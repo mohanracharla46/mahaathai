@@ -19,6 +19,7 @@ import AuthPage from './components/AuthPage';
 import ProfilePage from './components/ProfilePage';
 import GiftcardPage from './components/GiftcardPage';
 import MenuPage from './components/MenuPage';
+import AdminPage from './components/AdminPage';
 import logoImg from './assets/mahathailogo.png';
 
 
@@ -138,6 +139,10 @@ export default function App() {
         setCurrentUser(updated);
         localStorage.setItem(`maha_user_${currentUser.email}`, JSON.stringify(updated));
       }
+      // Store in global list for admin panel
+      const globalBookings = JSON.parse(localStorage.getItem('maha_global_bookings') || '[]');
+      globalBookings.unshift(newBooking);
+      localStorage.setItem('maha_global_bookings', JSON.stringify(globalBookings));
     };
 
     const handleAddOrder = (e) => {
@@ -150,6 +155,10 @@ export default function App() {
         setCurrentUser(updated);
         localStorage.setItem(`maha_user_${currentUser.email}`, JSON.stringify(updated));
       }
+      // Store in global list for admin panel
+      const globalOrders = JSON.parse(localStorage.getItem('maha_global_orders') || '[]');
+      globalOrders.unshift(newOrder);
+      localStorage.setItem('maha_global_orders', JSON.stringify(globalOrders));
     };
 
     window.addEventListener('maha_add_booking', handleAddBooking);
@@ -263,9 +272,10 @@ export default function App() {
   const isAuthPage = currentHash === '#/login' || currentHash === '#/signin' || currentHash === '#/auth';
   const isProfilePage = currentHash === '#/profile' || currentHash === '#profile-page';
   const isGiftcardPage = currentHash === '#/giftcards' || currentHash === '#/giftcard';
+  const isAdminPage = currentHash === '#/admin';
 
   useEffect(() => {
-    if (isAboutPage || isEventsPage || isCateringPage || isMenuPage || isContactPage || isCareersPage || isAuthPage || isProfilePage || isGiftcardPage) {
+    if (isAboutPage || isEventsPage || isCateringPage || isMenuPage || isContactPage || isCareersPage || isAuthPage || isProfilePage || isGiftcardPage || isAdminPage) {
       window.scrollTo(0, 0);
     } else {
       if (currentHash && currentHash !== '#/') {
@@ -280,7 +290,7 @@ export default function App() {
         }
       }
     }
-  }, [currentHash, isAboutPage, isEventsPage, isCateringPage, isMenuPage, isContactPage, isCareersPage, isAuthPage, isProfilePage]);
+  }, [currentHash, isAboutPage, isEventsPage, isCateringPage, isMenuPage, isContactPage, isCareersPage, isAuthPage, isProfilePage, isAdminPage]);
 
   return (
     <>
@@ -363,7 +373,9 @@ export default function App() {
 
           {/* Interactive Sections */}
           <main style={{ flexGrow: 1 }}>
-            {isAboutPage ? (
+            {isAdminPage ? (
+              <AdminPage />
+            ) : isAboutPage ? (
               <AboutUsPage />
             ) : isAuthPage ? (
               <AuthPage onLoginSuccess={handleLoginSuccess} />
@@ -602,7 +614,11 @@ export default function App() {
                               items: Object.values(cart).map(item => `${item.quantity}x ${item.name}`).join(', '),
                               total: getCartTotal(),
                               type: cartCheckoutData.serviceType === 'delivery' ? 'Delivery' : 'Pickup',
-                              status: 'Preparing'
+                              status: 'Preparing',
+                              customerName: cartCheckoutData.name,
+                              customerPhone: cartCheckoutData.phone,
+                              customerEmail: currentUser ? currentUser.email : 'guest@example.com',
+                              address: cartCheckoutData.serviceType === 'delivery' ? cartCheckoutData.address : 'Pickup'
                             };
                             if (currentUser) {
                               const updated = {
@@ -612,6 +628,11 @@ export default function App() {
                               setCurrentUser(updated);
                               localStorage.setItem(`maha_user_${currentUser.email}`, JSON.stringify(updated));
                             }
+
+                            // Store in global list for admin panel
+                            const globalOrders = JSON.parse(localStorage.getItem('maha_global_orders') || '[]');
+                            globalOrders.unshift(newOrder);
+                            localStorage.setItem('maha_global_orders', JSON.stringify(globalOrders));
                           }}
                           style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}
                         >

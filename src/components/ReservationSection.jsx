@@ -56,7 +56,10 @@ export default function ReservationSection({ initialTab = 'reservation', current
           time: reserveData.time + ' Seating',
           guests: parseInt(reserveData.guests) || 2,
           notes: reserveData.notes || '',
-          status: 'Confirmed'
+          status: 'Confirmed',
+          customerName: reserveData.name,
+          customerEmail: reserveData.email,
+          customerPhone: reserveData.phone
         }
       }));
     }
@@ -143,7 +146,11 @@ export default function ReservationSection({ initialTab = 'reservation', current
             .join(', '),
           total: subtotal,
           type: orderServiceType === 'delivery' ? 'Delivery' : 'Pickup',
-          status: 'Preparing'
+          status: 'Preparing',
+          customerName: orderName,
+          customerEmail: orderEmail,
+          customerPhone: orderPhone,
+          address: orderServiceType === 'delivery' ? orderAddress : 'Pickup'
         }
       }));
     }

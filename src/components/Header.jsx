@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ChevronDown, ShoppingBag, User, LogOut } from 'lucide-react';
+import { Menu, X, ChevronDown, ShoppingBag, User, LogOut, ShieldAlert } from 'lucide-react';
 import logoImg from '../assets/mahathailogo.png';
 
 const navLinks = [
@@ -321,6 +321,31 @@ export default function Header({ onOpenReservation, cartCount = 0, onOpenCart, c
                         <User size={12} style={{ color: 'var(--gold-antique)' }} />
                         View Profile
                       </a>
+                      {currentUser && currentUser.email === 'admin@mahathai.com' && (
+                        <a
+                          href="#/admin"
+                          onClick={() => setActiveDropdown(null)}
+                          className="dropdown-link"
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '0.5rem',
+                            fontFamily: 'var(--font-sans)',
+                            fontSize: '0.7rem',
+                            fontWeight: 600,
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.15em',
+                            color: 'var(--accent-jade)',
+                            textDecoration: 'none',
+                            padding: '0.6rem 1.5rem',
+                            borderBottom: '1px solid var(--border-light)'
+                          }}
+                        >
+                          <ShieldAlert size={12} style={{ color: 'var(--gold-antique)' }} />
+                          Admin Portal
+                        </a>
+                      )}
                       <button
                         onClick={onSignOut}
                         className="dropdown-link"

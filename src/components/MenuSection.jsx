@@ -669,6 +669,19 @@ menuData['Lunch'] = [
   }
 ];
 
+// Load custom admin overrides from localStorage if present
+try {
+  const customMenuData = localStorage.getItem('maha_custom_menu');
+  if (customMenuData) {
+    const parsed = JSON.parse(customMenuData);
+    Object.keys(parsed).forEach(key => {
+      menuData[key] = parsed[key];
+    });
+  }
+} catch (e) {
+  console.error("Failed to parse custom menu data", e);
+}
+
 const categories = ['Noodle Bar', 'Curry Kitchen', 'Rice & Wok', 'Street Kitchen', 'From the Sea', 'Chef’s Table', 'Plant-Based', 'Sweet Endings', 'Beverages & Sides'];
 
 export default function MenuSection({ cart = {}, addToCart, removeFromCart }) {
