@@ -22,7 +22,14 @@ import {
   Check, 
   AlertCircle,
   Eye,
-  FileText
+  FileText,
+  Tag,
+  Cpu,
+  Star,
+  Bell,
+  Sparkles,
+  ToggleLeft,
+  ToggleRight
 } from 'lucide-react';
 import { menuData } from './MenuSection';
 
@@ -103,6 +110,68 @@ const defaultMockBookings = [
   }
 ];
 
+// Initial Mock Coupons if none in localStorage
+const defaultMockCoupons = [
+  {
+    id: 'c-mock1',
+    code: 'WELCOME10',
+    type: 'percentage',
+    value: 10,
+    minOrder: 30,
+    expiryDate: '2026-12-31',
+    status: 'Active'
+  },
+  {
+    id: 'c-mock2',
+    code: 'MAHAFEAST',
+    type: 'flat',
+    value: 15,
+    minOrder: 80,
+    expiryDate: '2026-09-30',
+    status: 'Active'
+  },
+  {
+    id: 'c-mock3',
+    code: 'SIAMVIP25',
+    type: 'percentage',
+    value: 25,
+    minOrder: 120,
+    expiryDate: '2026-06-30',
+    status: 'Inactive'
+  }
+];
+
+// Initial Mock Feedback if none in localStorage
+const defaultMockFeedback = [
+  {
+    id: 'rev-mock1',
+    date: 'May 22, 2026',
+    customerName: 'Alexander Hamilton',
+    customerEmail: 'alex@example.com',
+    experience: 'General Dining Salon',
+    rating: 5,
+    comment: 'The Massaman Comfort Curry is a culinary masterpiece. Extraordinary service.'
+  },
+  {
+    id: 'rev-mock2',
+    date: 'May 23, 2026',
+    customerName: 'Sarah Connor',
+    customerEmail: 'sarah@example.com',
+    experience: 'Patio Lounge',
+    rating: 4,
+    comment: 'Delicious street Pad Thai, although wait times during peak dinner hour were slightly long.'
+  },
+  {
+    id: 'rev-mock3',
+    date: 'May 24, 2026',
+    customerName: 'Bruce Wayne',
+    customerEmail: 'bruce@waynecorp.com',
+    experience: 'Chef’s Table',
+    rating: 5,
+    comment: 'Flawless execution. A taste of pure Royal Siam.'
+  }
+];
+
 export default function AdminPage() {
   // Authentication State
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
@@ -114,22 +183,38 @@ export default function AdminPage() {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   // Dashboard Sidebar & View State
-  const [activeTab, setActiveTab] = useState('overview'); // 'overview', 'orders', 'bookings', 'menu', 'customers'
+  const [activeTab, setActiveTab] = useState('overview'); // 'overview', 'orders', 'items', 'coupons', 'users', 'automation', 'feedback'
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   // Global Lists States
   const [orders, setOrders] = useState([]);
   const [bookings, setBookings] = useState([]);
   const [localMenu, setLocalMenu] = useState({});
+  const [coupons, setCoupons] = useState([]);
   const [usersList, setUsersList] = useState([]);
+  const [feedbackList, setFeedbackList] = useState([]);
 
   // Search & Filter state for tab lists
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
+  const [orderTypeFilter, setOrderTypeFilter] = useState('All'); // 'All', 'Pickup', 'Delivery'
   
-  // Menu Category state for Menu Tab
+  // Menu Category state for Items Tab
   const menuCategories = ['Noodle Bar', 'Curry Kitchen', 'Rice & Wok', 'Street Kitchen', 'From the Sea', 'Chef’s Table', 'Plant-Based', 'Sweet Endings', 'Beverages & Sides', 'Lunch', 'Normal', 'Vegetarian'];
   const [selectedMenuCategory, setSelectedMenuCategory] = useState('Noodle Bar');
+
+  // Automation Settings (Toggles)
+  const [automationRules, setAutomationRules] = useState(() => {
+    const saved = localStorage.getItem('maha_automation_rules');
+    if (saved) return JSON.parse(saved);
+    return {
+      seatingReminder: true,
+      happyHourPricing: false,
+      reviewInvites: true,
+      backupSync: true,
+      kitchenDisplayAutoAlert: true
+    };
+  });
 
   // Modal Dialog states
   const [showEditItemModal, setShowEditItemModal] = useState(false);
@@ -143,6 +228,20 @@ export default function AdminPage() {
     rating: 4.8,
     image: '',
     availability: true
+  });
+
+  // Coupon Modals states
+  const [showAddCouponModal, setShowAddCouponModal] = useState(false);
+  const [showEditCouponModal, setShowEditCouponModal] = useState(false);
+  const [selectedCoupon, setSelectedCoupon] = useState(null);
+  const [couponFormData, setCouponFormData] = useState({
+    id: '',
+    code: '',
+    type: 'percentage',
+    value: 10,
+    minOrder: 30,
+    expiryDate: '2026-12-31',
+    status: 'Active'
   });
 
   const [showOrderDetailsModal, setShowOrderDetailsModal] = useState(false);
@@ -160,7 +259,7 @@ export default function AdminPage() {
     }
     setOrders(JSON.parse(savedOrders));
 
-    // 2. Load Bookings
+    // 2. Load Bookings (Seating)
     let savedBookings = localStorage.getItem('maha_global_bookings');
     if (!savedBookings) {
       localStorage.setItem('maha_global_bookings', JSON.stringify(defaultMockBookings));
@@ -180,9 +279,24 @@ export default function AdminPage() {
       setLocalMenu({ ...menuData });
     }
 
-    // 4. Load Users from LocalStorage (keys matching maha_user_*)
+    // 4. Load Coupons
+    let savedCoupons = localStorage.getItem('maha_global_coupons');
+    if (!savedCoupons) {
+      localStorage.setItem('maha_global_coupons', JSON.stringify(defaultMockCoupons));
+      savedCoupons = JSON.stringify(defaultMockCoupons);
+    }
+    setCoupons(JSON.parse(savedCoupons));
+
+    // 5. Load Feedback Reviews
+    let savedFeedback = localStorage.getItem('maha_global_feedback');
+    if (!savedFeedback) {
+      localStorage.setItem('maha_global_feedback', JSON.stringify(defaultMockFeedback));
+      savedFeedback = JSON.stringify(defaultMockFeedback);
+    }
+    setFeedbackList(JSON.parse(savedFeedback));
+
+    // 6. Load Users from LocalStorage (keys matching maha_user_*)
     const users = [];
-    // Mock baseline customers
     users.push({
       name: 'Alexander Hamilton',
       email: 'alex@example.com',
@@ -211,7 +325,6 @@ export default function AdminPage() {
         try {
           const userObj = JSON.parse(localStorage.getItem(key));
           if (userObj && userObj.email) {
-            // Check if already in list to avoid duplications
             if (!users.some(u => u.email === userObj.email)) {
               users.push({
                 name: userObj.name || userObj.email.split('@')[0],
@@ -234,7 +347,6 @@ export default function AdminPage() {
     setLoginError('');
     setIsLoggingIn(true);
 
-    // Simulate luxury authentication delay
     setTimeout(() => {
       if (loginEmail === 'admin@mahathai.com' && loginPassword === 'admin') {
         sessionStorage.setItem('maha_admin_auth', 'true');
@@ -255,8 +367,6 @@ export default function AdminPage() {
   const saveMenuOverrides = (newMenu) => {
     setLocalMenu(newMenu);
     localStorage.setItem('maha_custom_menu', JSON.stringify(newMenu));
-    
-    // Dynamically update the imported menuData in memory so pages don't need a full reload
     Object.keys(newMenu).forEach(key => {
       menuData[key] = newMenu[key];
     });
@@ -267,8 +377,6 @@ export default function AdminPage() {
     const updated = orders.map(o => o.id === orderId ? { ...o, status: newStatus } : o);
     setOrders(updated);
     localStorage.setItem('maha_global_orders', JSON.stringify(updated));
-
-    // Also attempt to update order inside specific user's profiles
     updateUserProfileData(orderId, 'orders', { status: newStatus });
   };
 
@@ -280,27 +388,8 @@ export default function AdminPage() {
     }
   };
 
-  // --- RESERVATION OPERATIONS ---
-  const handleUpdateBookingStatus = (bookingId, newStatus) => {
-    const updated = bookings.map(b => b.id === bookingId ? { ...b, status: newStatus } : b);
-    setBookings(updated);
-    localStorage.setItem('maha_global_bookings', JSON.stringify(updated));
-
-    // Also attempt to update booking inside specific user's profiles
-    updateUserProfileData(bookingId, 'bookings', { status: newStatus });
-  };
-
-  const handleDeleteBooking = (bookingId) => {
-    if (window.confirm('Are you sure you want to cancel and delete this reservation?')) {
-      const updated = bookings.filter(b => b.id !== bookingId);
-      setBookings(updated);
-      localStorage.setItem('maha_global_bookings', JSON.stringify(updated));
-    }
-  };
-
   // Sync status edits back to target user localStorage key if applicable
   const updateUserProfileData = (recordId, type, fieldsToUpdate) => {
-    // Find who owns the record
     const targetRecord = type === 'orders' ? orders.find(o => o.id === recordId) : bookings.find(b => b.id === recordId);
     if (!targetRecord || !targetRecord.customerEmail) return;
 
@@ -319,7 +408,7 @@ export default function AdminPage() {
     }
   };
 
-  // --- MENU EDITOR OPERATIONS ---
+  // --- MENU ITEM OPERATIONS ---
   const handleOpenEditDish = (dish) => {
     setSelectedDish(dish);
     setDishFormData({
@@ -404,17 +493,118 @@ export default function AdminPage() {
     }
   };
 
-  // --- STATS COMPUTATIONS FOR OVERVIEW ---
+  // --- COUPON OPERATIONS ---
+  const handleOpenAddCoupon = () => {
+    setCouponFormData({
+      id: 'c-' + Date.now(),
+      code: '',
+      type: 'percentage',
+      value: 10,
+      minOrder: 30,
+      expiryDate: '2026-12-31',
+      status: 'Active'
+    });
+    setShowAddCouponModal(true);
+  };
+
+  const handleSaveAddCoupon = (e) => {
+    e.preventDefault();
+    if (!couponFormData.code || couponFormData.value <= 0) return;
+
+    const updatedCoupons = [
+      ...coupons,
+      {
+        ...couponFormData,
+        code: couponFormData.code.toUpperCase().trim(),
+        value: parseFloat(couponFormData.value),
+        minOrder: parseFloat(couponFormData.minOrder)
+      }
+    ];
+    setCoupons(updatedCoupons);
+    localStorage.setItem('maha_global_coupons', JSON.stringify(updatedCoupons));
+    setShowAddCouponModal(false);
+  };
+
+  const handleOpenEditCoupon = (coupon) => {
+    setSelectedCoupon(coupon);
+    setCouponFormData({
+      id: coupon.id,
+      code: coupon.code,
+      type: coupon.type,
+      value: coupon.value,
+      minOrder: coupon.minOrder,
+      expiryDate: coupon.expiryDate,
+      status: coupon.status
+    });
+    setShowEditCouponModal(true);
+  };
+
+  const handleSaveEditCoupon = (e) => {
+    e.preventDefault();
+    if (!couponFormData.code || couponFormData.value <= 0) return;
+
+    const updatedCoupons = coupons.map(c => 
+      c.id === couponFormData.id ? {
+        ...couponFormData,
+        code: couponFormData.code.toUpperCase().trim(),
+        value: parseFloat(couponFormData.value),
+        minOrder: parseFloat(couponFormData.minOrder)
+      } : c
+    );
+    setCoupons(updatedCoupons);
+    localStorage.setItem('maha_global_coupons', JSON.stringify(updatedCoupons));
+    setShowEditCouponModal(false);
+  };
+
+  const handleDeleteCoupon = (couponId) => {
+    if (window.confirm('Are you sure you want to delete this promo coupon?')) {
+      const updatedCoupons = coupons.filter(c => c.id !== couponId);
+      setCoupons(updatedCoupons);
+      localStorage.setItem('maha_global_coupons', JSON.stringify(updatedCoupons));
+    }
+  };
+
+  // --- AUTOMATION OPERATIONS ---
+  const handleToggleAutomation = (key) => {
+    const updated = {
+      ...automationRules,
+      [key]: !automationRules[key]
+    };
+    setAutomationRules(updated);
+    localStorage.setItem('maha_automation_rules', JSON.stringify(updated));
+  };
+
+  // --- FEEDBACK BOARD OPERATIONS ---
+  const handleDeleteFeedback = (feedbackId) => {
+    if (window.confirm('Are you sure you want to delete this customer feedback?')) {
+      const updated = feedbackList.filter(f => f.id !== feedbackId);
+      setFeedbackList(updated);
+      localStorage.setItem('maha_global_feedback', JSON.stringify(updated));
+    }
+  };
+
+  const handleApproveFeedback = (feedbackId) => {
+    const updated = feedbackList.map(f => {
+      if (f.id === feedbackId) {
+        const nextState = !f.approved;
+        return { ...f, approved: nextState };
+      }
+      return f;
+    });
+    setFeedbackList(updated);
+    localStorage.setItem('maha_global_feedback', JSON.stringify(updated));
+  };
+
+  // --- STATS COMPUTATIONS ---
   const stats = useMemo(() => {
     const totalRev = orders
       .filter(o => o.status !== 'Cancelled')
       .reduce((sum, o) => sum + parseFloat(o.total || 0), 0);
     const pendingOrders = orders.filter(o => o.status === 'Pending' || o.status === 'Preparing' || o.status === 'Out for Delivery').length;
-    const confirmedBookings = bookings.filter(b => b.status === 'Confirmed').length;
+    const activeBookings = bookings.filter(b => b.status === 'Confirmed').length;
     
     let totalItems = 0;
     Object.keys(localMenu).forEach(key => {
-      // Don't double count computed menus
       if (key !== 'Normal' && key !== 'Vegetarian' && key !== 'Lunch') {
         totalItems += (localMenu[key] || []).length;
       }
@@ -423,13 +613,13 @@ export default function AdminPage() {
     return {
       revenue: totalRev,
       pendingOrders,
-      activeBookings: confirmedBookings,
+      activeBookings,
       menuCount: totalItems
     };
   }, [orders, bookings, localMenu]);
 
   // SVG Chart Computations (Simulated trajectory)
-  const salesHistory = [350, 480, 620, 540, 890, 1100, stats.revenue];
+  const salesHistory = [450, 580, 620, 740, 890, 1100, stats.revenue];
   const chartPoints = useMemo(() => {
     const maxVal = Math.max(...salesHistory) * 1.15;
     const height = 150;
@@ -441,7 +631,7 @@ export default function AdminPage() {
     }).join(' ');
   }, [stats.revenue]);
 
-  // Filters search queries
+  // Filtered Lists Computations
   const filteredOrders = useMemo(() => {
     return orders.filter(o => {
       const matchesSearch = 
@@ -449,24 +639,28 @@ export default function AdminPage() {
         o.id?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         o.items?.toLowerCase().includes(searchQuery.toLowerCase());
       
-      const matchesFilter = statusFilter === 'All' || o.status === statusFilter;
-      return matchesSearch && matchesFilter;
+      const matchesType = orderTypeFilter === 'All' || o.type?.toLowerCase() === orderTypeFilter.toLowerCase();
+      const matchesStatus = statusFilter === 'All' || o.status === statusFilter;
+      return matchesSearch && matchesType && matchesStatus;
     });
-  }, [orders, searchQuery, statusFilter]);
+  }, [orders, searchQuery, orderTypeFilter, statusFilter]);
 
-  const filteredBookings = useMemo(() => {
-    return bookings.filter(b => {
-      const matchesSearch = 
-        b.customerName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        b.id?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        b.notes?.toLowerCase().includes(searchQuery.toLowerCase());
-      
-      const matchesFilter = statusFilter === 'All' || b.status === statusFilter;
-      return matchesSearch && matchesFilter;
-    });
-  }, [bookings, searchQuery, statusFilter]);
+  const filteredItems = useMemo(() => {
+    return (localMenu[selectedMenuCategory] || []).filter(item => 
+      item.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.id?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.description?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [localMenu, selectedMenuCategory, searchQuery]);
 
-  const filteredCustomers = useMemo(() => {
+  const filteredCoupons = useMemo(() => {
+    return coupons.filter(c => 
+      c.code?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      c.type?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [coupons, searchQuery]);
+
+  const filteredUsers = useMemo(() => {
     return usersList.filter(u => 
       u.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       u.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -474,8 +668,16 @@ export default function AdminPage() {
     );
   }, [usersList, searchQuery]);
 
+  const filteredFeedback = useMemo(() => {
+    return feedbackList.filter(f => 
+      f.customerName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      f.comment?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      f.experience?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [feedbackList, searchQuery]);
+
   return (
-    <div style={{ backgroundColor: 'var(--canvas-secondary)', minHeight: '100vh', paddingTop: '100px' }}>
+    <div style={{ backgroundColor: 'var(--canvas-secondary)', minHeight: '100vh' }}>
       <AnimatePresence mode="wait">
         {!isAuthenticated ? (
           /* AUTHENTICATION WALL */
@@ -506,7 +708,6 @@ export default function AdminPage() {
                 textAlign: 'center'
               }}
             >
-              {/* Emblem */}
               <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '56px', height: '56px', borderRadius: '50%', backgroundColor: 'var(--gold-light)', border: '1px solid var(--gold-antique)', color: 'var(--gold-antique)', marginBottom: '1.5rem' }}>
                 <ShieldAlert size={28} />
               </div>
@@ -595,7 +796,7 @@ export default function AdminPage() {
               color: 'var(--text-dark)'
             }}
           >
-            {/* COLLAPSIBLE SIDEBAR */}
+            {/* SIDEBAR */}
             <aside 
               style={{
                 width: isSidebarOpen ? '260px' : '70px',
@@ -609,7 +810,6 @@ export default function AdminPage() {
                 flexShrink: 0
               }}
             >
-              {/* Sidebar Header */}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: isSidebarOpen ? 'space-between' : 'center', padding: '1.5rem', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', minHeight: '75px' }}>
                 {isSidebarOpen && (
                   <span className="font-serif" style={{ fontSize: '1.2rem', color: 'var(--gold-antique)', tracking: '0.05em' }}>
@@ -624,7 +824,6 @@ export default function AdminPage() {
                 </button>
               </div>
 
-              {/* Sidebar Profile Card */}
               {isSidebarOpen && (
                 <div style={{ padding: '1.5rem', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', backgroundColor: 'rgba(0,0,0,0.15)' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
@@ -639,14 +838,15 @@ export default function AdminPage() {
                 </div>
               )}
 
-              {/* Sidebar Nav Items */}
               <nav style={{ flexGrow: 1, padding: '1.5rem 0.5rem', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
                 {[
-                  { id: 'overview', label: 'Overview', icon: TrendingUp },
+                  { id: 'overview', label: 'Dashboard', icon: TrendingUp },
                   { id: 'orders', label: 'Orders Log', icon: ShoppingBag },
-                  { id: 'bookings', label: 'Table Seating', icon: Calendar },
-                  { id: 'menu', label: 'Menu Editor', icon: Edit },
-                  { id: 'customers', label: 'VIP Registry', icon: Users }
+                  { id: 'items', label: 'Items (Menu)', icon: Edit },
+                  { id: 'coupons', label: 'Coupons', icon: Tag },
+                  { id: 'users', label: 'Users', icon: Users },
+                  { id: 'automation', label: 'Automation', icon: Cpu },
+                  { id: 'feedback', label: 'Feedback', icon: Star }
                 ].map((item) => {
                   const Icon = item.icon;
                   const isActive = activeTab === item.id;
@@ -657,6 +857,7 @@ export default function AdminPage() {
                         setActiveTab(item.id);
                         setSearchQuery('');
                         setStatusFilter('All');
+                        setOrderTypeFilter('All');
                       }}
                       style={{
                         display: 'flex',
@@ -688,7 +889,6 @@ export default function AdminPage() {
                 })}
               </nav>
 
-              {/* Sidebar Footer / Logout */}
               <div style={{ padding: '1rem', borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
                 <button
                   onClick={handleLogout}
@@ -717,36 +917,53 @@ export default function AdminPage() {
               </div>
             </aside>
 
-            {/* MAIN CONTENT AREA */}
+            {/* MAIN CONTENT */}
             <main style={{ flexGrow: 1, padding: '2.5rem', overflowX: 'hidden' }}>
               
-              {/* TAB CONTAINER Header */}
+              {/* Header */}
               <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', marginBottom: '2.5rem', borderBottom: '1px solid var(--border-light)', paddingBottom: '1.25rem' }}>
                 <div>
                   <span style={{ fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', tracking: '0.2em', color: 'var(--gold-antique)' }}>
                     Curator Salon Dashboard
                   </span>
                   <h1 className="font-serif" style={{ fontSize: '2.2rem', textTransform: 'capitalize', fontWeight: 300, marginTop: '0.25rem' }}>
-                    {activeTab === 'menu' ? 'Live Menu Customization' : activeTab === 'bookings' ? 'Table Seating & Reservation' : activeTab === 'customers' ? 'VIP Guest Registry' : activeTab}
+                    {activeTab === 'overview' ? 'Staff Dashboard' : activeTab === 'items' ? 'Items Manager (Menu)' : activeTab === 'users' ? 'Registered Users' : activeTab}
                   </h1>
                 </div>
 
-                {/* Optional Top Right Info */}
-                <div style={{ display: 'flex', gap: '1rem' }}>
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                  <button
+                    onClick={() => { window.location.hash = '#/'; }}
+                    style={{
+                      padding: '0.5rem 1rem',
+                      backgroundColor: 'var(--canvas-primary)',
+                      border: '1px solid var(--border-light)',
+                      borderRadius: '4px',
+                      fontSize: '0.78rem',
+                      color: 'var(--text-muted)',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.4rem',
+                      transition: 'border-color 0.2s'
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--gold-antique)'}
+                    onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border-light)'}
+                  >
+                    ← Back to Site
+                  </button>
                   <div style={{ padding: '0.5rem 1rem', backgroundColor: 'var(--canvas-primary)', border: '1px solid var(--border-light)', borderRadius: '4px', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                    Active User Database: <strong style={{ color: 'var(--text-dark)' }}>{usersList.length} Accounts</strong>
+                    Admin Mode: <strong style={{ color: 'var(--accent-jade)' }}>Online</strong>
                   </div>
                 </div>
               </div>
 
               {/* RENDER ACTIVE TAB */}
               {activeTab === 'overview' && (
-                /* 1. OVERVIEW TAB */
+                /* 1. DASHBOARD TAB */
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
-                  {/* KPI Stats Grid */}
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.5rem' }}>
                     
-                    {/* Stat Card 1 */}
                     <div style={{ backgroundColor: 'var(--canvas-primary)', border: '1px solid var(--border-light)', borderRadius: '8px', padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1.25rem', boxShadow: 'var(--shadow-soft)' }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '48px', height: '48px', borderRadius: '8px', backgroundColor: 'var(--gold-light)', color: 'var(--gold-antique)' }}>
                         <DollarSign size={24} />
@@ -757,47 +974,40 @@ export default function AdminPage() {
                       </div>
                     </div>
 
-                    {/* Stat Card 2 */}
                     <div style={{ backgroundColor: 'var(--canvas-primary)', border: '1px solid var(--border-light)', borderRadius: '8px', padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1.25rem', boxShadow: 'var(--shadow-soft)' }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '48px', height: '48px', borderRadius: '8px', backgroundColor: 'rgba(14, 110, 86, 0.1)', color: 'var(--accent-jade)' }}>
                         <ShoppingBag size={24} />
                       </div>
                       <div>
-                        <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Active Orders</p>
+                        <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Pending Orders</p>
                         <h3 style={{ fontSize: '1.5rem', fontWeight: 300, color: 'var(--text-dark)', marginTop: '0.15rem' }}>{stats.pendingOrders} Active</h3>
                       </div>
                     </div>
 
-                    {/* Stat Card 3 */}
                     <div style={{ backgroundColor: 'var(--canvas-primary)', border: '1px solid var(--border-light)', borderRadius: '8px', padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1.25rem', boxShadow: 'var(--shadow-soft)' }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '48px', height: '48px', borderRadius: '8px', backgroundColor: 'var(--gold-light)', color: 'var(--gold-antique)' }}>
                         <Calendar size={24} />
                       </div>
                       <div>
-                        <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Confirmed Bookings</p>
+                        <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Bookings</p>
                         <h3 style={{ fontSize: '1.5rem', fontWeight: 300, color: 'var(--text-dark)', marginTop: '0.15rem' }}>{stats.activeBookings} Tables</h3>
                       </div>
                     </div>
 
-                    {/* Stat Card 4 */}
                     <div style={{ backgroundColor: 'var(--canvas-primary)', border: '1px solid var(--border-light)', borderRadius: '8px', padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1.25rem', boxShadow: 'var(--shadow-soft)' }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '48px', height: '48px', borderRadius: '8px', backgroundColor: 'rgba(14, 110, 86, 0.1)', color: 'var(--accent-jade)' }}>
                         <Edit size={24} />
                       </div>
                       <div>
-                        <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Menu Inventory</p>
-                        <h3 style={{ fontSize: '1.5rem', fontWeight: 300, color: 'var(--text-dark)', marginTop: '0.15rem' }}>{stats.menuCount} Items</h3>
+                        <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Items Count</p>
+                        <h3 style={{ fontSize: '1.5rem', fontWeight: 300, color: 'var(--text-dark)', marginTop: '0.15rem' }}>{stats.menuCount} Dishes</h3>
                       </div>
                     </div>
                   </div>
 
-                  {/* Analytics Trajectory Widget */}
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
-                    
-                    {/* SVG Chart Panel */}
                     <div style={{ backgroundColor: 'var(--canvas-primary)', border: '1px solid var(--border-light)', borderRadius: '8px', padding: '2rem', boxShadow: 'var(--shadow-soft)', display: 'flex', flexDirection: 'column' }}>
                       <h3 className="font-serif" style={{ fontSize: '1.25rem', fontWeight: 300, marginBottom: '1.5rem' }}>Revenue Trajectory (Weekly)</h3>
-                      
                       <div style={{ position: 'relative', height: '170px', width: '100%', marginTop: 'auto' }}>
                         <svg viewBox="0 0 500 150" style={{ width: '100%', height: '150px', overflow: 'visible' }}>
                           <defs>
@@ -806,101 +1016,38 @@ export default function AdminPage() {
                               <stop offset="100%" stopColor="var(--gold-antique)" stopOpacity="0"/>
                             </linearGradient>
                           </defs>
-                          
-                          {/* Grid Lines */}
                           <line x1="0" y1="0" x2="500" y2="0" stroke="var(--border-light)" strokeWidth="0.5" />
                           <line x1="0" y1="50" x2="500" y2="50" stroke="var(--border-light)" strokeWidth="0.5" />
                           <line x1="0" y1="100" x2="500" y2="100" stroke="var(--border-light)" strokeWidth="0.5" />
                           <line x1="0" y1="150" x2="500" y2="150" stroke="var(--border-medium)" strokeWidth="1" />
-
-                          {/* Gradient Glow */}
-                          <path 
-                            d={`M 0,150 L ${chartPoints} L 500,150 Z`} 
-                            fill="url(#chartGlow)" 
-                          />
-                          
-                          {/* Trajectory Line */}
-                          <motion.path 
-                            initial={{ pathLength: 0 }}
-                            animate={{ pathLength: 1 }}
-                            transition={{ duration: 1.5, ease: 'easeOut' }}
-                            d={`M ${chartPoints}`} 
-                            fill="none" 
-                            stroke="var(--gold-antique)" 
-                            strokeWidth="3.5" 
-                            strokeLinecap="round"
-                          />
-
-                          {/* Data points dots */}
+                          <path d={`M 0,150 L ${chartPoints} L 500,150 Z`} fill="url(#chartGlow)" />
+                          <motion.path initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.5 }} d={`M ${chartPoints}`} fill="none" stroke="var(--gold-antique)" strokeWidth="3.5" strokeLinecap="round" />
                           {salesHistory.map((val, idx) => {
                             const maxVal = Math.max(...salesHistory) * 1.15;
                             const x = (idx / (salesHistory.length - 1)) * 500;
                             const y = 150 - (val / maxVal) * 150;
                             return (
-                              <circle 
-                                key={idx}
-                                cx={x} 
-                                cy={y} 
-                                r="5" 
-                                fill="var(--text-dark)" 
-                                stroke="var(--gold-antique)" 
-                                strokeWidth="2" 
-                              />
+                              <circle key={idx} cx={x} cy={y} r="5" fill="var(--text-dark)" stroke="var(--gold-antique)" strokeWidth="2" />
                             );
                           })}
                         </svg>
                       </div>
-
-                      {/* X Axis Labels */}
                       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: 'var(--text-muted)', marginTop: '0.75rem', fontWeight: 600 }}>
-                        <span>Mon</span>
-                        <span>Tue</span>
-                        <span>Wed</span>
-                        <span>Thu</span>
-                        <span>Fri</span>
-                        <span>Sat</span>
-                        <span>Sun</span>
+                        <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
                       </div>
                     </div>
 
-                    {/* Operations Summary Feed */}
                     <div style={{ backgroundColor: 'var(--canvas-primary)', border: '1px solid var(--border-light)', borderRadius: '8px', padding: '2rem', boxShadow: 'var(--shadow-soft)', display: 'flex', flexDirection: 'column' }}>
                       <h3 className="font-serif" style={{ fontSize: '1.25rem', fontWeight: 300, marginBottom: '1rem' }}>Active Service Logs</h3>
-                      
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', flexGrow: 1, overflowY: 'auto', maxHeight: '180px' }}>
-                        {orders.slice(0, 3).map((o, idx) => (
-                          <div key={idx} style={{ display: 'flex', justifyItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--border-light)', paddingBottom: '0.75rem' }}>
+                        {orders.slice(0, 4).map((o, idx) => (
+                          <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-light)', paddingBottom: '0.75rem' }}>
                             <div>
                               <p style={{ fontSize: '0.8rem', fontWeight: 600 }}>Order {o.id}</p>
                               <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{o.customerName} • {o.type}</p>
                             </div>
-                            <span 
-                              style={{ 
-                                fontSize: '9px', fontWeight: 700, padding: '0.2rem 0.5rem', borderRadius: '12px',
-                                textTransform: 'uppercase', height: 'fit-content',
-                                backgroundColor: o.status === 'Delivered' ? 'rgba(14,110,86,0.1)' : 'var(--gold-light)',
-                                color: o.status === 'Delivered' ? 'var(--accent-jade)' : 'var(--gold-antique)'
-                              }}
-                            >
+                            <span style={{ fontSize: '9px', fontWeight: 700, padding: '0.2rem 0.5rem', borderRadius: '12px', textTransform: 'uppercase', height: 'fit-content', backgroundColor: o.status === 'Delivered' ? 'rgba(14,110,86,0.1)' : 'var(--gold-light)', color: o.status === 'Delivered' ? 'var(--accent-jade)' : 'var(--gold-antique)' }}>
                               {o.status}
-                            </span>
-                          </div>
-                        ))}
-                        {bookings.slice(0, 2).map((b, idx) => (
-                          <div key={idx} style={{ display: 'flex', justifyItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--border-light)', paddingBottom: '0.75rem' }}>
-                            <div>
-                              <p style={{ fontSize: '0.8rem', fontWeight: 600 }}>Booking Seating</p>
-                              <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{b.customerName} • {b.guests} Guests • {b.time}</p>
-                            </div>
-                            <span 
-                              style={{ 
-                                fontSize: '9px', fontWeight: 700, padding: '0.2rem 0.5rem', borderRadius: '12px',
-                                textTransform: 'uppercase', height: 'fit-content',
-                                backgroundColor: b.status === 'Confirmed' ? 'rgba(14,110,86,0.1)' : 'var(--gold-light)',
-                                color: b.status === 'Confirmed' ? 'var(--accent-jade)' : 'var(--gold-antique)'
-                              }}
-                            >
-                              {b.status}
                             </span>
                           </div>
                         ))}
@@ -911,29 +1058,55 @@ export default function AdminPage() {
               )}
 
               {activeTab === 'orders' && (
-                /* 2. ORDERS LOG TAB */
+                /* 2. ORDERS TAB (Pickup, Delivery segregation) */
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                  {/* Search, Filter Bar */}
+                  {/* Subfilters */}
                   <div style={{ display: 'flex', flexWrap: 'wrap', justifyItems: 'center', justifyContent: 'space-between', gap: '1rem', backgroundColor: 'var(--canvas-primary)', border: '1px solid var(--border-light)', borderRadius: '6px', padding: '1rem' }}>
-                    <div style={{ position: 'relative', flexGrow: 1, maxWidth: '350px' }}>
-                      <span style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>
-                        <Search size={16} />
-                      </span>
-                      <input 
-                        type="text" 
-                        placeholder="Search orders (ID, client name, items)..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        style={{ width: '100%', padding: '0.5rem 0.75rem 0.5rem 2.25rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }}
-                      />
+                    
+                    {/* Pickup / Delivery Toggles */}
+                    <div style={{ display: 'flex', gap: '0.25rem', backgroundColor: 'var(--canvas-secondary)', padding: '0.25rem', borderRadius: '4px', border: '1px solid var(--border-light)' }}>
+                      {[
+                        { id: 'All', label: 'All Orders' },
+                        { id: 'Pickup', label: 'Pickups' },
+                        { id: 'Delivery', label: 'Deliveries' }
+                      ].map(t => (
+                        <button
+                          key={t.id}
+                          onClick={() => setOrderTypeFilter(t.id)}
+                          style={{
+                            padding: '0.35rem 0.75rem',
+                            fontSize: '0.75rem',
+                            fontWeight: 600,
+                            borderRadius: '3px',
+                            border: 'none',
+                            cursor: 'pointer',
+                            backgroundColor: orderTypeFilter === t.id ? 'var(--text-dark)' : 'transparent',
+                            color: orderTypeFilter === t.id ? 'var(--canvas-primary)' : 'var(--text-muted)'
+                          }}
+                        >
+                          {t.label}
+                        </button>
+                      ))}
                     </div>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Filter Status:</span>
+                    <div style={{ display: 'flex', gap: '1rem', flexGrow: 1, maxWidth: '400px' }}>
+                      <div style={{ position: 'relative', width: '100%' }}>
+                        <span style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>
+                          <Search size={16} />
+                        </span>
+                        <input 
+                          type="text" 
+                          placeholder="Search orders (ID, client name, items)..."
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          style={{ width: '100%', padding: '0.5rem 0.75rem 0.5rem 2.25rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }}
+                        />
+                      </div>
+
                       <select 
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
-                        style={{ padding: '0.5rem 1rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }}
+                        style={{ padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', width: '140px' }}
                       >
                         <option value="All">All Statuses</option>
                         <option value="Pending">Pending</option>
@@ -945,25 +1118,25 @@ export default function AdminPage() {
                     </div>
                   </div>
 
-                  {/* Orders Table Panel */}
+                  {/* Orders Table */}
                   <div style={{ backgroundColor: 'var(--canvas-primary)', border: '1px solid var(--border-light)', borderRadius: '8px', boxShadow: 'var(--shadow-soft)', overflowX: 'auto' }}>
                     <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '800px' }}>
                       <thead>
                         <tr style={{ borderBottom: '2px solid var(--border-light)', backgroundColor: 'var(--canvas-secondary)' }}>
                           <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Order ID</th>
-                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Customer Coordinates</th>
-                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Items Ordered</th>
+                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Patron Details</th>
+                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Items</th>
+                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Type</th>
                           <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Total Cost</th>
-                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Logistics</th>
                           <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Status State</th>
-                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Action Seals</th>
+                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Actions</th>
                         </tr>
                       </thead>
                       <tbody>
                         {filteredOrders.length === 0 ? (
                           <tr>
                             <td colSpan="7" style={{ padding: '3rem', textAlign: 'center', fontSize: '0.85rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>
-                              No orders found matching search criteria.
+                              No orders found.
                             </td>
                           </tr>
                         ) : (
@@ -972,41 +1145,22 @@ export default function AdminPage() {
                               <td style={{ padding: '1rem', fontSize: '0.8rem', fontWeight: 600 }}>{order.id}</td>
                               <td style={{ padding: '1rem', fontSize: '0.8rem' }}>
                                 <div style={{ fontWeight: 600 }}>{order.customerName}</div>
-                                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{order.customerPhone}</div>
-                                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{order.customerEmail}</div>
+                                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{order.customerPhone} | {order.customerEmail}</div>
                               </td>
                               <td style={{ padding: '1rem', fontSize: '0.8rem', maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                 {order.items}
                               </td>
-                              <td style={{ padding: '1rem', fontSize: '0.8rem', fontWeight: 600 }}>${parseFloat(order.total || 0).toFixed(2)}</td>
                               <td style={{ padding: '1rem', fontSize: '0.8rem' }}>
-                                <span style={{ fontWeight: 500 }}>{order.type}</span>
-                                {order.address && order.type === 'Delivery' && (
-                                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', maxWidth: '160px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={order.address}>
-                                    {order.address}
-                                  </div>
-                                )}
+                                <span style={{ padding: '0.15rem 0.5rem', borderRadius: '4px', fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', backgroundColor: order.type === 'Delivery' ? 'rgba(14, 110, 86, 0.1)' : 'var(--gold-light)', color: order.type === 'Delivery' ? 'var(--accent-jade)' : 'var(--gold-antique)' }}>
+                                  {order.type}
+                                </span>
                               </td>
+                              <td style={{ padding: '1rem', fontSize: '0.8rem', fontWeight: 600 }}>${parseFloat(order.total || 0).toFixed(2)}</td>
                               <td style={{ padding: '1rem', fontSize: '0.8rem' }}>
                                 <select 
                                   value={order.status}
                                   onChange={(e) => handleUpdateOrderStatus(order.id, e.target.value)}
-                                  style={{
-                                    padding: '0.35rem 0.5rem',
-                                    borderRadius: '4px',
-                                    border: '1px solid var(--border-light)',
-                                    fontSize: '0.75rem',
-                                    fontWeight: 600,
-                                    outline: 'none',
-                                    backgroundColor: 
-                                      order.status === 'Delivered' ? 'rgba(14, 110, 86, 0.1)' : 
-                                      order.status === 'Cancelled' ? 'rgba(219, 68, 85, 0.1)' : 
-                                      'var(--gold-light)',
-                                    color: 
-                                      order.status === 'Delivered' ? 'var(--accent-jade)' : 
-                                      order.status === 'Cancelled' ? '#db4455' : 
-                                      'var(--gold-antique)'
-                                  }}
+                                  style={{ padding: '0.35rem 0.5rem', borderRadius: '4px', border: '1px solid var(--border-light)', fontSize: '0.75rem', fontWeight: 600, outline: 'none' }}
                                 >
                                   <option value="Pending">Pending</option>
                                   <option value="Preparing">Preparing</option>
@@ -1017,23 +1171,8 @@ export default function AdminPage() {
                               </td>
                               <td style={{ padding: '1rem', fontSize: '0.8rem' }}>
                                 <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                  <button
-                                    onClick={() => {
-                                      setSelectedOrder(order);
-                                      setShowOrderDetailsModal(true);
-                                    }}
-                                    style={{ background: 'none', border: 'none', color: 'var(--accent-jade)', cursor: 'pointer', padding: '0.25rem' }}
-                                    title="View Ticket Details"
-                                  >
-                                    <Eye size={16} />
-                                  </button>
-                                  <button
-                                    onClick={() => handleDeleteOrder(order.id)}
-                                    style={{ background: 'none', border: 'none', color: '#db4455', cursor: 'pointer', padding: '0.25rem' }}
-                                    title="Delete Order Log"
-                                  >
-                                    <Trash2 size={16} />
-                                  </button>
+                                  <button onClick={() => { setSelectedOrder(order); setShowOrderDetailsModal(true); }} style={{ background: 'none', border: 'none', color: 'var(--accent-jade)', cursor: 'pointer' }}><Eye size={16} /></button>
+                                  <button onClick={() => handleDeleteOrder(order.id)} style={{ background: 'none', border: 'none', color: '#db4455', cursor: 'pointer' }}><Trash2 size={16} /></button>
                                 </div>
                               </td>
                             </tr>
@@ -1045,145 +1184,22 @@ export default function AdminPage() {
                 </div>
               )}
 
-              {activeTab === 'bookings' && (
-                /* 3. RESERVATIONS SEATING TAB */
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                  {/* Search, Filter Bar */}
-                  <div style={{ display: 'flex', flexWrap: 'wrap', justifyItems: 'center', justifyContent: 'space-between', gap: '1rem', backgroundColor: 'var(--canvas-primary)', border: '1px solid var(--border-light)', borderRadius: '6px', padding: '1rem' }}>
-                    <div style={{ position: 'relative', flexGrow: 1, maxWidth: '350px' }}>
-                      <span style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>
-                        <Search size={16} />
-                      </span>
-                      <input 
-                        type="text" 
-                        placeholder="Search reservations (guests, date, notes)..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        style={{ width: '100%', padding: '0.5rem 0.75rem 0.5rem 2.25rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }}
-                      />
-                    </div>
-
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Filter Status:</span>
-                      <select 
-                        value={statusFilter}
-                        onChange={(e) => setStatusFilter(e.target.value)}
-                        style={{ padding: '0.5rem 1rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }}
-                      >
-                        <option value="All">All Bookings</option>
-                        <option value="Confirmed">Confirmed</option>
-                        <option value="Completed">Completed</option>
-                        <option value="Cancelled">Cancelled</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  {/* Bookings Table Panel */}
-                  <div style={{ backgroundColor: 'var(--canvas-primary)', border: '1px solid var(--border-light)', borderRadius: '8px', boxShadow: 'var(--shadow-soft)', overflowX: 'auto' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '800px' }}>
-                      <thead>
-                        <tr style={{ borderBottom: '2px solid var(--border-light)', backgroundColor: 'var(--canvas-secondary)' }}>
-                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Seating Date</th>
-                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Seating Hour</th>
-                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Guests</th>
-                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>VIP Patron Contacts</th>
-                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Special Notes / Dietary</th>
-                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Seating Status</th>
-                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Action Seals</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {filteredBookings.length === 0 ? (
-                          <tr>
-                            <td colSpan="7" style={{ padding: '3rem', textAlign: 'center', fontSize: '0.85rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>
-                              No table reservations found.
-                            </td>
-                          </tr>
-                        ) : (
-                          filteredBookings.map((b) => (
-                            <tr key={b.id} style={{ borderBottom: '1px solid var(--border-light)', transition: 'background-color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--canvas-secondary)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
-                              <td style={{ padding: '1rem', fontSize: '0.8rem', fontWeight: 600 }}>{b.date}</td>
-                              <td style={{ padding: '1rem', fontSize: '0.8rem' }}>{b.time}</td>
-                              <td style={{ padding: '1rem', fontSize: '0.8rem', fontWeight: 600 }}>{b.guests} Guests</td>
-                              <td style={{ padding: '1rem', fontSize: '0.8rem' }}>
-                                <div style={{ fontWeight: 600 }}>{b.customerName}</div>
-                                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{b.customerPhone}</div>
-                                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{b.customerEmail}</div>
-                              </td>
-                              <td style={{ padding: '1rem', fontSize: '0.8rem', maxWidth: '240px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={b.notes}>
-                                {b.notes || <span style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>None</span>}
-                              </td>
-                              <td style={{ padding: '1rem', fontSize: '0.8rem' }}>
-                                <select 
-                                  value={b.status}
-                                  onChange={(e) => handleUpdateBookingStatus(b.id, e.target.value)}
-                                  style={{
-                                    padding: '0.35rem 0.5rem',
-                                    borderRadius: '4px',
-                                    border: '1px solid var(--border-light)',
-                                    fontSize: '0.75rem',
-                                    fontWeight: 600,
-                                    outline: 'none',
-                                    backgroundColor: 
-                                      b.status === 'Completed' ? 'rgba(14, 110, 86, 0.1)' : 
-                                      b.status === 'Cancelled' ? 'rgba(219, 68, 85, 0.1)' : 
-                                      'var(--gold-light)',
-                                    color: 
-                                      b.status === 'Completed' ? 'var(--accent-jade)' : 
-                                      b.status === 'Cancelled' ? '#db4455' : 
-                                      'var(--gold-antique)'
-                                  }}
-                                >
-                                  <option value="Confirmed">Confirmed</option>
-                                  <option value="Completed">Completed</option>
-                                  <option value="Cancelled">Cancelled</option>
-                                </select>
-                              </td>
-                              <td style={{ padding: '1rem', fontSize: '0.8rem' }}>
-                                <button
-                                  onClick={() => handleDeleteBooking(b.id)}
-                                  style={{ background: 'none', border: 'none', color: '#db4455', cursor: 'pointer', padding: '0.25rem' }}
-                                  title="Cancel & Delete Booking"
-                                >
-                                  <Trash2 size={16} />
-                                </button>
-                              </td>
-                            </tr>
-                          ))
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              )}
-
-              {activeTab === 'menu' && (
-                /* 4. LIVE MENU CUSTOMIZER TAB */
+              {activeTab === 'items' && (
+                /* 3. ITEMS TAB (Menu Editor: view, add, update, delete items) */
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-                  {/* Category selector menu */}
+                  {/* Category Pill Switcher */}
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
-                    <div 
-                      style={{ 
-                        display: 'flex', gap: '0.5rem', overflowX: 'auto', paddingBottom: '0.5rem', maxWidth: '100%',
-                        whiteSpace: 'nowrap', WebkitOverflowScrolling: 'touch'
-                      }}
-                    >
+                    <div style={{ display: 'flex', gap: '0.5rem', overflowX: 'auto', paddingBottom: '0.5rem', maxWidth: '100%', whiteSpace: 'nowrap' }}>
                       {menuCategories.map(cat => (
                         <button
                           key={cat}
                           onClick={() => setSelectedMenuCategory(cat)}
                           style={{
-                            padding: '0.5rem 1rem',
-                            fontSize: '0.75rem',
-                            fontWeight: 700,
-                            letterSpacing: '0.05em',
-                            borderRadius: '24px',
-                            border: '1px solid',
+                            padding: '0.5rem 1rem', fontSize: '0.75rem', fontWeight: 700, borderRadius: '24px', border: '1px solid',
                             borderColor: selectedMenuCategory === cat ? 'var(--gold-antique)' : 'var(--border-light)',
                             backgroundColor: selectedMenuCategory === cat ? 'var(--gold-antique)' : 'var(--canvas-primary)',
                             color: selectedMenuCategory === cat ? 'var(--text-dark)' : 'var(--text-muted)',
-                            cursor: 'pointer',
-                            transition: 'all 0.3s'
+                            cursor: 'pointer', transition: 'all 0.3s'
                           }}
                         >
                           {cat}
@@ -1191,114 +1207,117 @@ export default function AdminPage() {
                       ))}
                     </div>
 
-                    <button 
-                      onClick={handleOpenAddDish}
-                      className="btn-filled"
-                      style={{ padding: '0.75rem 1.5rem', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
-                    >
-                      <Plus size={16} /> ADD DISH
+                    <button onClick={handleOpenAddDish} className="btn-filled" style={{ padding: '0.75rem 1.5rem', fontSize: '0.75rem' }}>
+                      <Plus size={16} /> ADD NEW ITEM
                     </button>
                   </div>
 
-                  {/* Dishes Grid */}
+                  {/* Items Catalog Grid */}
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
-                    {((localMenu[selectedMenuCategory]) || []).map((dish) => (
-                      <div 
-                        key={dish.id} 
-                        style={{ 
-                          backgroundColor: 'var(--canvas-primary)', border: '1px solid var(--border-light)', borderRadius: '8px', 
-                          overflow: 'hidden', boxShadow: 'var(--shadow-soft)', display: 'flex', flexDirection: 'column',
-                          position: 'relative'
-                        }}
-                      >
-                        {/* Stock availability indicator tag */}
-                        <div 
-                          style={{
-                            position: 'absolute', top: '0.75rem', right: '0.75rem', zIndex: 10,
-                            padding: '0.2rem 0.5rem', borderRadius: '12px', fontSize: '9px', fontWeight: 700,
-                            textTransform: 'uppercase',
-                            backgroundColor: dish.availability !== false ? 'rgba(14, 110, 86, 0.1)' : 'rgba(219, 68, 85, 0.1)',
-                            color: dish.availability !== false ? 'var(--accent-jade)' : '#db4455',
-                            border: '1px solid',
-                            borderColor: dish.availability !== false ? 'rgba(14, 110, 86, 0.2)' : 'rgba(219, 68, 85, 0.2)'
-                          }}
-                        >
+                    {filteredItems.map((dish) => (
+                      <div key={dish.id} style={{ backgroundColor: 'var(--canvas-primary)', border: '1px solid var(--border-light)', borderRadius: '8px', overflow: 'hidden', boxShadow: 'var(--shadow-soft)', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+                        <div style={{ position: 'absolute', top: '0.75rem', right: '0.75rem', zIndex: 10, padding: '0.2rem 0.5rem', borderRadius: '12px', fontSize: '9px', fontWeight: 700, textTransform: 'uppercase', backgroundColor: dish.availability !== false ? 'rgba(14, 110, 86, 0.1)' : 'rgba(219, 68, 85, 0.1)', color: dish.availability !== false ? 'var(--accent-jade)' : '#db4455', border: '1px solid', borderColor: dish.availability !== false ? 'rgba(14, 110, 86, 0.2)' : 'rgba(219, 68, 85, 0.2)' }}>
                           {dish.availability !== false ? 'In Stock' : 'Out of Stock'}
                         </div>
-
-                        {/* Dish preview img */}
                         <div style={{ height: '140px', overflow: 'hidden', backgroundColor: 'var(--canvas-secondary)' }}>
-                          <img 
-                            src={dish.image || 'https://images.unsplash.com/photo-1559314809-0d155014e29e?auto=format&fit=crop&q=80&w=400'} 
-                            alt={dish.name} 
-                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                            onError={(e) => {
-                              e.target.src = 'https://images.unsplash.com/photo-1559314809-0d155014e29e?auto=format&fit=crop&q=80&w=400';
-                            }}
-                          />
+                          <img src={dish.image} alt={dish.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1559314809-0d155014e29e?auto=format&fit=crop&q=80&w=400'; }} />
                         </div>
-
-                        {/* Info details */}
                         <div style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', flexGrow: 1, gap: '0.5rem' }}>
-                          <div style={{ display: 'flex', justifyItems: 'center', justifyContent: 'space-between' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                             <h4 className="font-serif" style={{ fontSize: '1.1rem', color: 'var(--text-dark)' }}>{dish.name}</h4>
                             <span style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--gold-antique)' }}>${dish.price}</span>
                           </div>
-
-                          <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: 1.5, flexGrow: 1 }}>
-                            {dish.description}
-                          </p>
-
-                          <div style={{ display: 'flex', justifyItems: 'center', justifyContent: 'space-between', borderTop: '1px solid var(--border-light)', paddingTop: '0.75rem', marginTop: '0.5rem' }}>
+                          <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: 1.5, flexGrow: 1 }}>{dish.description}</p>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--border-light)', paddingTop: '0.75rem', marginTop: '0.5rem', alignItems: 'center' }}>
                             <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>ID: {dish.id}</span>
                             <div style={{ display: 'flex', gap: '0.5rem' }}>
-                              <button
-                                onClick={() => handleOpenEditDish(dish)}
-                                style={{ background: 'none', border: 'none', color: 'var(--gold-antique)', cursor: 'pointer', padding: '0.25rem' }}
-                                title="Edit Item Details"
-                              >
-                                <Edit size={15} />
-                              </button>
-                              <button
-                                onClick={() => handleDeleteDish(dish.id)}
-                                style={{ background: 'none', border: 'none', color: '#db4455', cursor: 'pointer', padding: '0.25rem' }}
-                                title="Delete Item"
-                              >
-                                <Trash2 size={15} />
-                              </button>
+                              <button onClick={() => handleOpenEditDish(dish)} style={{ background: 'none', border: 'none', color: 'var(--gold-antique)', cursor: 'pointer' }}><Edit size={15} /></button>
+                              <button onClick={() => handleDeleteDish(dish.id)} style={{ background: 'none', border: 'none', color: '#db4455', cursor: 'pointer' }}><Trash2 size={15} /></button>
                             </div>
                           </div>
                         </div>
                       </div>
                     ))}
-
-                    {((localMenu[selectedMenuCategory]) || []).length === 0 && (
-                      <div style={{ gridColumn: '1 / -1', padding: '4rem 2rem', textAlign: 'center', border: '1px dashed var(--border-medium)', borderRadius: '8px', color: 'var(--text-muted)' }}>
-                        <p style={{ fontStyle: 'italic', fontSize: '0.9rem' }}>No dishes found in category "{selectedMenuCategory}".</p>
-                        <button 
-                          onClick={handleOpenAddDish}
-                          style={{ margin: '1rem auto 0', padding: '0.5rem 1rem', fontSize: '0.75rem', border: '1px solid var(--gold-antique)', borderRadius: '4px', backgroundColor: 'transparent', color: 'var(--gold-antique)', cursor: 'pointer' }}
-                        >
-                          Add the First Item
-                        </button>
-                      </div>
-                    )}
                   </div>
                 </div>
               )}
 
-              {activeTab === 'customers' && (
-                /* 5. REGISTERED CUSTOMERS TAB */
+              {activeTab === 'coupons' && (
+                /* 4. COUPONS TAB (Add, Update coupons) */
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                  {/* Search Bar */}
-                  <div style={{ display: 'flex', flexWrap: 'wrap', justifyItems: 'center', justifyContent: 'space-between', gap: '1rem', backgroundColor: 'var(--canvas-primary)', border: '1px solid var(--border-light)', borderRadius: '6px', padding: '1rem' }}>
-                    <div style={{ position: 'relative', flexGrow: 1, maxWidth: '350px' }}>
+                  <div style={{ display: 'flex', justifyItems: 'center', justifyContent: 'space-between', gap: '1rem', backgroundColor: 'var(--canvas-primary)', border: '1px solid var(--border-light)', borderRadius: '6px', padding: '1rem', alignItems: 'center' }}>
+                    <div style={{ position: 'relative', width: '300px' }}>
                       <span style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>
                         <Search size={16} />
                       </span>
                       <input 
                         type="text" 
-                        placeholder="Search patron database..."
+                        placeholder="Search coupons..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        style={{ width: '100%', padding: '0.5rem 0.75rem 0.5rem 2.25rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }}
+                      />
+                    </div>
+
+                    <button onClick={handleOpenAddCoupon} className="btn-filled" style={{ padding: '0.75rem 1.5rem', fontSize: '0.75rem' }}>
+                      <Plus size={16} /> ADD COUPON
+                    </button>
+                  </div>
+
+                  {/* Coupons Table */}
+                  <div style={{ backgroundColor: 'var(--canvas-primary)', border: '1px solid var(--border-light)', borderRadius: '8px', boxShadow: 'var(--shadow-soft)', overflowX: 'auto' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '700px' }}>
+                      <thead>
+                        <tr style={{ borderBottom: '2px solid var(--border-light)', backgroundColor: 'var(--canvas-secondary)' }}>
+                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Coupon Code</th>
+                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Discount Type</th>
+                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Discount Value</th>
+                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Min Order (USD)</th>
+                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Expiry Date</th>
+                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Status</th>
+                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredCoupons.map((coupon) => (
+                          <tr key={coupon.id} style={{ borderBottom: '1px solid var(--border-light)' }}>
+                            <td style={{ padding: '1rem', fontSize: '0.8rem', fontWeight: 700, color: 'var(--gold-antique)' }}>{coupon.code}</td>
+                            <td style={{ padding: '1rem', fontSize: '0.8rem', textTransform: 'capitalize' }}>{coupon.type}</td>
+                            <td style={{ padding: '1rem', fontSize: '0.8rem', fontWeight: 600 }}>
+                              {coupon.type === 'percentage' ? `${coupon.value}%` : `$${coupon.value}`}
+                            </td>
+                            <td style={{ padding: '1rem', fontSize: '0.8rem' }}>${coupon.minOrder}</td>
+                            <td style={{ padding: '1rem', fontSize: '0.8rem' }}>{coupon.expiryDate}</td>
+                            <td style={{ padding: '1rem', fontSize: '0.8rem' }}>
+                              <span style={{ padding: '0.2rem 0.5rem', borderRadius: '12px', fontSize: '9px', fontWeight: 700, textTransform: 'uppercase', backgroundColor: coupon.status === 'Active' ? 'rgba(14, 110, 86, 0.1)' : 'rgba(219, 68, 85, 0.1)', color: coupon.status === 'Active' ? 'var(--accent-jade)' : '#db4455' }}>
+                                {coupon.status}
+                              </span>
+                            </td>
+                            <td style={{ padding: '1rem', fontSize: '0.8rem' }}>
+                              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                <button onClick={() => handleOpenEditCoupon(coupon)} style={{ background: 'none', border: 'none', color: 'var(--gold-antique)', cursor: 'pointer' }}><Edit size={16} /></button>
+                                <button onClick={() => handleDeleteCoupon(coupon.id)} style={{ background: 'none', border: 'none', color: '#db4455', cursor: 'pointer' }}><Trash2 size={16} /></button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'users' && (
+                /* 5. USERS TAB */
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                  <div style={{ display: 'flex', justifyItems: 'center', justifyContent: 'space-between', gap: '1rem', backgroundColor: 'var(--canvas-primary)', border: '1px solid var(--border-light)', borderRadius: '6px', padding: '1rem' }}>
+                    <div style={{ position: 'relative', width: '350px' }}>
+                      <span style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>
+                        <Search size={16} />
+                      </span>
+                      <input 
+                        type="text" 
+                        placeholder="Search users..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         style={{ width: '100%', padding: '0.5rem 0.75rem 0.5rem 2.25rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }}
@@ -1306,40 +1325,169 @@ export default function AdminPage() {
                     </div>
                   </div>
 
-                  {/* Customers VIP Table */}
                   <div style={{ backgroundColor: 'var(--canvas-primary)', border: '1px solid var(--border-light)', borderRadius: '8px', boxShadow: 'var(--shadow-soft)', overflowX: 'auto' }}>
                     <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '700px' }}>
                       <thead>
                         <tr style={{ borderBottom: '2px solid var(--border-light)', backgroundColor: 'var(--canvas-secondary)' }}>
-                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>VIP Patron Name</th>
-                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Email Coordinate</th>
+                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>User Name</th>
+                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Email Address</th>
                           <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Phone Number</th>
-                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Total Bookings</th>
-                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Total Orders</th>
+                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Bookings</th>
+                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Orders</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {filteredCustomers.length === 0 ? (
+                        {filteredUsers.map((user, idx) => (
+                          <tr key={idx} style={{ borderBottom: '1px solid var(--border-light)' }}>
+                            <td style={{ padding: '1rem', fontSize: '0.8rem', fontWeight: 600 }}>{user.name}</td>
+                            <td style={{ padding: '1rem', fontSize: '0.8rem' }}>{user.email}</td>
+                            <td style={{ padding: '1rem', fontSize: '0.8rem' }}>{user.phone}</td>
+                            <td style={{ padding: '1rem', fontSize: '0.8rem' }}>
+                              <span style={{ padding: '0.15rem 0.5rem', backgroundColor: 'var(--gold-light)', color: 'var(--gold-antique)', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>
+                                {user.bookingsCount} Seating
+                              </span>
+                            </td>
+                            <td style={{ padding: '1rem', fontSize: '0.8rem' }}>
+                              <span style={{ padding: '0.15rem 0.5rem', backgroundColor: 'rgba(14, 110, 86, 0.1)', color: 'var(--accent-jade)', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>
+                                {user.ordersCount} Orders
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'automation' && (
+                /* 6. AUTOMATION TAB */
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                  <div style={{ backgroundColor: 'var(--canvas-primary)', border: '1px solid var(--border-light)', borderRadius: '8px', padding: '2rem', boxShadow: 'var(--shadow-soft)' }}>
+                    <h3 className="font-serif" style={{ fontSize: '1.4rem', fontWeight: 300, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <Cpu size={20} style={{ color: 'var(--gold-antique)' }} /> Automatic Campaign Rules
+                    </h3>
+                    <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '2rem' }}>
+                      Configure background automations, timed pricing reductions, and email logs.
+                    </p>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                      {[
+                        { key: 'seatingReminder', title: 'Automated Seating Reminder', desc: 'Dispatches automated email/SMS reminders to patrons 24 hours prior to their reserved seating booking.' },
+                        { key: 'happyHourPricing', title: 'Happy Hour Smart Pricing', desc: 'Lowers Appetizers and Beverages cost by 15% automatically on weekdays from 2 PM to 5 PM.' },
+                        { key: 'reviewInvites', title: 'Automated Review Invites', desc: 'Triggers a dining feedback request email 2 hours after a food delivery is marked as delivered.' },
+                        { key: 'backupSync', title: 'System Database Cloud Sync', desc: 'Syncs customer records, menu templates, and logs to secondary secure systems nightly.' },
+                        { key: 'kitchenDisplayAutoAlert', title: 'Kitchen Alert Auto-Prioritizer', desc: 'Flags orders exceeding $100 as priority in staff logs automatically.' }
+                      ].map(rule => (
+                        <div key={rule.key} style={{ display: 'flex', justifyItems: 'center', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-light)', paddingBottom: '1.25rem', gap: '1.5rem' }}>
+                          <div style={{ textAlign: 'left' }}>
+                            <h4 style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-dark)' }}>{rule.title}</h4>
+                            <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>{rule.desc}</p>
+                          </div>
+                          <button
+                            onClick={() => handleToggleAutomation(rule.key)}
+                            style={{ background: 'none', border: 'none', cursor: 'pointer', color: automationRules[rule.key] ? 'var(--accent-jade)' : 'var(--text-muted)', transition: 'color 0.2s' }}
+                          >
+                            {automationRules[rule.key] ? <ToggleRight size={42} /> : <ToggleLeft size={42} />}
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div style={{ backgroundColor: 'var(--canvas-primary)', border: '1px solid var(--border-light)', borderRadius: '8px', padding: '2rem', boxShadow: 'var(--shadow-soft)' }}>
+                    <h4 className="font-serif" style={{ fontSize: '1.15rem', fontWeight: 300, marginBottom: '1rem' }}>Background Task Log</h4>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.8rem' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-light)', paddingBottom: '0.5rem' }}>
+                        <span style={{ color: 'var(--text-muted)' }}>[14:15:32] System Cloud Backup:</span>
+                        <strong style={{ color: 'var(--accent-jade)' }}>Completed (204Kb)</strong>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-light)', paddingBottom: '0.5rem' }}>
+                        <span style={{ color: 'var(--text-muted)' }}>[12:00:00] Seating Reminders:</span>
+                        <span>Sent 14 emails</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-light)', paddingBottom: '0.5rem' }}>
+                        <span style={{ color: 'var(--text-muted)' }}>[09:00:05] Menu Price Engine:</span>
+                        <span>Standard pricing active (Happy hour disabled)</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'feedback' && (
+                /* 7. FEEDBACK TAB */
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                  <div style={{ display: 'flex', justifyItems: 'center', justifyContent: 'space-between', gap: '1rem', backgroundColor: 'var(--canvas-primary)', border: '1px solid var(--border-light)', borderRadius: '6px', padding: '1rem' }}>
+                    <div style={{ position: 'relative', width: '350px' }}>
+                      <span style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>
+                        <Search size={16} />
+                      </span>
+                      <input 
+                        type="text" 
+                        placeholder="Search feedback reviews..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        style={{ width: '100%', padding: '0.5rem 0.75rem 0.5rem 2.25rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Feedback table */}
+                  <div style={{ backgroundColor: 'var(--canvas-primary)', border: '1px solid var(--border-light)', borderRadius: '8px', boxShadow: 'var(--shadow-soft)', overflowX: 'auto' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '800px' }}>
+                      <thead>
+                        <tr style={{ borderBottom: '2px solid var(--border-light)', backgroundColor: 'var(--canvas-secondary)' }}>
+                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Patron</th>
+                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Dining Area</th>
+                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Rating</th>
+                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Comment</th>
+                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Date</th>
+                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Slider Approval</th>
+                          <th style={{ padding: '1rem', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Delete</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredFeedback.length === 0 ? (
                           <tr>
-                            <td colSpan="5" style={{ padding: '3rem', textAlign: 'center', fontSize: '0.85rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>
-                              No registered user profiles found.
+                            <td colSpan="7" style={{ padding: '3rem', textAlign: 'center', fontSize: '0.85rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>
+                              No customer feedback reviews found.
                             </td>
                           </tr>
                         ) : (
-                          filteredCustomers.map((user, idx) => (
-                            <tr key={idx} style={{ borderBottom: '1px solid var(--border-light)', transition: 'background-color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--canvas-secondary)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
-                              <td style={{ padding: '1rem', fontSize: '0.8rem', fontWeight: 600 }}>{user.name}</td>
-                              <td style={{ padding: '1rem', fontSize: '0.8rem' }}>{user.email}</td>
-                              <td style={{ padding: '1rem', fontSize: '0.8rem' }}>{user.phone}</td>
+                          filteredFeedback.map((f) => (
+                            <tr key={f.id} style={{ borderBottom: '1px solid var(--border-light)' }}>
                               <td style={{ padding: '1rem', fontSize: '0.8rem' }}>
-                                <span style={{ padding: '0.15rem 0.5rem', backgroundColor: 'var(--gold-light)', color: 'var(--gold-antique)', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>
-                                  {user.bookingsCount} Seating
-                                </span>
+                                <div style={{ fontWeight: 600 }}>{f.customerName}</div>
+                                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{f.customerEmail}</div>
+                              </td>
+                              <td style={{ padding: '1rem', fontSize: '0.8rem' }}>{f.experience}</td>
+                              <td style={{ padding: '1rem', fontSize: '0.8rem', color: 'var(--gold-antique)' }}>
+                                <div style={{ display: 'flex', gap: '1px' }}>
+                                  {[1, 2, 3, 4, 5].map(star => (
+                                    <Star key={star} size={12} fill={star <= f.rating ? 'var(--gold-antique)' : 'none'} stroke="var(--gold-antique)" />
+                                  ))}
+                                </div>
+                              </td>
+                              <td style={{ padding: '1rem', fontSize: '0.8rem', maxWidth: '300px', lineHeight: 1.4 }}>{f.comment}</td>
+                              <td style={{ padding: '1rem', fontSize: '0.8rem' }}>{f.date}</td>
+                              <td style={{ padding: '1rem', fontSize: '0.8rem' }}>
+                                <button
+                                  onClick={() => handleApproveFeedback(f.id)}
+                                  style={{
+                                    border: 'none', padding: '0.35rem 0.75rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600,
+                                    cursor: 'pointer', outline: 'none', display: 'flex', alignItems: 'center', gap: '0.25rem',
+                                    backgroundColor: f.approved ? 'rgba(14, 110, 86, 0.1)' : 'var(--canvas-secondary)',
+                                    color: f.approved ? 'var(--accent-jade)' : 'var(--text-muted)',
+                                    border: f.approved ? '1px solid rgba(14, 110, 86, 0.2)' : '1px solid var(--border-light)'
+                                  }}
+                                >
+                                  {f.approved ? <Check size={12} /> : null}
+                                  {f.approved ? 'Approved' : 'Approve'}
+                                </button>
                               </td>
                               <td style={{ padding: '1rem', fontSize: '0.8rem' }}>
-                                <span style={{ padding: '0.15rem 0.5rem', backgroundColor: 'rgba(14, 110, 86, 0.1)', color: 'var(--accent-jade)', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>
-                                  {user.ordersCount} Orders
-                                </span>
+                                <button onClick={() => handleDeleteFeedback(f.id)} style={{ background: 'none', border: 'none', color: '#db4455', cursor: 'pointer' }}><Trash2 size={16} /></button>
                               </td>
                             </tr>
                           ))
@@ -1354,235 +1502,194 @@ export default function AdminPage() {
         )}
       </AnimatePresence>
 
-      {/* --- ADD DISH DIALOG MODAL --- */}
+      {/* --- ADD DISH MODAL --- */}
       <AnimatePresence>
         {showAddItemModal && (
           <div className="luxury-modal-overlay" onClick={() => setShowAddItemModal(false)}>
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="luxury-modal-content"
-              style={{ maxWidth: '500px', display: 'flex', flexDirection: 'column' }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Close Button */}
-              <button onClick={() => setShowAddItemModal(false)} className="luxury-modal-close">
-                <X size={20} />
-              </button>
-
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="luxury-modal-content" style={{ maxWidth: '500px', display: 'flex', flexDirection: 'column' }} onClick={(e) => e.stopPropagation()}>
+              <button onClick={() => setShowAddItemModal(false)} className="luxury-modal-close"><X size={20} /></button>
               <div style={{ marginBottom: '1.5rem' }}>
-                <span className="modal-subtitle">Live Menu Customizer</span>
+                <span className="modal-subtitle">Items Manager</span>
                 <h3 className="modal-title" style={{ fontSize: '1.5rem' }}>Add New Culinary Creation</h3>
               </div>
-
               <form onSubmit={handleSaveAddDish} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                   <div>
-                    <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>
-                      Dish Name
-                    </label>
-                    <input 
-                      type="text" 
-                      required
-                      placeholder="e.g. Royal Curry"
-                      value={dishFormData.name}
-                      onChange={(e) => setDishFormData({ ...dishFormData, name: e.target.value })}
-                      style={{ width: '100%', padding: '0.6rem 0.8rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }}
-                    />
+                    <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>Dish Name</label>
+                    <input type="text" required placeholder="e.g. Royal Curry" value={dishFormData.name} onChange={(e) => setDishFormData({ ...dishFormData, name: e.target.value })} style={{ width: '100%', padding: '0.6rem 0.8rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }} />
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>
-                      Price (USD)
-                    </label>
-                    <input 
-                      type="number" 
-                      required
-                      placeholder="28"
-                      value={dishFormData.price}
-                      onChange={(e) => setDishFormData({ ...dishFormData, price: e.target.value })}
-                      style={{ width: '100%', padding: '0.6rem 0.8rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }}
-                    />
+                    <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>Price (USD)</label>
+                    <input type="number" step="0.01" required placeholder="28" value={dishFormData.price} onChange={(e) => setDishFormData({ ...dishFormData, price: e.target.value })} style={{ width: '100%', padding: '0.6rem 0.8rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }} />
                   </div>
                 </div>
-
                 <div>
-                  <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>
-                    Description
-                  </label>
-                  <textarea 
-                    rows="3"
-                    placeholder="Provide details about the ingredients, flavors, and allergens..."
-                    value={dishFormData.description}
-                    onChange={(e) => setDishFormData({ ...dishFormData, description: e.target.value })}
-                    style={{ width: '100%', padding: '0.6rem 0.8rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', fontFamily: 'var(--font-sans)', resize: 'none' }}
-                  />
+                  <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>Description</label>
+                  <textarea rows="3" placeholder="Provide details..." value={dishFormData.description} onChange={(e) => setDishFormData({ ...dishFormData, description: e.target.value })} style={{ width: '100%', padding: '0.6rem 0.8rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', fontFamily: 'var(--font-sans)', resize: 'none' }} />
                 </div>
-
                 <div>
-                  <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>
-                    Visual Asset Link (Image URL)
-                  </label>
-                  <input 
-                    type="text" 
-                    placeholder="https://images.unsplash.com/photo..."
-                    value={dishFormData.image}
-                    onChange={(e) => setDishFormData({ ...dishFormData, image: e.target.value })}
-                    style={{ width: '100%', padding: '0.6rem 0.8rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }}
-                  />
+                  <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>Visual Asset Link (Image URL)</label>
+                  <input type="text" placeholder="https://images.unsplash.com/photo..." value={dishFormData.image} onChange={(e) => setDishFormData({ ...dishFormData, image: e.target.value })} style={{ width: '100%', padding: '0.6rem 0.8rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }} />
                 </div>
-
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <input 
-                    type="checkbox" 
-                    id="dish-avail-add" 
-                    checked={dishFormData.availability}
-                    onChange={(e) => setDishFormData({ ...dishFormData, availability: e.target.checked })}
-                    style={{ cursor: 'pointer' }}
-                  />
-                  <label htmlFor="dish-avail-add" style={{ fontSize: '0.8rem', color: 'var(--text-dark)', userSelect: 'none', cursor: 'pointer' }}>
-                    Mark as Available in Inventory (In Stock)
-                  </label>
+                  <input type="checkbox" id="dish-avail-add" checked={dishFormData.availability} onChange={(e) => setDishFormData({ ...dishFormData, availability: e.target.checked })} style={{ cursor: 'pointer' }} />
+                  <label htmlFor="dish-avail-add" style={{ fontSize: '0.8rem', color: 'var(--text-dark)', userSelect: 'none', cursor: 'pointer' }}>Mark as Available in Inventory (In Stock)</label>
                 </div>
-
-                <button 
-                  type="submit" 
-                  className="btn-filled"
-                  style={{ width: '100%', justifyContent: 'center', padding: '0.9rem', marginTop: '0.5rem' }}
-                >
-                  ADD TO MENU
-                </button>
+                <button type="submit" className="btn-filled" style={{ width: '100%', justifyContent: 'center', padding: '0.9rem', marginTop: '0.5rem' }}>ADD TO CATALOG</button>
               </form>
             </motion.div>
           </div>
         )}
       </AnimatePresence>
 
-      {/* --- EDIT DISH DIALOG MODAL --- */}
+      {/* --- EDIT DISH MODAL --- */}
       <AnimatePresence>
         {showEditItemModal && (
           <div className="luxury-modal-overlay" onClick={() => setShowEditItemModal(false)}>
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="luxury-modal-content"
-              style={{ maxWidth: '500px', display: 'flex', flexDirection: 'column' }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Close Button */}
-              <button onClick={() => setShowEditItemModal(false)} className="luxury-modal-close">
-                <X size={20} />
-              </button>
-
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="luxury-modal-content" style={{ maxWidth: '500px', display: 'flex', flexDirection: 'column' }} onClick={(e) => e.stopPropagation()}>
+              <button onClick={() => setShowEditItemModal(false)} className="luxury-modal-close"><X size={20} /></button>
               <div style={{ marginBottom: '1.5rem' }}>
-                <span className="modal-subtitle">Live Menu Customizer</span>
-                <h3 className="modal-title" style={{ fontSize: '1.5rem' }}>Modify Dish Selections</h3>
+                <span className="modal-subtitle">Items Manager</span>
+                <h3 className="modal-title" style={{ fontSize: '1.5rem' }}>Update Dish details</h3>
               </div>
-
               <form onSubmit={handleSaveEditDish} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                   <div>
-                    <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>
-                      Dish Name
-                    </label>
-                    <input 
-                      type="text" 
-                      required
-                      value={dishFormData.name}
-                      onChange={(e) => setDishFormData({ ...dishFormData, name: e.target.value })}
-                      style={{ width: '100%', padding: '0.6rem 0.8rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }}
-                    />
+                    <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>Dish Name</label>
+                    <input type="text" required value={dishFormData.name} onChange={(e) => setDishFormData({ ...dishFormData, name: e.target.value })} style={{ width: '100%', padding: '0.6rem 0.8rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }} />
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>
-                      Price (USD)
-                    </label>
-                    <input 
-                      type="number" 
-                      required
-                      value={dishFormData.price}
-                      onChange={(e) => setDishFormData({ ...dishFormData, price: e.target.value })}
-                      style={{ width: '100%', padding: '0.6rem 0.8rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }}
-                    />
+                    <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>Price (USD)</label>
+                    <input type="number" step="0.01" required value={dishFormData.price} onChange={(e) => setDishFormData({ ...dishFormData, price: e.target.value })} style={{ width: '100%', padding: '0.6rem 0.8rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }} />
                   </div>
                 </div>
-
                 <div>
-                  <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>
-                    Description
-                  </label>
-                  <textarea 
-                    rows="3"
-                    value={dishFormData.description}
-                    onChange={(e) => setDishFormData({ ...dishFormData, description: e.target.value })}
-                    style={{ width: '100%', padding: '0.6rem 0.8rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', fontFamily: 'var(--font-sans)', resize: 'none' }}
-                  />
+                  <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>Description</label>
+                  <textarea rows="3" value={dishFormData.description} onChange={(e) => setDishFormData({ ...dishFormData, description: e.target.value })} style={{ width: '100%', padding: '0.6rem 0.8rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', fontFamily: 'var(--font-sans)', resize: 'none' }} />
                 </div>
-
                 <div>
-                  <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>
-                    Visual Asset Link (Image URL)
-                  </label>
-                  <input 
-                    type="text" 
-                    value={dishFormData.image}
-                    onChange={(e) => setDishFormData({ ...dishFormData, image: e.target.value })}
-                    style={{ width: '100%', padding: '0.6rem 0.8rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }}
-                  />
+                  <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>Visual Asset Link (Image URL)</label>
+                  <input type="text" value={dishFormData.image} onChange={(e) => setDishFormData({ ...dishFormData, image: e.target.value })} style={{ width: '100%', padding: '0.6rem 0.8rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }} />
                 </div>
-
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <input 
-                    type="checkbox" 
-                    id="dish-avail-edit" 
-                    checked={dishFormData.availability}
-                    onChange={(e) => setDishFormData({ ...dishFormData, availability: e.target.checked })}
-                    style={{ cursor: 'pointer' }}
-                  />
-                  <label htmlFor="dish-avail-edit" style={{ fontSize: '0.8rem', color: 'var(--text-dark)', userSelect: 'none', cursor: 'pointer' }}>
-                    Mark as Available in Inventory (In Stock)
-                  </label>
+                  <input type="checkbox" id="dish-avail-edit" checked={dishFormData.availability} onChange={(e) => setDishFormData({ ...dishFormData, availability: e.target.checked })} style={{ cursor: 'pointer' }} />
+                  <label htmlFor="dish-avail-edit" style={{ fontSize: '0.8rem', color: 'var(--text-dark)', userSelect: 'none', cursor: 'pointer' }}>Mark as Available in Inventory (In Stock)</label>
                 </div>
-
-                <button 
-                  type="submit" 
-                  className="btn-filled"
-                  style={{ width: '100%', justifyContent: 'center', padding: '0.9rem', marginTop: '0.5rem' }}
-                >
-                  SAVE OVERRIDES
-                </button>
+                <button type="submit" className="btn-filled" style={{ width: '100%', justifyContent: 'center', padding: '0.9rem', marginTop: '0.5rem' }}>UPDATE ITEM</button>
               </form>
             </motion.div>
           </div>
         )}
       </AnimatePresence>
 
-      {/* --- ORDER DETAILS DIALOG MODAL --- */}
+      {/* --- ADD COUPON MODAL --- */}
+      <AnimatePresence>
+        {showAddCouponModal && (
+          <div className="luxury-modal-overlay" onClick={() => setShowAddCouponModal(false)}>
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="luxury-modal-content" style={{ maxWidth: '480px', display: 'flex', flexDirection: 'column' }} onClick={(e) => e.stopPropagation()}>
+              <button onClick={() => setShowAddCouponModal(false)} className="luxury-modal-close"><X size={20} /></button>
+              <div style={{ marginBottom: '1.5rem' }}>
+                <span className="modal-subtitle">Promo Manager</span>
+                <h3 className="modal-title" style={{ fontSize: '1.5rem' }}>Create Promo Discount Coupon</h3>
+              </div>
+              <form onSubmit={handleSaveAddCoupon} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>Coupon Code</label>
+                    <input type="text" required placeholder="WELCOME20" value={couponFormData.code} onChange={(e) => setCouponFormData({ ...couponFormData, code: e.target.value })} style={{ width: '100%', padding: '0.6rem 0.8rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }} />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>Discount Type</label>
+                    <select value={couponFormData.type} onChange={(e) => setCouponFormData({ ...couponFormData, type: e.target.value })} style={{ width: '100%', padding: '0.6rem 0.8rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }}>
+                      <option value="percentage">Percentage (%)</option>
+                      <option value="flat">Flat Amount ($)</option>
+                    </select>
+                  </div>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>Discount Value</label>
+                    <input type="number" required placeholder="10" value={couponFormData.value} onChange={(e) => setCouponFormData({ ...couponFormData, value: e.target.value })} style={{ width: '100%', padding: '0.6rem 0.8rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }} />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>Min Order Purchase ($)</label>
+                    <input type="number" required placeholder="30" value={couponFormData.minOrder} onChange={(e) => setCouponFormData({ ...couponFormData, minOrder: e.target.value })} style={{ width: '100%', padding: '0.6rem 0.8rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }} />
+                  </div>
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>Expiry Date</label>
+                  <input type="date" required value={couponFormData.expiryDate} onChange={(e) => setCouponFormData({ ...couponFormData, expiryDate: e.target.value })} style={{ width: '100%', padding: '0.6rem 0.8rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }} />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <input type="checkbox" id="coupon-status-add" checked={couponFormData.status === 'Active'} onChange={(e) => setCouponFormData({ ...couponFormData, status: e.target.checked ? 'Active' : 'Inactive' })} style={{ cursor: 'pointer' }} />
+                  <label htmlFor="coupon-status-add" style={{ fontSize: '0.8rem', color: 'var(--text-dark)', userSelect: 'none', cursor: 'pointer' }}>Mark as Active Immediately</label>
+                </div>
+                <button type="submit" className="btn-filled" style={{ width: '100%', justifyContent: 'center', padding: '0.9rem', marginTop: '0.5rem' }}>CREATE COUPON</button>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* --- EDIT COUPON MODAL --- */}
+      <AnimatePresence>
+        {showEditCouponModal && (
+          <div className="luxury-modal-overlay" onClick={() => setShowEditCouponModal(false)}>
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="luxury-modal-content" style={{ maxWidth: '480px', display: 'flex', flexDirection: 'column' }} onClick={(e) => e.stopPropagation()}>
+              <button onClick={() => setShowEditCouponModal(false)} className="luxury-modal-close"><X size={20} /></button>
+              <div style={{ marginBottom: '1.5rem' }}>
+                <span className="modal-subtitle">Promo Manager</span>
+                <h3 className="modal-title" style={{ fontSize: '1.5rem' }}>Update Promo Coupon Details</h3>
+              </div>
+              <form onSubmit={handleSaveEditCoupon} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>Coupon Code</label>
+                    <input type="text" required value={couponFormData.code} onChange={(e) => setCouponFormData({ ...couponFormData, code: e.target.value })} style={{ width: '100%', padding: '0.6rem 0.8rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }} />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>Discount Type</label>
+                    <select value={couponFormData.type} onChange={(e) => setCouponFormData({ ...couponFormData, type: e.target.value })} style={{ width: '100%', padding: '0.6rem 0.8rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }}>
+                      <option value="percentage">Percentage (%)</option>
+                      <option value="flat">Flat Amount ($)</option>
+                    </select>
+                  </div>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>Discount Value</label>
+                    <input type="number" required value={couponFormData.value} onChange={(e) => setCouponFormData({ ...couponFormData, value: e.target.value })} style={{ width: '100%', padding: '0.6rem 0.8rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }} />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>Min Order Purchase ($)</label>
+                    <input type="number" required value={couponFormData.minOrder} onChange={(e) => setCouponFormData({ ...couponFormData, minOrder: e.target.value })} style={{ width: '100%', padding: '0.6rem 0.8rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }} />
+                  </div>
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>Expiry Date</label>
+                  <input type="date" required value={couponFormData.expiryDate} onChange={(e) => setCouponFormData({ ...couponFormData, expiryDate: e.target.value })} style={{ width: '100%', padding: '0.6rem 0.8rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }} />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <input type="checkbox" id="coupon-status-edit" checked={couponFormData.status === 'Active'} onChange={(e) => setCouponFormData({ ...couponFormData, status: e.target.checked ? 'Active' : 'Inactive' })} style={{ cursor: 'pointer' }} />
+                  <label htmlFor="coupon-status-edit" style={{ fontSize: '0.8rem', color: 'var(--text-dark)', userSelect: 'none', cursor: 'pointer' }}>Mark as Active</label>
+                </div>
+                <button type="submit" className="btn-filled" style={{ width: '100%', justifyContent: 'center', padding: '0.9rem', marginTop: '0.5rem' }}>SAVE CHANGES</button>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* --- ORDER DETAILS MODAL --- */}
       <AnimatePresence>
         {showOrderDetailsModal && selectedOrder && (
           <div className="luxury-modal-overlay" onClick={() => setShowOrderDetailsModal(false)}>
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="luxury-modal-content"
-              style={{ maxWidth: '460px', display: 'flex', flexDirection: 'column' }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Close Button */}
-              <button onClick={() => setShowOrderDetailsModal(false)} className="luxury-modal-close">
-                <X size={20} />
-              </button>
-
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="luxury-modal-content" style={{ maxWidth: '460px', display: 'flex', flexDirection: 'column' }} onClick={(e) => e.stopPropagation()}>
+              <button onClick={() => setShowOrderDetailsModal(false)} className="luxury-modal-close"><X size={20} /></button>
               <div style={{ marginBottom: '1.5rem', borderBottom: '1px solid var(--border-light)', paddingBottom: '0.75rem' }}>
-                <span className="modal-subtitle" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                  <FileText size={12} />
-                  Ticket Order Receipt
-                </span>
+                <span className="modal-subtitle" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}><FileText size={12} /> Ticket Order Receipt</span>
                 <h3 className="modal-title" style={{ fontSize: '1.6rem' }}>{selectedOrder.id}</h3>
               </div>
-
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '0.8rem' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', backgroundColor: 'var(--canvas-secondary)', padding: '1rem', borderRadius: '4px', border: '1px solid var(--border-light)' }}>
                   <div>
@@ -1598,7 +1705,6 @@ export default function AdminPage() {
                     <span>{selectedOrder.customerEmail || 'N/A'}</span>
                   </div>
                 </div>
-
                 <div>
                   <strong style={{ display: 'block', fontSize: '9px', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Logistics details</strong>
                   <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-light)', paddingBottom: '0.5rem' }}>
@@ -1612,11 +1718,8 @@ export default function AdminPage() {
                     </div>
                   )}
                 </div>
-
                 <div className="receipt-box" style={{ margin: '0.5rem 0' }}>
                   <div className="receipt-header">Aromatic Selection Items</div>
-                  
-                  {/* Parse individual items summary */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', padding: '0.5rem 0' }}>
                     {selectedOrder.items.split(', ').map((item, idx) => (
                       <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem' }}>
@@ -1624,21 +1727,15 @@ export default function AdminPage() {
                       </div>
                     ))}
                   </div>
-
                   <div className="receipt-total-row" style={{ marginTop: '0.5rem' }}>
                     <span>Receipt Total (USD)</span>
                     <span>${parseFloat(selectedOrder.total || 0).toFixed(2)}</span>
                   </div>
                 </div>
-
                 <div style={{ display: 'flex', gap: '1rem', justifyItems: 'center', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border-light)', paddingTop: '1rem', marginTop: '0.5rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Workflow:</span>
-                    <select 
-                      value={selectedOrder.status}
-                      onChange={(e) => handleUpdateOrderStatus(selectedOrder.id, e.target.value)}
-                      style={{ padding: '0.35rem 0.5rem', border: '1px solid var(--border-light)', borderRadius: '4px', fontSize: '0.75rem' }}
-                    >
+                    <select value={selectedOrder.status} onChange={(e) => handleUpdateOrderStatus(selectedOrder.id, e.target.value)} style={{ padding: '0.35rem 0.5rem', border: '1px solid var(--border-light)', borderRadius: '4px', fontSize: '0.75rem' }}>
                       <option value="Pending">Pending</option>
                       <option value="Preparing">Preparing</option>
                       <option value="Out for Delivery">Out for Delivery</option>
@@ -1646,14 +1743,7 @@ export default function AdminPage() {
                       <option value="Cancelled">Cancelled</option>
                     </select>
                   </div>
-
-                  <button 
-                    onClick={() => setShowOrderDetailsModal(false)}
-                    className="btn-filled"
-                    style={{ padding: '0.6rem 1.2rem', fontSize: '0.7rem' }}
-                  >
-                    CLOSE TICKET
-                  </button>
+                  <button onClick={() => setShowOrderDetailsModal(false)} className="btn-filled" style={{ padding: '0.6rem 1.2rem', fontSize: '0.7rem' }}>CLOSE TICKET</button>
                 </div>
               </div>
             </motion.div>

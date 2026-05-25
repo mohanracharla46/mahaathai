@@ -30,6 +30,10 @@ export default function App() {
   const [reservationTab, setReservationTab] = useState('reservation');
   const [cart, setCart] = useState({});
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [couponCode, setCouponCode] = useState('');
+  const [couponDiscount, setCouponDiscount] = useState(0);
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [couponError, setCouponError] = useState('');
   const [currentUser, setCurrentUser] = useState(() => {
     const activeEmail = localStorage.getItem('maha_active_user');
     if (activeEmail) {
@@ -229,6 +233,10 @@ export default function App() {
     setCart({});
     setIsCartCheckedOut(false);
     setIsCartCheckoutFormOpen(false);
+    setCouponCode('');
+    setCouponDiscount(0);
+    setAppliedCoupon(null);
+    setCouponError('');
   };
 
   const getCartCount = () => {
@@ -237,6 +245,55 @@ export default function App() {
 
   const getCartTotal = () => {
     return Object.values(cart).reduce((total, item) => total + item.quantity * item.price, 0);
+  };
+
+  const getCartFinalTotal = () => {
+    const subtotal = getCartTotal();
+    return Math.max(0, subtotal - couponDiscount);
+  };
+
+  const handleApplyCoupon = () => {
+    setCouponError('');
+    setCouponDiscount(0);
+    setAppliedCoupon(null);
+
+    if (!couponCode) return;
+
+    // Load coupons from localStorage
+    const savedCoupons = JSON.parse(localStorage.getItem('maha_global_coupons') || '[]');
+    const baselineCoupons = [
+      { id: 'c-mock1', code: 'WELCOME10', type: 'percentage', value: 10, minOrder: 30, status: 'Active' },
+      { id: 'c-mock2', code: 'MAHAFEAST', type: 'flat', value: 15, minOrder: 80, status: 'Active' }
+    ];
+    const couponsList = savedCoupons.length > 0 ? savedCoupons : baselineCoupons;
+
+    const match = couponsList.find(c => c.code.toUpperCase() === couponCode.toUpperCase().trim());
+
+    if (!match) {
+      setCouponError('Invalid coupon code.');
+      return;
+    }
+
+    if (match.status !== 'Active') {
+      setCouponError('This coupon is no longer active.');
+      return;
+    }
+
+    const subtotal = getCartTotal();
+    if (subtotal < match.minOrder) {
+      setCouponError(`Min order of $${match.minOrder} required.`);
+      return;
+    }
+
+    let discount = 0;
+    if (match.type === 'percentage') {
+      discount = Math.round((subtotal * match.value) / 100);
+    } else {
+      discount = match.value;
+    }
+
+    setCouponDiscount(discount);
+    setAppliedCoupon(match);
   };
 
   const openReservation = (tab = 'reservation') => {
@@ -362,14 +419,16 @@ export default function App() {
           className="relative min-h-screen w-full flex flex-col"
           style={{ width: '100%', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}
         >
-          {/* Sticky Header */}
-          <Header 
-            onOpenReservation={openReservation} 
-            cartCount={getCartCount()} 
-            onOpenCart={() => setIsCartOpen(true)} 
-            currentUser={currentUser}
-            onSignOut={handleSignOut}
-          />
+          {/* Sticky Header — hidden on Admin page */}
+          {!isAdminPage && (
+            <Header 
+              onOpenReservation={openReservation} 
+              cartCount={getCartCount()} 
+              onOpenCart={() => setIsCartOpen(true)} 
+              currentUser={currentUser}
+              onSignOut={handleSignOut}
+            />
+          )}
 
           {/* Interactive Sections */}
           <main style={{ flexGrow: 1 }}>
@@ -455,8 +514,8 @@ export default function App() {
             )}
           </main>
 
-          {/* Luxury Footer */}
-          <Footer />
+          {/* Luxury Footer — hidden on Admin page */}
+          {!isAdminPage && <Footer />}
 
           {/* Reservation Form Modal */}
           <AnimatePresence>
@@ -612,7 +671,7 @@ export default function App() {
                               id: 'o-' + Date.now(),
                               date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
                               items: Object.values(cart).map(item => `${item.quantity}x ${item.name}`).join(', '),
-                              total: getCartTotal(),
+                              total: getCartFinalTotal(),
                               type: cartCheckoutData.serviceType === 'delivery' ? 'Delivery' : 'Pickup',
                               status: 'Preparing',
                               customerName: cartCheckoutData.name,
@@ -703,9 +762,47 @@ export default function App() {
                             </div>
                           )}
 
-                          <div className="order-subtotal-row" style={{ marginTop: '0.5rem', paddingTop: '0.75rem' }}>
+                          {/* Coupon Code Input */}
+                          <div>
+                            <label className="block font-sans text-[10px] font-bold tracking-widest uppercase text-dark mb-1" style={{ fontSize: '10px' }}>
+                              Promo Code
+                            </label>
+                            <div style={{ display: 'flex', gap: '0.5rem' }}>
+                              <input
+                                type="text"
+                                placeholder="e.g. WELCOME10"
+                                value={couponCode}
+                                onChange={(e) => setCouponCode(e.target.value)}
+                                className="w-full px-4 py-2 font-sans text-sm bg-white rounded border focus:outline-none"
+                                style={{ flexGrow: 1, padding: '0.5rem 0.8rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }}
+                              />
+                              <button
+                                type="button"
+                                onClick={handleApplyCoupon}
+                                className="btn-filled"
+                                style={{ padding: '0.5rem 1rem', fontSize: '0.75rem', height: 'fit-content' }}
+                              >
+                                Apply
+                              </button>
+                            </div>
+                            {couponError && (
+                              <p style={{ fontSize: '0.75rem', color: '#db4455', marginTop: '0.25rem' }}>{couponError}</p>
+                            )}
+                            {couponDiscount > 0 && (
+                              <p style={{ fontSize: '0.75rem', color: 'var(--accent-jade)', marginTop: '0.25rem' }}>Coupon applied successfully!</p>
+                            )}
+                          </div>
+
+                          {couponDiscount > 0 && (
+                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--accent-jade)', marginTop: '0.5rem', borderTop: '1px dashed var(--border-light)', paddingTop: '0.5rem' }}>
+                              <span>Promo Discount ({appliedCoupon?.code})</span>
+                              <span>-${couponDiscount}.00</span>
+                            </div>
+                          )}
+
+                          <div className="order-subtotal-row" style={{ marginTop: '0.5rem', paddingTop: '0.75rem', borderTop: '1px solid var(--border-light)' }}>
                             <span className="subtotal-label" style={{ fontSize: '0.75rem' }}>Order Total</span>
-                            <span className="subtotal-price" style={{ fontSize: '1.2rem' }}>${getCartTotal()}.00</span>
+                            <span className="subtotal-price" style={{ fontSize: '1.2rem' }}>${getCartFinalTotal()}.00</span>
                           </div>
 
                           <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>

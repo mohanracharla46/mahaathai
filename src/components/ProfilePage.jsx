@@ -102,7 +102,9 @@ export default function ProfilePage({ currentUser, onSignOut, onUpdateProfile })
       experience: feedbackExp,
       rating: feedbackRating,
       comment: feedbackComment,
-      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      customerName: currentUser.name || currentUser.email.split('@')[0],
+      customerEmail: currentUser.email
     };
 
     const updatedReviews = [newReview, ...(currentUser.feedbackReviews || [])];
@@ -111,6 +113,11 @@ export default function ProfilePage({ currentUser, onSignOut, onUpdateProfile })
       ...currentUser,
       feedbackReviews: updatedReviews
     });
+
+    // Save to global feedback registry for the Admin Panel
+    const globalFeedback = JSON.parse(localStorage.getItem('maha_global_feedback') || '[]');
+    globalFeedback.unshift(newReview);
+    localStorage.setItem('maha_global_feedback', JSON.stringify(globalFeedback));
     
     setFeedbackSubmitted(true);
     setFeedbackComment('');
