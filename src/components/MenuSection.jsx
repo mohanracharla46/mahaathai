@@ -739,10 +739,9 @@ export default function MenuSection({ cart = {}, addToCart, removeFromCart }) {
 
         {/* State-Driven Tab Filtering System */}
         <div 
-          className="flex justify-center mb-16" 
+          className="flex justify-start md:justify-center mb-16" 
           style={{ 
             display: 'flex', 
-            justifyContent: 'center', 
             marginBottom: '4rem',
             width: '100%',
             overflowX: 'auto',
