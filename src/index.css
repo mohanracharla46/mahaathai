@@ -566,10 +566,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .hero-cta-btn-gold:hover {
-  background-color: transparent;
-  color: #FFFFFF;
-  border-color: #FFFFFF;
-  box-shadow: 0 10px 30px rgba(255, 255, 255, 0.15);
+  background-color: var(--gold-antique);
+  color: #0B363D;
+  border-color: var(--gold-antique);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(204, 164, 83, 0.35);
 }
 
 .hero-scroll-down {
