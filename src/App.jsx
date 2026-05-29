@@ -471,7 +471,7 @@ export default function App() {
                 addToCart={addToCart} 
                 removeFromCart={removeFromCart} 
               />
-            ) : (currentHash === '#/menu' || currentHash === '#menu' || currentHash === '#/menu/') ? (
+            ) : isMenuPage ? (
               <MenuPage 
                 onOpenReservation={openReservation} 
                 cart={cart} 

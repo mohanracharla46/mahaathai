@@ -70,7 +70,7 @@ export default function MenuPage({ onOpenReservation, cart = {}, addToCart, remo
   }
 
   return (
-    <div style={{ backgroundColor: 'var(--canvas-primary)' }}>
+    <div style={{ backgroundColor: 'var(--canvas-primary)', paddingTop: '120px' }}>
 
       {/* ── Hero ─────────────────────────────────────────────────────────────── */}
       <section style={{

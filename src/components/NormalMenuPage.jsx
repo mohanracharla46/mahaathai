@@ -17,7 +17,7 @@ export default function NormalMenuPage({ onOpenReservation, cart = {}, addToCart
   };
 
   return (
-    <div style={{ backgroundColor: 'var(--canvas-primary)' }}>
+    <div style={{ backgroundColor: 'var(--canvas-primary)', paddingTop: '120px' }}>
       {/* Hero Banner */}
       <section
         className="menu-page-hero"

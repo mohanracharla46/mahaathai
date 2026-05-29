@@ -17,7 +17,7 @@ export default function VegetarianMenuPage({ onOpenReservation, cart = {}, addTo
   };
 
   return (
-    <div style={{ backgroundColor: 'var(--canvas-primary)' }}>
+    <div style={{ backgroundColor: 'var(--canvas-primary)', paddingTop: '120px' }}>
       {/* Hero Banner — Earthy green tones */}
       <section
         className="menu-page-hero"
