@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Star, ArrowLeft, SlidersHorizontal, X, ChevronDown } from 'lucide-react';
 import { menuData } from './MenuSection';
 
-const ALL_CATEGORIES = ['Lunch', 'Normal', 'Vegetarian'];
+const ALL_CATEGORIES = ['Lunch', 'Dinner', 'Vegetarian'];
 
 const PRICE_RANGES = [
   { label: 'All Prices', min: 0, max: Infinity },
@@ -22,12 +22,12 @@ const SORT_OPTIONS = [
 
 const CATEGORY_META = {
   'Lunch':       { emoji: '☀️', color: '#BA9B5F' },
-  'Normal':      { emoji: '🍽️', color: '#0B363D' },
+  'Dinner':      { emoji: '🍽️', color: '#0B363D' },
   'Vegetarian':  { emoji: '🌿', color: '#6B9E3A' }
 };
 
 export default function MenuPage({ onOpenReservation, cart = {}, addToCart, removeFromCart }) {
-  const [selectedCategory, setSelectedCategory] = useState('Normal');
+  const [selectedCategory, setSelectedCategory] = useState('Dinner');
   const [selectedPriceRange, setSelectedPriceRange] = useState(0);
   const [sortBy, setSortBy]                         = useState('default');
   const [isSortOpen, setIsSortOpen]                 = useState(false);

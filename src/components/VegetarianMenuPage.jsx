@@ -304,7 +304,7 @@ export default function VegetarianMenuPage({ onOpenReservation, cart = {}, addTo
           <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
             {[
               { name: 'Lunch Menu', href: '#/menu/lunch' },
-              { name: 'Normal Menu', href: '#/menu/normal' }
+              { name: 'Dinner Menu', href: '#/menu/dinner' }
             ].map((link) => (
               <a key={link.name} href={link.href} style={{
                 padding: '0.85rem 2rem',

@@ -290,7 +290,7 @@ export default function LunchMenuPage({ onOpenReservation, cart = {}, addToCart,
           </h3>
           <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
             {[
-              { name: 'Normal Menu', href: '#/menu/normal' },
+              { name: 'Dinner Menu', href: '#/menu/dinner' },
               { name: 'Vegetarian Menu', href: '#/menu/vegetarian' }
             ].map((link) => (
               <a key={link.name} href={link.href} style={{

@@ -119,7 +119,7 @@ export default function Hero() {
             className="hero-title-elegant"
           >
             Experience Authentic <br />
-            <span className="gold">Thai Fine Dining</span>
+            <span className="gold">Thai Food</span>
           </motion.h1>
 
           {/* Explore Menus Button */}

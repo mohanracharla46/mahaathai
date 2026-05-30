@@ -5,27 +5,27 @@ import logoImg from '../assets/mahathailogo.png';
 
 const navLinks = [
   { name: 'Home', href: '#home' },
+  { name: 'About Us', href: '#/about' },
   {
     name: 'Menu',
     href: '#menu',
     dropdown: [
       { name: 'Lunch', href: '#/menu/lunch' },
-      { name: 'Normal', href: '#/menu/normal' },
+      { name: 'Dinner', href: '#/menu/dinner' },
       { name: 'Vegetarian', href: '#/menu/vegetarian' }
     ]
   },
-  { name: 'About Us', href: '#/about' },
+  { name: 'Private Events', href: '#/events' },
+  { name: 'Catering', href: '#/catering' },
+  { name: 'Careers', href: '#/careers' },
   {
-    name: 'Private Events',
-    href: '#/events',
+    name: 'Contact',
+    href: '#/contact',
     dropdown: [
-      { name: 'Events', href: '#/events' },
-      { name: 'Caterings', href: '#/catering' }
+      { name: 'Contact Us', href: '#/contact' },
+      { name: 'Gift Cards', href: '#/giftcards' }
     ]
-  },
-  { name: 'Contact', href: '#/contact' },
-  { name: 'Careerpage', href: '#/careers' },
-  { name: 'Giftcards', href: '#/giftcards' }
+  }
 ];
 
 export default function Header({ onOpenReservation, cartCount = 0, onOpenCart, currentUser = null, onSignOut }) {

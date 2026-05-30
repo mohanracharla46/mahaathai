@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Star, ArrowLeft, UtensilsCrossed, Flame, Award } from 'lucide-react';
 import { menuData } from './MenuSection';
 
-export default function NormalMenuPage({ onOpenReservation, cart = {}, addToCart, removeFromCart }) {
-  const items = menuData['Normal'];
+export default function DinnerMenuPage({ onOpenReservation, cart = {}, addToCart, removeFromCart }) {
+  const items = menuData['Dinner'];
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -157,7 +157,7 @@ export default function NormalMenuPage({ onOpenReservation, cart = {}, addToCart
               fontFamily: 'var(--font-body)', fontSize: '0.9rem',
               color: 'var(--text-muted)', fontWeight: 300
             }}>
-              {items.length} dishes available
+              {items ? items.length : 0} dishes available
             </p>
           </div>
 
@@ -173,7 +173,7 @@ export default function NormalMenuPage({ onOpenReservation, cart = {}, addToCart
                 gap: '2rem'
               }}
             >
-              {items.map((item) => (
+              {items && items.map((item) => (
                 <motion.div
                   key={item.id}
                   variants={itemVariants}

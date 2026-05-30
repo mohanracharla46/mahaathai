@@ -564,9 +564,9 @@ export const menuData = {
   ]
 };
 
-// Map Lunch, Normal, and Vegetarian menu keys for the specialized dropdowns and pages
+// Map Lunch, Dinner, and Vegetarian menu keys for the specialized dropdowns and pages
 menuData['Vegetarian'] = menuData['Plant-Based'];
-menuData['Normal'] = [
+menuData['Dinner'] = [
   ...menuData['Noodle Bar'],
   ...menuData['Curry Kitchen'],
   ...menuData['Rice & Wok'],

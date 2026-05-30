@@ -200,7 +200,7 @@ export default function AdminPage() {
   const [orderTypeFilter, setOrderTypeFilter] = useState('All'); // 'All', 'Pickup', 'Delivery'
   
   // Menu Category state for Items Tab
-  const menuCategories = ['Noodle Bar', 'Curry Kitchen', 'Rice & Wok', 'Street Kitchen', 'From the Sea', 'Chef’s Table', 'Plant-Based', 'Sweet Endings', 'Beverages & Sides', 'Lunch', 'Normal', 'Vegetarian'];
+  const menuCategories = ['Noodle Bar', 'Curry Kitchen', 'Rice & Wok', 'Street Kitchen', 'From the Sea', 'Chef’s Table', 'Plant-Based', 'Sweet Endings', 'Beverages & Sides', 'Lunch', 'Dinner', 'Vegetarian'];
   const [selectedMenuCategory, setSelectedMenuCategory] = useState('Noodle Bar');
 
   // Automation Settings (Toggles)
@@ -605,7 +605,7 @@ export default function AdminPage() {
     
     let totalItems = 0;
     Object.keys(localMenu).forEach(key => {
-      if (key !== 'Normal' && key !== 'Vegetarian' && key !== 'Lunch') {
+      if (key !== 'Dinner' && key !== 'Vegetarian' && key !== 'Lunch') {
         totalItems += (localMenu[key] || []).length;
       }
     });

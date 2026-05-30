@@ -8,7 +8,7 @@ import AboutUsPage from './components/AboutUsPage';
 import EventsPage from './components/EventsPage';
 import CateringPage from './components/CateringPage';
 import LunchMenuPage from './components/LunchMenuPage';
-import NormalMenuPage from './components/NormalMenuPage';
+import DinnerMenuPage from './components/DinnerMenuPage';
 import VegetarianMenuPage from './components/VegetarianMenuPage';
 import ContactPage from './components/ContactPage';
 import CareersPage from './components/CareersPage';
@@ -322,7 +322,7 @@ export default function App() {
   const isCateringPage = currentHash === '#/catering';
   const isMenuPage = currentHash.startsWith('#/menu') || currentHash === '#menu';
   const isLunchPage = currentHash === '#/menu/lunch';
-  const isNormalPage = currentHash === '#/menu/normal';
+  const isDinnerPage = currentHash === '#/menu/dinner';
   const isVegetarianPage = currentHash === '#/menu/vegetarian';
   const isContactPage = currentHash === '#/contact';
   const isCareersPage = currentHash === '#/careers';
@@ -377,10 +377,12 @@ export default function App() {
           >
             {/* Ambient Gold Radial glow */}
             <div
-              className="absolute w-[500px] h-[500px] rounded-full blur-[150px] pointer-events-none opacity-25"
+              className="absolute pointer-events-none opacity-25 rounded-full"
               style={{
+                width: '700px',
+                height: '700px',
                 backgroundColor: 'var(--gold-antique)',
-                filter: 'blur(120px)'
+                filter: 'blur(160px)'
               }}
             />
 
@@ -398,12 +400,42 @@ export default function App() {
                   src={logoImg}
                   alt="Maha Thai Logo"
                   style={{
-                    height: '160px',
+                    height: '240px',
                     width: 'auto',
                     objectFit: 'contain',
-                    filter: 'drop-shadow(0 6px 18px rgba(11, 54, 61, 0.15))'
+                    filter: 'drop-shadow(0 8px 24px rgba(11, 54, 61, 0.18))'
                   }}
                 />
+              </div>
+
+              {/* Elegant Micro-loading Indicator */}
+              <div style={{ marginTop: '2.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem' }}>
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
+                  style={{
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '50%',
+                    border: '2px solid rgba(197, 160, 89, 0.1)',
+                    borderTop: '2px solid var(--gold-antique)',
+                  }}
+                />
+                <motion.span
+                  initial={{ opacity: 0.4 }}
+                  animate={{ opacity: [0.4, 0.9, 0.4] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                  style={{
+                    fontFamily: 'var(--font-sans)',
+                    fontSize: '10px',
+                    letterSpacing: '0.2em',
+                    color: 'var(--gold-antique)',
+                    textTransform: 'uppercase',
+                    fontWeight: 500
+                  }}
+                >
+                  Loading
+                </motion.span>
               </div>
             </motion.div>
           </motion.div>
@@ -457,8 +489,8 @@ export default function App() {
                 addToCart={addToCart} 
                 removeFromCart={removeFromCart} 
               />
-            ) : isNormalPage ? (
-              <NormalMenuPage 
+            ) : isDinnerPage ? (
+              <DinnerMenuPage 
                 onOpenReservation={openReservation} 
                 cart={cart} 
                 addToCart={addToCart} 
