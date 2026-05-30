@@ -230,6 +230,17 @@ export default function AdminPage() {
     availability: true
   });
 
+  const handleImageFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setDishFormData(prev => ({ ...prev, image: reader.result }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   // Coupon Modals states
   const [showAddCouponModal, setShowAddCouponModal] = useState(false);
   const [showEditCouponModal, setShowEditCouponModal] = useState(false);
@@ -1529,7 +1540,22 @@ export default function AdminPage() {
                 </div>
                 <div>
                   <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>Visual Asset Link (Image URL)</label>
-                  <input type="text" placeholder="https://images.unsplash.com/photo..." value={dishFormData.image} onChange={(e) => setDishFormData({ ...dishFormData, image: e.target.value })} style={{ width: '100%', padding: '0.6rem 0.8rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }} />
+                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                    <input type="text" placeholder="https://images.unsplash.com/photo..." value={dishFormData.image} onChange={(e) => setDishFormData({ ...dishFormData, image: e.target.value })} style={{ flexGrow: 1, padding: '0.6rem 0.8rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }} />
+                    <label style={{ padding: '0.6rem 1rem', fontSize: '0.75rem', fontWeight: 600, border: '1px solid var(--gold-antique)', borderRadius: '4px', color: 'var(--gold-antique)', cursor: 'pointer', whiteSpace: 'nowrap', backgroundColor: 'transparent', transition: 'all 0.3s' }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--gold-light)'; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}>
+                      Upload File
+                      <input type="file" accept="image/*" onChange={handleImageFileChange} style={{ display: 'none' }} />
+                    </label>
+                  </div>
+                  {dishFormData.image && (
+                    <div style={{ marginTop: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <div style={{ position: 'relative', width: '64px', height: '48px', borderRadius: '4px', overflow: 'hidden', border: '1px solid var(--border-light)' }}>
+                        <img src={dishFormData.image} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        <button type="button" onClick={() => setDishFormData({ ...dishFormData, image: '' })} style={{ position: 'absolute', top: '2px', right: '2px', backgroundColor: 'rgba(0,0,0,0.6)', border: 'none', borderRadius: '50%', width: '16px', height: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', cursor: 'pointer', outline: 'none' }}><X size={10} /></button>
+                      </div>
+                      <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Image asset loaded successfully</span>
+                    </div>
+                  )}
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <input type="checkbox" id="dish-avail-add" checked={dishFormData.availability} onChange={(e) => setDishFormData({ ...dishFormData, availability: e.target.checked })} style={{ cursor: 'pointer' }} />
@@ -1569,7 +1595,22 @@ export default function AdminPage() {
                 </div>
                 <div>
                   <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>Visual Asset Link (Image URL)</label>
-                  <input type="text" value={dishFormData.image} onChange={(e) => setDishFormData({ ...dishFormData, image: e.target.value })} style={{ width: '100%', padding: '0.6rem 0.8rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }} />
+                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                    <input type="text" placeholder="https://images.unsplash.com/photo..." value={dishFormData.image} onChange={(e) => setDishFormData({ ...dishFormData, image: e.target.value })} style={{ flexGrow: 1, padding: '0.6rem 0.8rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }} />
+                    <label style={{ padding: '0.6rem 1rem', fontSize: '0.75rem', fontWeight: 600, border: '1px solid var(--gold-antique)', borderRadius: '4px', color: 'var(--gold-antique)', cursor: 'pointer', whiteSpace: 'nowrap', backgroundColor: 'transparent', transition: 'all 0.3s' }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--gold-light)'; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}>
+                      Upload File
+                      <input type="file" accept="image/*" onChange={handleImageFileChange} style={{ display: 'none' }} />
+                    </label>
+                  </div>
+                  {dishFormData.image && (
+                    <div style={{ marginTop: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <div style={{ position: 'relative', width: '64px', height: '48px', borderRadius: '4px', overflow: 'hidden', border: '1px solid var(--border-light)' }}>
+                        <img src={dishFormData.image} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        <button type="button" onClick={() => setDishFormData({ ...dishFormData, image: '' })} style={{ position: 'absolute', top: '2px', right: '2px', backgroundColor: 'rgba(0,0,0,0.6)', border: 'none', borderRadius: '50%', width: '16px', height: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', cursor: 'pointer', outline: 'none' }}><X size={10} /></button>
+                      </div>
+                      <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Image asset loaded successfully</span>
+                    </div>
+                  )}
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <input type="checkbox" id="dish-avail-edit" checked={dishFormData.availability} onChange={(e) => setDishFormData({ ...dishFormData, availability: e.target.checked })} style={{ cursor: 'pointer' }} />
