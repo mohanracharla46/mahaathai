@@ -377,12 +377,19 @@ export default function App() {
           >
             {/* Ambient Gold Radial glow */}
             <div
-              className="absolute pointer-events-none opacity-25 rounded-full"
               style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
                 width: '700px',
                 height: '700px',
                 backgroundColor: 'var(--gold-antique)',
-                filter: 'blur(160px)'
+                filter: 'blur(160px)',
+                pointerEvents: 'none',
+                opacity: 0.25,
+                borderRadius: '50%',
+                zIndex: 1
               }}
             />
 
@@ -391,8 +398,13 @@ export default function App() {
               initial={{ scale: 0.85, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-              className="flex flex-col items-center"
-              style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+              style={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                alignItems: 'center',
+                position: 'relative',
+                zIndex: 2
+              }}
             >
               {/* Brand Logo */}
               <div className="text-center" style={{ textAlign: 'center' }}>
