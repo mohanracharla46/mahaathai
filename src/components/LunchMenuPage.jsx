@@ -2,6 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, ArrowLeft, Sun, Clock, Leaf } from 'lucide-react';
 import { menuData } from './MenuSection';
+import lunchImg from '../assets/lunchimg.png';
 
 export default function LunchMenuPage({ onOpenReservation, cart = {}, addToCart, removeFromCart }) {
   const items = menuData['Lunch'];
@@ -29,7 +30,9 @@ export default function LunchMenuPage({ onOpenReservation, cart = {}, addToCart,
           justifyContent: 'center',
           textAlign: 'center',
           overflow: 'hidden',
-          background: 'linear-gradient(135deg, #0B363D 0%, #14555F 50%, #0B363D 100%)'
+          backgroundImage: `linear-gradient(rgba(11, 54, 61, 0.85), rgba(11, 54, 61, 0.88)), url(${lunchImg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
         }}
       >
         {/* Dot pattern */}
