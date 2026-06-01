@@ -32,6 +32,7 @@ import {
   ToggleRight
 } from 'lucide-react';
 import { menuData } from './MenuSection';
+import { getWebsiteContent, updateWebsiteContent, defaultWebsiteContent } from '../utils/cms';
 
 // Initial Mock Orders if none in localStorage
 const defaultMockOrders = [
@@ -193,6 +194,27 @@ export default function AdminPage() {
   const [coupons, setCoupons] = useState([]);
   const [usersList, setUsersList] = useState([]);
   const [feedbackList, setFeedbackList] = useState([]);
+
+  // CMS State
+  const [cmsContent, setCmsContent] = useState(() => getWebsiteContent());
+  const [cmsActiveSection, setCmsActiveSection] = useState('hero'); // 'hero', 'philosophy', 'welcome', 'about', 'contact'
+  const [cmsNotification, setCmsNotification] = useState('');
+
+  const handleSaveCMS = (e) => {
+    e.preventDefault();
+    updateWebsiteContent(cmsContent);
+    setCmsNotification('Website content updated successfully. Live changes reflected.');
+    setTimeout(() => setCmsNotification(''), 4000);
+  };
+
+  const handleResetCMS = () => {
+    if (window.confirm('Are you sure you want to restore all website content to its default Siamese royal templates? This will overwrite your current dynamic updates.')) {
+      setCmsContent(defaultWebsiteContent);
+      updateWebsiteContent(defaultWebsiteContent);
+      setCmsNotification('Website content reset to default templates.');
+      setTimeout(() => setCmsNotification(''), 4000);
+    }
+  };
 
   // Search & Filter state for tab lists
   const [searchQuery, setSearchQuery] = useState('');
@@ -857,7 +879,8 @@ export default function AdminPage() {
                   { id: 'coupons', label: 'Coupons', icon: Tag },
                   { id: 'users', label: 'Users', icon: Users },
                   { id: 'automation', label: 'Automation', icon: Cpu },
-                  { id: 'feedback', label: 'Feedback', icon: Star }
+                  { id: 'feedback', label: 'Feedback', icon: Star },
+                  { id: 'content', label: 'CMS (Pages)', icon: FileText }
                 ].map((item) => {
                   const Icon = item.icon;
                   const isActive = activeTab === item.id;
@@ -938,7 +961,7 @@ export default function AdminPage() {
                     Curator Salon Dashboard
                   </span>
                   <h1 className="font-serif" style={{ fontSize: '2.2rem', textTransform: 'capitalize', fontWeight: 300, marginTop: '0.25rem' }}>
-                    {activeTab === 'overview' ? 'Staff Dashboard' : activeTab === 'items' ? 'Items Manager (Menu)' : activeTab === 'users' ? 'Registered Users' : activeTab}
+                    {activeTab === 'overview' ? 'Staff Dashboard' : activeTab === 'items' ? 'Items Manager (Menu)' : activeTab === 'users' ? 'Registered Users' : activeTab === 'content' ? 'Website Content Management' : activeTab}
                   </h1>
                 </div>
 
@@ -1505,6 +1528,465 @@ export default function AdminPage() {
                         )}
                       </tbody>
                     </table>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'content' && (
+                /* 8. WEBSITE CONTENT MANAGEMENT (CMS) */
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                  {/* Notification banner */}
+                  {cmsNotification && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '1rem 1.25rem', backgroundColor: 'rgba(14, 110, 86, 0.1)', border: '1px solid rgba(14, 110, 86, 0.3)', borderRadius: '6px', color: 'var(--accent-jade)', fontSize: '0.85rem' }}>
+                      <CheckCircle size={18} style={{ flexShrink: 0 }} />
+                      <span>{cmsNotification}</span>
+                    </div>
+                  )}
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '240px 1fr', gap: '2rem', alignItems: 'start' }}>
+                    
+                    {/* CMS Side Sub-navigation */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', backgroundColor: 'var(--canvas-primary)', border: '1px solid var(--border-light)', borderRadius: '8px', padding: '1rem', boxShadow: 'var(--shadow-soft)' }}>
+                      <h4 style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', tracking: '0.1em', color: 'var(--text-muted)', marginBottom: '0.5rem', paddingLeft: '0.5rem' }}>Sections</h4>
+                      {[
+                        { id: 'hero', label: 'Hero Banner' },
+                        { id: 'philosophy', label: 'Culinary Philosophy' },
+                        { id: 'welcome', label: 'Welcome Section' },
+                        { id: 'about', label: 'About Us Page' },
+                        { id: 'contact', label: 'Contact Details' }
+                      ].map(sec => (
+                        <button
+                          key={sec.id}
+                          onClick={() => setCmsActiveSection(sec.id)}
+                          style={{
+                            padding: '0.65rem 0.85rem',
+                            fontSize: '0.85rem',
+                            fontWeight: 600,
+                            borderRadius: '4px',
+                            border: 'none',
+                            cursor: 'pointer',
+                            textAlign: 'left',
+                            width: '100%',
+                            transition: 'all 0.2s',
+                            backgroundColor: cmsActiveSection === sec.id ? 'var(--gold-light)' : 'transparent',
+                            color: cmsActiveSection === sec.id ? 'var(--gold-antique)' : 'var(--text-muted)',
+                            borderLeft: cmsActiveSection === sec.id ? '3px solid var(--gold-antique)' : '3px solid transparent'
+                          }}
+                        >
+                          {sec.label}
+                        </button>
+                      ))}
+
+                      <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', paddingTop: '1rem', borderTop: '1px solid var(--border-light)' }}>
+                        <button onClick={handleSaveCMS} className="btn-filled" style={{ width: '100%', padding: '0.65rem', fontSize: '0.75rem', justifyContent: 'center' }}>
+                          <Check size={14} /> SAVE ALL CHANGES
+                        </button>
+                        <button onClick={handleResetCMS} style={{ width: '100%', padding: '0.65rem', fontSize: '0.75rem', border: '1px solid var(--border-light)', backgroundColor: 'transparent', color: '#db4455', borderRadius: '4px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}>
+                          <Clock size={14} /> Restore Defaults
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* CMS Editing Panel */}
+                    <div style={{ backgroundColor: 'var(--canvas-primary)', border: '1px solid var(--border-light)', borderRadius: '8px', padding: '2rem', boxShadow: 'var(--shadow-soft)' }}>
+                      <form onSubmit={handleSaveCMS} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                        
+                        {/* HERO SECTION CMS */}
+                        {cmsActiveSection === 'hero' && (
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                            <div style={{ borderBottom: '1px solid var(--border-light)', paddingBottom: '0.75rem' }}>
+                              <h3 className="font-serif" style={{ fontSize: '1.35rem', fontWeight: 300 }}>Hero Banner Copy</h3>
+                              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>Dynamically edit content appearing in the main landing banner.</p>
+                            </div>
+                            
+                            <div>
+                              <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>Tagline Subtitle</label>
+                              <input 
+                                type="text" 
+                                value={cmsContent.hero?.subtitle || ''} 
+                                onChange={(e) => setCmsContent({ ...cmsContent, hero: { ...cmsContent.hero, subtitle: e.target.value } })} 
+                                style={{ width: '100%', padding: '0.65rem 0.85rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-secondary)', color: 'var(--text-dark)' }}
+                              />
+                            </div>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                              <div>
+                                <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>Main Title (White Text)</label>
+                                <input 
+                                  type="text" 
+                                  value={cmsContent.hero?.titleLine1 || ''} 
+                                  onChange={(e) => setCmsContent({ ...cmsContent, hero: { ...cmsContent.hero, titleLine1: e.target.value } })} 
+                                  style={{ width: '100%', padding: '0.65rem 0.85rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-secondary)', color: 'var(--text-dark)' }}
+                                />
+                              </div>
+                              <div>
+                                <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>Main Title (Gold Text)</label>
+                                <input 
+                                  type="text" 
+                                  value={cmsContent.hero?.titleGold || ''} 
+                                  onChange={(e) => setCmsContent({ ...cmsContent, hero: { ...cmsContent.hero, titleGold: e.target.value } })} 
+                                  style={{ width: '100%', padding: '0.65rem 0.85rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-secondary)', color: 'var(--text-dark)' }}
+                                />
+                              </div>
+                            </div>
+
+                            <div>
+                              <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>Button Text</label>
+                              <input 
+                                type="text" 
+                                value={cmsContent.hero?.buttonText || ''} 
+                                onChange={(e) => setCmsContent({ ...cmsContent, hero: { ...cmsContent.hero, buttonText: e.target.value } })} 
+                                style={{ width: '100%', padding: '0.65rem 0.85rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-secondary)', color: 'var(--text-dark)' }}
+                              />
+                            </div>
+                          </div>
+                        )}
+
+                        {/* PHILOSOPHY SECTION CMS */}
+                        {cmsActiveSection === 'philosophy' && (
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                            <div style={{ borderBottom: '1px solid var(--border-light)', paddingBottom: '0.75rem' }}>
+                              <h3 className="font-serif" style={{ fontSize: '1.35rem', fontWeight: 300 }}>Culinary Philosophy</h3>
+                              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>Dynamically edit content appearing in the luxury philosophy block.</p>
+                            </div>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '1rem' }}>
+                              <div>
+                                <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>Section Subtitle</label>
+                                <input 
+                                  type="text" 
+                                  value={cmsContent.philosophy?.subtitle || ''} 
+                                  onChange={(e) => setCmsContent({ ...cmsContent, philosophy: { ...cmsContent.philosophy, subtitle: e.target.value } })} 
+                                  style={{ width: '100%', padding: '0.65rem 0.85rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-secondary)', color: 'var(--text-dark)' }}
+                                />
+                              </div>
+                              <div>
+                                <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>Section Title</label>
+                                <input 
+                                  type="text" 
+                                  value={cmsContent.philosophy?.title || ''} 
+                                  onChange={(e) => setCmsContent({ ...cmsContent, philosophy: { ...cmsContent.philosophy, title: e.target.value } })} 
+                                  style={{ width: '100%', padding: '0.65rem 0.85rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-secondary)', color: 'var(--text-dark)' }}
+                                />
+                              </div>
+                            </div>
+
+                            <div>
+                              <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>Philosophy Paragraph 1</label>
+                              <textarea 
+                                rows="3"
+                                value={cmsContent.philosophy?.paragraph1 || ''} 
+                                onChange={(e) => setCmsContent({ ...cmsContent, philosophy: { ...cmsContent.philosophy, paragraph1: e.target.value } })} 
+                                style={{ width: '100%', padding: '0.65rem 0.85rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-secondary)', color: 'var(--text-dark)', fontFamily: 'var(--font-sans)', resize: 'none', lineHeight: '1.4' }}
+                              />
+                            </div>
+
+                            <div>
+                              <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>Philosophy Paragraph 2</label>
+                              <textarea 
+                                rows="3"
+                                value={cmsContent.philosophy?.paragraph2 || ''} 
+                                onChange={(e) => setCmsContent({ ...cmsContent, philosophy: { ...cmsContent.philosophy, paragraph2: e.target.value } })} 
+                                style={{ width: '100%', padding: '0.65rem 0.85rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-secondary)', color: 'var(--text-dark)', fontFamily: 'var(--font-sans)', resize: 'none', lineHeight: '1.4' }}
+                              />
+                            </div>
+
+                            <div style={{ borderTop: '1px solid var(--border-light)', paddingTop: '1rem' }}>
+                              <h4 style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', tracking: '0.1em', color: 'var(--gold-antique)', marginBottom: '1rem' }}>Three Pillar Highlights</h4>
+                              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
+                                <div>
+                                  <label style={{ display: 'block', fontSize: '8px', fontWeight: 'bold', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Pillar 1 Label</label>
+                                  <input type="text" value={cmsContent.philosophy?.pillar1Text || ''} onChange={(e) => setCmsContent({ ...cmsContent, philosophy: { ...cmsContent.philosophy, pillar1Text: e.target.value } })} style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-secondary)', color: 'var(--text-dark)' }} />
+                                </div>
+                                <div>
+                                  <label style={{ display: 'block', fontSize: '8px', fontWeight: 'bold', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Pillar 2 Label</label>
+                                  <input type="text" value={cmsContent.philosophy?.pillar2Text || ''} onChange={(e) => setCmsContent({ ...cmsContent, philosophy: { ...cmsContent.philosophy, pillar2Text: e.target.value } })} style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-secondary)', color: 'var(--text-dark)' }} />
+                                </div>
+                                <div>
+                                  <label style={{ display: 'block', fontSize: '8px', fontWeight: 'bold', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Pillar 3 Label</label>
+                                  <input type="text" value={cmsContent.philosophy?.pillar3Text || ''} onChange={(e) => setCmsContent({ ...cmsContent, philosophy: { ...cmsContent.philosophy, pillar3Text: e.target.value } })} style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-secondary)', color: 'var(--text-dark)' }} />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* WELCOME SECTION CMS */}
+                        {cmsActiveSection === 'welcome' && (
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                            <div style={{ borderBottom: '1px solid var(--border-light)', paddingBottom: '0.75rem' }}>
+                              <h3 className="font-serif" style={{ fontSize: '1.35rem', fontWeight: 300 }}>Welcome Section</h3>
+                              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>Dynamically edit content appearing in the Sawasdee greeting section.</p>
+                            </div>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '1rem' }}>
+                              <div>
+                                <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>Subtitle</label>
+                                <input 
+                                  type="text" 
+                                  value={cmsContent.welcome?.subtitle || ''} 
+                                  onChange={(e) => setCmsContent({ ...cmsContent, welcome: { ...cmsContent.welcome, subtitle: e.target.value } })} 
+                                  style={{ width: '100%', padding: '0.65rem 0.85rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-secondary)', color: 'var(--text-dark)' }}
+                                />
+                              </div>
+                              <div>
+                                <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>Greeting Title</label>
+                                <input 
+                                  type="text" 
+                                  value={cmsContent.welcome?.title || ''} 
+                                  onChange={(e) => setCmsContent({ ...cmsContent, welcome: { ...cmsContent.welcome, title: e.target.value } })} 
+                                  style={{ width: '100%', padding: '0.65rem 0.85rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-secondary)', color: 'var(--text-dark)' }}
+                                />
+                              </div>
+                            </div>
+
+                            <div>
+                              <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>Welcome Paragraph Text</label>
+                              <textarea 
+                                rows="3"
+                                value={cmsContent.welcome?.paragraph || ''} 
+                                onChange={(e) => setCmsContent({ ...cmsContent, welcome: { ...cmsContent.welcome, paragraph: e.target.value } })} 
+                                style={{ width: '100%', padding: '0.65rem 0.85rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-secondary)', color: 'var(--text-dark)', fontFamily: 'var(--font-sans)', resize: 'none', lineHeight: '1.4' }}
+                              />
+                            </div>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                              <div>
+                                <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>Button Text</label>
+                                <input 
+                                  type="text" 
+                                  value={cmsContent.welcome?.buttonText || ''} 
+                                  onChange={(e) => setCmsContent({ ...cmsContent, welcome: { ...cmsContent.welcome, buttonText: e.target.value } })} 
+                                  style={{ width: '100%', padding: '0.65rem 0.85rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-secondary)', color: 'var(--text-dark)' }}
+                                />
+                              </div>
+                            </div>
+
+                            <div style={{ borderTop: '1px solid var(--border-light)', paddingTop: '1rem' }}>
+                              <h4 style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', tracking: '0.1em', color: 'var(--gold-antique)', marginBottom: '1rem' }}>Three Core Pillars</h4>
+                              
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                {/* Pillar 1 */}
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '1rem', borderBottom: '1px solid var(--border-light)', paddingBottom: '0.75rem' }}>
+                                  <div>
+                                    <label style={{ display: 'block', fontSize: '8px', fontWeight: 'bold', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Pillar 1 Title</label>
+                                    <input type="text" value={cmsContent.welcome?.pillar1Title || ''} onChange={(e) => setCmsContent({ ...cmsContent, welcome: { ...cmsContent.welcome, pillar1Title: e.target.value } })} style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-secondary)', color: 'var(--text-dark)' }} />
+                                  </div>
+                                  <div>
+                                    <label style={{ display: 'block', fontSize: '8px', fontWeight: 'bold', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Pillar 1 Description</label>
+                                    <input type="text" value={cmsContent.welcome?.pillar1Desc || ''} onChange={(e) => setCmsContent({ ...cmsContent, welcome: { ...cmsContent.welcome, pillar1Desc: e.target.value } })} style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-secondary)', color: 'var(--text-dark)' }} />
+                                  </div>
+                                </div>
+
+                                {/* Pillar 2 */}
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '1rem', borderBottom: '1px solid var(--border-light)', paddingBottom: '0.75rem' }}>
+                                  <div>
+                                    <label style={{ display: 'block', fontSize: '8px', fontWeight: 'bold', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Pillar 2 Title</label>
+                                    <input type="text" value={cmsContent.welcome?.pillar2Title || ''} onChange={(e) => setCmsContent({ ...cmsContent, welcome: { ...cmsContent.welcome, pillar2Title: e.target.value } })} style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-secondary)', color: 'var(--text-dark)' }} />
+                                  </div>
+                                  <div>
+                                    <label style={{ display: 'block', fontSize: '8px', fontWeight: 'bold', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Pillar 2 Description</label>
+                                    <input type="text" value={cmsContent.welcome?.pillar2Desc || ''} onChange={(e) => setCmsContent({ ...cmsContent, welcome: { ...cmsContent.welcome, pillar2Desc: e.target.value } })} style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-secondary)', color: 'var(--text-dark)' }} />
+                                  </div>
+                                </div>
+
+                                {/* Pillar 3 */}
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '1rem' }}>
+                                  <div>
+                                    <label style={{ display: 'block', fontSize: '8px', fontWeight: 'bold', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Pillar 3 Title</label>
+                                    <input type="text" value={cmsContent.welcome?.pillar3Title || ''} onChange={(e) => setCmsContent({ ...cmsContent, welcome: { ...cmsContent.welcome, pillar3Title: e.target.value } })} style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-secondary)', color: 'var(--text-dark)' }} />
+                                  </div>
+                                  <div>
+                                    <label style={{ display: 'block', fontSize: '8px', fontWeight: 'bold', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Pillar 3 Description</label>
+                                    <input type="text" value={cmsContent.welcome?.pillar3Desc || ''} onChange={(e) => setCmsContent({ ...cmsContent, welcome: { ...cmsContent.welcome, pillar3Desc: e.target.value } })} style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-secondary)', color: 'var(--text-dark)' }} />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* ABOUT US PAGE CMS */}
+                        {cmsActiveSection === 'about' && (
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                            <div style={{ borderBottom: '1px solid var(--border-light)', paddingBottom: '0.75rem' }}>
+                              <h3 className="font-serif" style={{ fontSize: '1.35rem', fontWeight: 300 }}>About Us Legacy Details</h3>
+                              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>Dynamically edit text on the About Us page.</p>
+                            </div>
+
+                            {/* About page Hero */}
+                            <div style={{ border: '1px solid var(--border-light)', borderRadius: '6px', padding: '1rem', backgroundColor: 'var(--canvas-secondary)' }}>
+                              <h4 style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', tracking: '0.1em', color: 'var(--gold-antique)', marginBottom: '1rem' }}>About Banner Section</h4>
+                              <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '1rem', marginBottom: '1rem' }}>
+                                <div>
+                                  <label style={{ display: 'block', fontSize: '8px', fontWeight: 'bold', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Hero Subtitle</label>
+                                  <input type="text" value={cmsContent.about?.heroSubtitle || ''} onChange={(e) => setCmsContent({ ...cmsContent, about: { ...cmsContent.about, heroSubtitle: e.target.value } })} style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-primary)', color: 'var(--text-dark)' }} />
+                                </div>
+                                <div>
+                                  <label style={{ display: 'block', fontSize: '8px', fontWeight: 'bold', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Hero Title</label>
+                                  <input type="text" value={cmsContent.about?.heroTitle || ''} onChange={(e) => setCmsContent({ ...cmsContent, about: { ...cmsContent.about, heroTitle: e.target.value } })} style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-primary)', color: 'var(--text-dark)' }} />
+                                </div>
+                              </div>
+                              <div>
+                                <label style={{ display: 'block', fontSize: '8px', fontWeight: 'bold', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Hero Description</label>
+                                <input type="text" value={cmsContent.about?.heroDesc || ''} onChange={(e) => setCmsContent({ ...cmsContent, about: { ...cmsContent.about, heroDesc: e.target.value } })} style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-primary)', color: 'var(--text-dark)' }} />
+                              </div>
+                            </div>
+
+                            {/* Royal Lineage */}
+                            <div style={{ border: '1px solid var(--border-light)', borderRadius: '6px', padding: '1rem', backgroundColor: 'var(--canvas-secondary)' }}>
+                              <h4 style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', tracking: '0.1em', color: 'var(--gold-antique)', marginBottom: '1rem' }}>The Royal Lineage Section</h4>
+                              <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '1rem', marginBottom: '1rem' }}>
+                                <div>
+                                  <label style={{ display: 'block', fontSize: '8px', fontWeight: 'bold', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Subtitle</label>
+                                  <input type="text" value={cmsContent.about?.splitSubtitle || ''} onChange={(e) => setCmsContent({ ...cmsContent, about: { ...cmsContent.about, splitSubtitle: e.target.value } })} style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-primary)', color: 'var(--text-dark)' }} />
+                                </div>
+                                <div>
+                                  <label style={{ display: 'block', fontSize: '8px', fontWeight: 'bold', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Title</label>
+                                  <input type="text" value={cmsContent.about?.splitTitle || ''} onChange={(e) => setCmsContent({ ...cmsContent, about: { ...cmsContent.about, splitTitle: e.target.value } })} style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-primary)', color: 'var(--text-dark)' }} />
+                                </div>
+                              </div>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                                <div>
+                                  <label style={{ display: 'block', fontSize: '8px', fontWeight: 'bold', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Paragraph 1</label>
+                                  <textarea rows="3" value={cmsContent.about?.splitDesc1 || ''} onChange={(e) => setCmsContent({ ...cmsContent, about: { ...cmsContent.about, splitDesc1: e.target.value } })} style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-primary)', color: 'var(--text-dark)', fontFamily: 'var(--font-sans)', resize: 'none' }} />
+                                </div>
+                                <div>
+                                  <label style={{ display: 'block', fontSize: '8px', fontWeight: 'bold', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Paragraph 2</label>
+                                  <textarea rows="3" value={cmsContent.about?.splitDesc2 || ''} onChange={(e) => setCmsContent({ ...cmsContent, about: { ...cmsContent.about, splitDesc2: e.target.value } })} style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-primary)', color: 'var(--text-dark)', fontFamily: 'var(--font-sans)', resize: 'none' }} />
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Chef Thanachai Quote */}
+                            <div style={{ border: '1px solid var(--border-light)', borderRadius: '6px', padding: '1rem', backgroundColor: 'var(--canvas-secondary)' }}>
+                              <h4 style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', tracking: '0.1em', color: 'var(--gold-antique)', marginBottom: '1rem' }}>Chef Quote Block</h4>
+                              <div style={{ marginBottom: '1rem' }}>
+                                <label style={{ display: 'block', fontSize: '8px', fontWeight: 'bold', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Quote Text</label>
+                                <textarea rows="2" value={cmsContent.about?.quoteText || ''} onChange={(e) => setCmsContent({ ...cmsContent, about: { ...cmsContent.about, quoteText: e.target.value } })} style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-primary)', color: 'var(--text-dark)', fontFamily: 'var(--font-sans)', resize: 'none' }} />
+                              </div>
+                              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                <div>
+                                  <label style={{ display: 'block', fontSize: '8px', fontWeight: 'bold', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Author Name</label>
+                                  <input type="text" value={cmsContent.about?.quoteAuthorName || ''} onChange={(e) => setCmsContent({ ...cmsContent, about: { ...cmsContent.about, quoteAuthorName: e.target.value } })} style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-primary)', color: 'var(--text-dark)' }} />
+                                </div>
+                                <div>
+                                  <label style={{ display: 'block', fontSize: '8px', fontWeight: 'bold', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Author Title</label>
+                                  <input type="text" value={cmsContent.about?.quoteAuthorTitle || ''} onChange={(e) => setCmsContent({ ...cmsContent, about: { ...cmsContent.about, quoteAuthorTitle: e.target.value } })} style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-primary)', color: 'var(--text-dark)' }} />
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Canvas Segment */}
+                            <div style={{ border: '1px solid var(--border-light)', borderRadius: '6px', padding: '1rem', backgroundColor: 'var(--canvas-secondary)' }}>
+                              <h4 style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', tracking: '0.1em', color: 'var(--gold-antique)', marginBottom: '1rem' }}>The Mortar Canvas block</h4>
+                              <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '1rem', marginBottom: '1rem' }}>
+                                <div>
+                                  <label style={{ display: 'block', fontSize: '8px', fontWeight: 'bold', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Subtitle</label>
+                                  <input type="text" value={cmsContent.about?.canvasSubtitle || ''} onChange={(e) => setCmsContent({ ...cmsContent, about: { ...cmsContent.about, canvasSubtitle: e.target.value } })} style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-primary)', color: 'var(--text-dark)' }} />
+                                </div>
+                                <div>
+                                  <label style={{ display: 'block', fontSize: '8px', fontWeight: 'bold', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Title</label>
+                                  <input type="text" value={cmsContent.about?.canvasTitle || ''} onChange={(e) => setCmsContent({ ...cmsContent, about: { ...cmsContent.about, canvasTitle: e.target.value } })} style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-primary)', color: 'var(--text-dark)' }} />
+                                </div>
+                              </div>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                                <div>
+                                  <label style={{ display: 'block', fontSize: '8px', fontWeight: 'bold', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Paragraph 1</label>
+                                  <textarea rows="2" value={cmsContent.about?.canvasDesc1 || ''} onChange={(e) => setCmsContent({ ...cmsContent, about: { ...cmsContent.about, canvasDesc1: e.target.value } })} style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-primary)', color: 'var(--text-dark)', fontFamily: 'var(--font-sans)', resize: 'none' }} />
+                                </div>
+                                <div>
+                                  <label style={{ display: 'block', fontSize: '8px', fontWeight: 'bold', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Paragraph 2</label>
+                                  <textarea rows="2" value={cmsContent.about?.canvasDesc2 || ''} onChange={(e) => setCmsContent({ ...cmsContent, about: { ...cmsContent.about, canvasDesc2: e.target.value } })} style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-primary)', color: 'var(--text-dark)', fontFamily: 'var(--font-sans)', resize: 'none' }} />
+                                </div>
+                                <div>
+                                  <label style={{ display: 'block', fontSize: '8px', fontWeight: 'bold', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Paragraph 3</label>
+                                  <textarea rows="2" value={cmsContent.about?.canvasDesc3 || ''} onChange={(e) => setCmsContent({ ...cmsContent, about: { ...cmsContent.about, canvasDesc3: e.target.value } })} style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-primary)', color: 'var(--text-dark)', fontFamily: 'var(--font-sans)', resize: 'none' }} />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* CONTACT DETAILS CMS */}
+                        {cmsActiveSection === 'contact' && (
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                            <div style={{ borderBottom: '1px solid var(--border-light)', paddingBottom: '0.75rem' }}>
+                              <h3 className="font-serif" style={{ fontSize: '1.35rem', fontWeight: 300 }}>Contact Details & Location</h3>
+                              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>Dynamically edit address, numbers, hours, and mail contact info.</p>
+                            </div>
+
+                            {/* Header Section info */}
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '1rem' }}>
+                              <div>
+                                <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>Hero Subtitle</label>
+                                <input type="text" value={cmsContent.contact?.heroSubtitle || ''} onChange={(e) => setCmsContent({ ...cmsContent, contact: { ...cmsContent.contact, heroSubtitle: e.target.value } })} style={{ width: '100%', padding: '0.65rem 0.85rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-secondary)', color: 'var(--text-dark)' }} />
+                              </div>
+                              <div>
+                                <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>Hero Title</label>
+                                <input type="text" value={cmsContent.contact?.heroTitle || ''} onChange={(e) => setCmsContent({ ...cmsContent, contact: { ...cmsContent.contact, heroTitle: e.target.value } })} style={{ width: '100%', padding: '0.65rem 0.85rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-secondary)', color: 'var(--text-dark)' }} />
+                              </div>
+                            </div>
+
+                            <div>
+                              <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '0.4rem' }}>Hero Description</label>
+                              <input type="text" value={cmsContent.contact?.heroDesc || ''} onChange={(e) => setCmsContent({ ...cmsContent, contact: { ...cmsContent.contact, heroDesc: e.target.value } })} style={{ width: '100%', padding: '0.65rem 0.85rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-secondary)', color: 'var(--text-dark)' }} />
+                            </div>
+
+                            {/* Four Cards */}
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                              {/* Visit Us */}
+                              <div style={{ border: '1px solid var(--border-light)', borderRadius: '6px', padding: '1rem', backgroundColor: 'var(--canvas-secondary)' }}>
+                                <label style={{ display: 'block', fontSize: '9px', fontWeight: 'bold', textTransform: 'uppercase', color: 'var(--gold-antique)', marginBottom: '0.5rem' }}>Card 1: Visit Us</label>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                  <input type="text" placeholder="Card Title" value={cmsContent.contact?.card1Title || ''} onChange={(e) => setCmsContent({ ...cmsContent, contact: { ...cmsContent.contact, card1Title: e.target.value } })} style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-primary)', color: 'var(--text-dark)' }} />
+                                  <input type="text" placeholder="Address Line 1" value={cmsContent.contact?.card1Line1 || ''} onChange={(e) => setCmsContent({ ...cmsContent, contact: { ...cmsContent.contact, card1Line1: e.target.value } })} style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-primary)', color: 'var(--text-dark)' }} />
+                                  <input type="text" placeholder="Address Line 2" value={cmsContent.contact?.card1Line2 || ''} onChange={(e) => setCmsContent({ ...cmsContent, contact: { ...cmsContent.contact, card1Line2: e.target.value } })} style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-primary)', color: 'var(--text-dark)' }} />
+                                </div>
+                              </div>
+
+                              {/* Call Us */}
+                              <div style={{ border: '1px solid var(--border-light)', borderRadius: '6px', padding: '1rem', backgroundColor: 'var(--canvas-secondary)' }}>
+                                <label style={{ display: 'block', fontSize: '9px', fontWeight: 'bold', textTransform: 'uppercase', color: 'var(--gold-antique)', marginBottom: '0.5rem' }}>Card 2: Call Us</label>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                  <input type="text" placeholder="Card Title" value={cmsContent.contact?.card2Title || ''} onChange={(e) => setCmsContent({ ...cmsContent, contact: { ...cmsContent.contact, card2Title: e.target.value } })} style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-primary)', color: 'var(--text-dark)' }} />
+                                  <input type="text" placeholder="Phone 1" value={cmsContent.contact?.card2Line1 || ''} onChange={(e) => setCmsContent({ ...cmsContent, contact: { ...cmsContent.contact, card2Line1: e.target.value } })} style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-primary)', color: 'var(--text-dark)' }} />
+                                  <input type="text" placeholder="Phone 2" value={cmsContent.contact?.card2Line2 || ''} onChange={(e) => setCmsContent({ ...cmsContent, contact: { ...cmsContent.contact, card2Line2: e.target.value } })} style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-primary)', color: 'var(--text-dark)' }} />
+                                </div>
+                              </div>
+
+                              {/* Email Us */}
+                              <div style={{ border: '1px solid var(--border-light)', borderRadius: '6px', padding: '1rem', backgroundColor: 'var(--canvas-secondary)' }}>
+                                <label style={{ display: 'block', fontSize: '9px', fontWeight: 'bold', textTransform: 'uppercase', color: 'var(--gold-antique)', marginBottom: '0.5rem' }}>Card 3: Email Us</label>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                  <input type="text" placeholder="Card Title" value={cmsContent.contact?.card3Title || ''} onChange={(e) => setCmsContent({ ...cmsContent, contact: { ...cmsContent.contact, card3Title: e.target.value } })} style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-primary)', color: 'var(--text-dark)' }} />
+                                  <input type="text" placeholder="Email 1" value={cmsContent.contact?.card3Line1 || ''} onChange={(e) => setCmsContent({ ...cmsContent, contact: { ...cmsContent.contact, card3Line1: e.target.value } })} style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-primary)', color: 'var(--text-dark)' }} />
+                                  <input type="text" placeholder="Email 2" value={cmsContent.contact?.card3Line2 || ''} onChange={(e) => setCmsContent({ ...cmsContent, contact: { ...cmsContent.contact, card3Line2: e.target.value } })} style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-primary)', color: 'var(--text-dark)' }} />
+                                </div>
+                              </div>
+
+                              {/* Opening Hours */}
+                              <div style={{ border: '1px solid var(--border-light)', borderRadius: '6px', padding: '1rem', backgroundColor: 'var(--canvas-secondary)' }}>
+                                <label style={{ display: 'block', fontSize: '9px', fontWeight: 'bold', textTransform: 'uppercase', color: 'var(--gold-antique)', marginBottom: '0.5rem' }}>Card 4: Hours</label>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                  <input type="text" placeholder="Card Title" value={cmsContent.contact?.card4Title || ''} onChange={(e) => setCmsContent({ ...cmsContent, contact: { ...cmsContent.contact, card4Title: e.target.value } })} style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-primary)', color: 'var(--text-dark)' }} />
+                                  <input type="text" placeholder="Lunch Hours" value={cmsContent.contact?.card4Line1 || ''} onChange={(e) => setCmsContent({ ...cmsContent, contact: { ...cmsContent.contact, card4Line1: e.target.value } })} style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-primary)', color: 'var(--text-dark)' }} />
+                                  <input type="text" placeholder="Dinner Hours" value={cmsContent.contact?.card4Line2 || ''} onChange={(e) => setCmsContent({ ...cmsContent, contact: { ...cmsContent.contact, card4Line2: e.target.value } })} style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-primary)', color: 'var(--text-dark)' }} />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                        
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem', borderTop: '1px solid var(--border-light)', paddingTop: '1.5rem' }}>
+                          <button type="submit" className="btn-filled" style={{ padding: '0.75rem 2rem' }}>
+                            Save All Dynamic Changes
+                          </button>
+                        </div>
+
+                      </form>
+                    </div>
+
                   </div>
                 </div>
               )}

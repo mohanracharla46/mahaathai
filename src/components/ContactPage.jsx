@@ -1,8 +1,30 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, Phone, Mail, Clock, Send, ArrowLeft, MessageSquare, Globe, ChevronRight } from 'lucide-react';
+import { useWebsiteContent } from '../utils/cms';
 
 export default function ContactPage({ onOpenReservation }) {
+  const content = useWebsiteContent();
+  const {
+    heroSubtitle,
+    heroTitle,
+    heroDesc,
+    card1Title,
+    card1Line1,
+    card1Line2,
+    card2Title,
+    card2Line1,
+    card2Line2,
+    card3Title,
+    card3Line1,
+    card3Line2,
+    card4Title,
+    card4Line1,
+    card4Line2,
+    formSubtitle,
+    formTitle,
+    formDesc
+  } = content.contact;
   const [formData, setFormData] = useState({
     name: '', email: '', phone: '', subject: '', message: ''
   });
@@ -97,7 +119,7 @@ export default function ContactPage({ onOpenReservation }) {
                 fontFamily: 'var(--font-body)', fontSize: '0.75rem', fontWeight: 700,
                 letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--accent-jade)'
               }}>
-                GET IN TOUCH
+                {heroSubtitle}
               </span>
             </div>
 
@@ -106,7 +128,7 @@ export default function ContactPage({ onOpenReservation }) {
               fontSize: 'clamp(2.5rem, 5.5vw, 4.5rem)', fontWeight: 300,
               color: 'var(--text-dark)', lineHeight: 1.1, marginBottom: '1.5rem'
             }}>
-              Contact Us
+              {heroTitle}
             </h1>
 
             <div style={{
@@ -120,8 +142,7 @@ export default function ContactPage({ onOpenReservation }) {
               color: 'var(--text-muted)', maxWidth: '520px',
               margin: '0 auto', lineHeight: 1.8, fontWeight: 300
             }}>
-              We'd love to hear from you. Reach out for reservations, private events,
-              catering inquiries, or simply to say hello.
+              {heroDesc}
             </p>
           </motion.div>
         </div>
@@ -144,26 +165,26 @@ export default function ContactPage({ onOpenReservation }) {
             {[
               {
                 icon: <MapPin size={22} />,
-                title: 'Visit Us',
-                lines: ['12 Heritage Court,', 'Sukhumvit, Bangkok 10110'],
+                title: card1Title,
+                lines: [card1Line1, card1Line2],
                 action: { label: 'Get Directions', href: 'https://maps.google.com' }
               },
               {
                 icon: <Phone size={22} />,
-                title: 'Call Us',
-                lines: ['+66 2 888 7890', '+66 2 888 7891'],
-                action: { label: 'Call Now', href: 'tel:+6628887890' }
+                title: card2Title,
+                lines: [card2Line1, card2Line2],
+                action: { label: 'Call Now', href: 'tel:' + card2Line1 }
               },
               {
                 icon: <Mail size={22} />,
-                title: 'Email Us',
-                lines: ['dining@mahathai.com', 'events@mahathai.com'],
-                action: { label: 'Send Email', href: 'mailto:dining@mahathai.com' }
+                title: card3Title,
+                lines: [card3Line1, card3Line2],
+                action: { label: 'Send Email', href: 'mailto:' + card3Line1 }
               },
               {
                 icon: <Clock size={22} />,
-                title: 'Opening Hours',
-                lines: ['Lunch: 11:30 AM – 3:00 PM', 'Dinner: 5:00 PM – 10:30 PM'],
+                title: card4Title,
+                lines: [card4Line1, card4Line2],
                 action: null
               }
             ].map((card, i) => (
@@ -265,22 +286,21 @@ export default function ContactPage({ onOpenReservation }) {
                 fontWeight: 700, letterSpacing: '0.3em', textTransform: 'uppercase',
                 color: 'var(--gold-antique)', marginBottom: '0.75rem'
               }}>
-                SEND A MESSAGE
+                {formSubtitle}
               </span>
               <h2 style={{
                 fontFamily: 'var(--font-heading)',
                 fontSize: 'clamp(1.6rem, 2.5vw, 2.2rem)', fontWeight: 300,
                 color: 'var(--text-dark)', marginBottom: '0.75rem'
               }}>
-                We'd Love to Hear From You
+                {formTitle}
               </h2>
               <p style={{
                 fontFamily: 'var(--font-body)', fontSize: '0.9rem',
                 color: 'var(--text-muted)', fontWeight: 300,
                 lineHeight: 1.7, marginBottom: '2rem'
               }}>
-                Whether it's a question about our menu, a special dietary need, or
-                a private event inquiry — our team is here to help.
+                {formDesc}
               </p>
 
               {submitted ? (

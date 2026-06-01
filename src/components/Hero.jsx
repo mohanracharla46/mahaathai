@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
+import { useWebsiteContent } from '../utils/cms';
 
 import herovideo1_mp4 from '../assets/herovideo1_optimized.mp4';
 import herovideo1_webm from '../assets/herovideo1_optimized.webm';
@@ -16,6 +17,8 @@ const videos = [
 ];
 
 export default function Hero() {
+  const content = useWebsiteContent();
+  const { subtitle, titleLine1, titleGold, buttonText } = content.hero;
   const [currentVideoIdx, setCurrentVideoIdx] = useState(0);
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const videoRef = useRef(null);
@@ -110,7 +113,7 @@ export default function Hero() {
             variants={fadeUpVariants}
             className="hero-subtitle-elegant"
           >
-            Crafted with Heritage, Served with Grace
+            {subtitle}
           </motion.span>
 
           {/* Heading */}
@@ -118,14 +121,14 @@ export default function Hero() {
             variants={fadeUpVariants}
             className="hero-title-elegant"
           >
-            Experience Authentic <br />
-            <span className="gold">Thai Food</span>
+            {titleLine1} <br />
+            <span className="gold">{titleGold}</span>
           </motion.h1>
 
           {/* Explore Menus Button */}
           <motion.div variants={fadeUpVariants}>
             <a href="#menu" className="hero-cta-btn-gold">
-              EXPLORE OUR MENUS
+              {buttonText}
             </a>
           </motion.div>
         </motion.div>

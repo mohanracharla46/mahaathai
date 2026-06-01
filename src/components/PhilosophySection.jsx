@@ -1,9 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useWebsiteContent } from '../utils/cms';
 import chefStoryImg from '../assets/chef_story.png';
 import menuCurryImg from '../assets/menu_curry.png';
 
 export default function PhilosophySection() {
+  const content = useWebsiteContent();
+  const { subtitle, title, paragraph1, paragraph2, pillar1Num, pillar1Text, pillar2Num, pillar2Text, pillar3Num, pillar3Text } = content.philosophy;
   const imageVariants = {
     hidden: { opacity: 0, x: -40, scale: 0.95 },
     visible: { 
@@ -94,43 +97,43 @@ export default function PhilosophySection() {
               className="block font-sans text-xs font-bold tracking-[0.3em] uppercase mb-4"
               style={{ color: 'var(--gold-antique)', display: 'block', fontSize: '0.75rem', letterSpacing: '0.3em', marginBottom: '1rem' }}
             >
-              THE ART OF MAHA
+              {subtitle}
             </span>
             
             <h2 
               className="font-serif text-4xl md:text-5xl font-light leading-tight mb-8"
               style={{ fontSize: 'clamp(2rem, 3.8vw, 3rem)', fontWeight: 300, lineHeight: 1.15, marginBottom: '1.5rem', color: 'var(--text-dark)' }}
             >
-              Culinary Philosophy Rooted in Tradition
+              {title}
             </h2>
             
             <p 
               className="font-sans text-base font-light text-muted mb-6 leading-relaxed"
               style={{ color: 'var(--text-muted)', fontSize: '0.95rem', fontWeight: 300, marginBottom: '1.5rem' }}
             >
-              At Maha Thai, we believe that dining is a narrative of heritage. Each dish is a meticulously crafted masterpiece, utilizing ancient royal recipes passed down through generations of master chefs.
+              {paragraph1}
             </p>
 
             <p 
               className="font-sans text-base font-light text-muted mb-8 leading-relaxed"
               style={{ color: 'var(--text-muted)', fontSize: '0.95rem', fontWeight: 300, marginBottom: '2rem' }}
             >
-              Our commitment to excellence begins with the source: premium organic spices from the foothills of Chiang Mai and the freshest coastal harvests. We balance the five essential Thai flavors—sour, sweet, salty, bitter, and spicy—to create a symphony for the palate.
+              {paragraph2}
             </p>
 
             {/* Horizontal Pillars list */}
             <div className="philosophy-pillars">
               <div className="philosophy-pillar-item">
-                <span className="philosophy-pillar-num">01</span>
-                <span className="philosophy-pillar-txt">HERITAGE INGREDIENTS</span>
+                <span className="philosophy-pillar-num">{pillar1Num}</span>
+                <span className="philosophy-pillar-txt">{pillar1Text}</span>
               </div>
               <div className="philosophy-pillar-item">
-                <span className="philosophy-pillar-num">02</span>
-                <span className="philosophy-pillar-txt">ARTISANAL CRAFT</span>
+                <span className="philosophy-pillar-num">{pillar2Num}</span>
+                <span className="philosophy-pillar-txt">{pillar2Text}</span>
               </div>
               <div className="philosophy-pillar-item">
-                <span className="philosophy-pillar-num">03</span>
-                <span className="philosophy-pillar-txt">BESPOKE SERVICE</span>
+                <span className="philosophy-pillar-num">{pillar3Num}</span>
+                <span className="philosophy-pillar-txt">{pillar3Text}</span>
               </div>
             </div>
           </motion.div>

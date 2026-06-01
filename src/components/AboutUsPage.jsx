@@ -1,8 +1,39 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useWebsiteContent } from '../utils/cms';
 import chefStoryImg from '../assets/chef_story.png';
 
 export default function AboutUsPage() {
+  const content = useWebsiteContent();
+  const {
+    heroSubtitle,
+    heroTitle,
+    heroDesc,
+    splitSubtitle,
+    splitTitle,
+    splitDesc1,
+    splitDesc2,
+    quoteText,
+    quoteAuthorName,
+    quoteAuthorTitle,
+    canvasSubtitle,
+    canvasTitle,
+    canvasDesc1,
+    canvasDesc2,
+    canvasDesc3,
+    value1Num,
+    value1Title,
+    value1Desc,
+    value2Num,
+    value2Title,
+    value2Desc,
+    value3Num,
+    value3Title,
+    value3Desc,
+    value4Num,
+    value4Title,
+    value4Desc
+  } = content.about;
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -69,19 +100,19 @@ export default function AboutUsPage() {
               className="block font-sans text-xs font-bold tracking-[0.4em] uppercase mb-4"
               style={{ color: 'var(--accent-jade)', display: 'block', fontSize: '0.75rem', letterSpacing: '0.4em', marginBottom: '1.25rem' }}
             >
-              Our Legacy
+              {heroSubtitle}
             </span>
             <h1 
               className="font-serif text-5xl md:text-6xl font-light leading-tight mb-6"
               style={{ fontSize: 'clamp(2.5rem, 5.5vw, 4.5rem)', fontWeight: 300, lineHeight: 1.1, color: 'var(--text-dark)', marginBottom: '1.5rem' }}
             >
-              Philosophy & Heritage
+              {heroTitle}
             </h1>
             <p 
               className="font-sans text-base md:text-lg font-light text-muted leading-relaxed"
               style={{ color: 'var(--text-muted)', fontSize: '1.05rem', fontWeight: 300, lineHeight: '1.8' }}
             >
-              Step behind the curtain of Maha Thai. We honor the intricate culinary methodologies of ancient Siam, preserving the culinary disciplines of royal court kitchens.
+              {heroDesc}
             </p>
           </motion.div>
         </div>
@@ -104,26 +135,26 @@ export default function AboutUsPage() {
                 className="block font-sans text-xs font-bold tracking-[0.3em] uppercase mb-4"
                 style={{ color: 'var(--accent-jade)', display: 'block', fontSize: '0.75rem', letterSpacing: '0.3em', marginBottom: '1rem' }}
               >
-                The Royal Lineage
+                {splitSubtitle}
               </span>
               <h2 
                 className="font-serif text-3xl md:text-4xl font-light leading-tight mb-8"
                 style={{ fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', fontWeight: 300, lineHeight: 1.2, marginBottom: '1.5rem', color: 'var(--text-dark)' }}
               >
-                Artistry born from Royal culinary tradition.
+                {splitTitle}
               </h2>
               <div className="space-y-6" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                 <p 
                   className="font-sans text-base font-light text-muted"
                   style={{ color: 'var(--text-muted)', fontSize: '0.95rem', fontWeight: 300, lineHeight: '1.7' }}
                 >
-                  In the royal courts of ancient Siam, dining was crafted as an offering of absolute equilibrium. Every dish was prepared to satisfy and balance the five fundamental flavors: salty, sweet, sour, spicy, and bitter. Spices were selected not only for their flavor profiles but for their natural therapeutic value.
+                  {splitDesc1}
                 </p>
                 <p 
                   className="font-sans text-base font-light text-muted"
                   style={{ color: 'var(--text-muted)', fontSize: '0.95rem', fontWeight: 300, lineHeight: '1.7' }}
                 >
-                  Our ancestors believed that food had the power to nurture the soul and harmonize the body. Each recipe was guardedly documented, handed down through generations of culinary masters who served the royal palaces. We carry this torch with pride, keeping the ancient flame of traditional Siamese cooking alive.
+                  {splitDesc2}
                 </p>
               </div>
             </motion.div>
@@ -150,20 +181,20 @@ export default function AboutUsPage() {
                   className="font-serif italic text-xl text-dark"
                   style={{ fontSize: '1.4rem', color: 'var(--text-dark)', lineHeight: '1.6', fontWeight: 300 }}
                 >
-                  "Cooking is a form of active meditation, where every herb must align to create a singular, transformative memory."
+                  "{quoteText}"
                 </p>
                 <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column' }}>
                   <span 
                     className="font-sans text-xs font-semibold uppercase tracking-widest"
                     style={{ fontSize: '0.75rem', color: 'var(--gold-antique)', letterSpacing: '0.25em' }}
                   >
-                    Chef Thanachai
+                    {quoteAuthorName}
                   </span>
                   <span 
                     className="font-sans text-[10px] text-muted uppercase tracking-wider mt-1"
                     style={{ fontSize: '10px', color: 'var(--text-muted)', letterSpacing: '0.15em', marginTop: '0.25rem' }}
                   >
-                    Master Culinary Officer
+                    {quoteAuthorTitle}
                   </span>
                 </div>
               </div>
@@ -221,35 +252,35 @@ export default function AboutUsPage() {
                 className="block font-sans text-xs font-bold tracking-[0.3em] uppercase mb-4"
                 style={{ color: 'var(--gold-antique)', display: 'block', fontSize: '0.75rem', letterSpacing: '0.3em', marginBottom: '1rem' }}
               >
-                Culinary Integrity
+                {canvasSubtitle}
               </span>
               
               <h2 
                 className="font-serif text-3xl md:text-4xl font-light leading-tight mb-8"
                 style={{ fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', fontWeight: 300, lineHeight: 1.2, marginBottom: '1.5rem', color: 'var(--text-dark)' }}
               >
-                The Rhythm of the Stone Mortar
+                {canvasTitle}
               </h2>
               
               <p 
                 className="font-sans text-base font-light text-muted mb-6 leading-relaxed"
                 style={{ color: 'var(--text-muted)', fontSize: '0.95rem', fontWeight: 300, marginBottom: '1.5rem', lineHeight: '1.7' }}
               >
-                Our Master Chef Thanachai firmly believes that electric food processors destroy the soul of Thai paste. High-speed steel blades heat the ingredients, causing delicate volatile oils in lemongrass, lime leaves, and wild galangal to evaporate prematurely.
+                {canvasDesc1}
               </p>
               
               <p 
                 className="font-sans text-base font-light text-muted mb-6 leading-relaxed"
                 style={{ color: 'var(--text-muted)', fontSize: '0.95rem', fontWeight: 300, marginBottom: '1.5rem', lineHeight: '1.7' }}
               >
-                Instead, our paste is created with a heavy granite mortar. The heavy, rhythmic pressure crushes the cell walls of herbs, coaxing out deep aromas and bonding natural juices into a thick, emerald paste. It is a slow, physically demanding task—but it is the only way to achieve the intense, complex depth that defines our signature curries.
+                {canvasDesc2}
               </p>
               
               <p 
                 className="font-sans text-base font-light text-muted leading-relaxed"
                 style={{ color: 'var(--text-muted)', fontSize: '0.95rem', fontWeight: 300, lineHeight: '1.7' }}
               >
-                From hand-pressed coconut milk to locally sourced bird's eye chilies and holy basil, we reject shortcuts. Every ingredient is treated as a sacred note in a larger, symphonic culinary masterpiece.
+                {canvasDesc3}
               </p>
             </motion.div>
           </div>
@@ -302,11 +333,11 @@ export default function AboutUsPage() {
               }}
               whileHover={{ y: -5, borderColor: 'var(--gold-antique)' }}
             >
-              <span className="font-serif text-4xl" style={{ color: 'var(--gold-antique)', display: 'block', marginBottom: '1.5rem', fontWeight: 300 }}>01</span>
+              <span className="font-serif text-4xl" style={{ color: 'var(--gold-antique)', display: 'block', marginBottom: '1.5rem', fontWeight: 300 }}>{value1Num}</span>
               <div>
-                <h3 className="font-serif text-xl font-medium mb-3" style={{ color: 'var(--text-dark)', marginBottom: '0.75rem', fontSize: '1.25rem' }}>Purity</h3>
+                <h3 className="font-serif text-xl font-medium mb-3" style={{ color: 'var(--text-dark)', marginBottom: '0.75rem', fontSize: '1.25rem' }}>{value1Title}</h3>
                 <p className="font-sans text-xs font-light text-muted" style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: '1.6' }}>
-                  Strictly organic herbs, fresh hand-pressed coconut milk, and zero artificial enhancers.
+                  {value1Desc}
                 </p>
               </div>
             </motion.div>
@@ -331,11 +362,11 @@ export default function AboutUsPage() {
               }}
               whileHover={{ y: -5, borderColor: 'var(--accent-jade)' }}
             >
-              <span className="font-serif text-4xl" style={{ color: 'var(--accent-jade)', display: 'block', marginBottom: '1.5rem', fontWeight: 300 }}>02</span>
+              <span className="font-serif text-4xl" style={{ color: 'var(--accent-jade)', display: 'block', marginBottom: '1.5rem', fontWeight: 300 }}>{value2Num}</span>
               <div>
-                <h3 className="font-serif text-xl font-medium mb-3" style={{ color: 'var(--text-dark)', marginBottom: '0.75rem', fontSize: '1.25rem' }}>Harmony</h3>
+                <h3 className="font-serif text-xl font-medium mb-3" style={{ color: 'var(--text-dark)', marginBottom: '0.75rem', fontSize: '1.25rem' }}>{value2Title}</h3>
                 <p className="font-sans text-xs font-light text-muted" style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: '1.6' }}>
-                  A calibrated symphony of sweet, spicy, salty, sour, and bitter elements in every bite.
+                  {value2Desc}
                 </p>
               </div>
             </motion.div>
@@ -360,11 +391,11 @@ export default function AboutUsPage() {
               }}
               whileHover={{ y: -5, borderColor: 'var(--gold-antique)' }}
             >
-              <span className="font-serif text-4xl" style={{ color: 'var(--text-dark)', display: 'block', marginBottom: '1.5rem', fontWeight: 300 }}>03</span>
+              <span className="font-serif text-4xl" style={{ color: 'var(--text-dark)', display: 'block', marginBottom: '1.5rem', fontWeight: 300 }}>{value3Num}</span>
               <div>
-                <h3 className="font-serif text-xl font-medium mb-3" style={{ color: 'var(--text-dark)', marginBottom: '0.75rem', fontSize: '1.25rem' }}>Artistry</h3>
+                <h3 className="font-serif text-xl font-medium mb-3" style={{ color: 'var(--text-dark)', marginBottom: '0.75rem', fontSize: '1.25rem' }}>{value3Title}</h3>
                 <p className="font-sans text-xs font-light text-muted" style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: '1.6' }}>
-                  Bespoke, visual plated designs mirroring traditional royal palace presentation methods.
+                  {value3Desc}
                 </p>
               </div>
             </motion.div>
@@ -389,11 +420,11 @@ export default function AboutUsPage() {
               }}
               whileHover={{ y: -5, borderColor: 'var(--accent-jade)' }}
             >
-              <span className="font-serif text-4xl" style={{ color: 'var(--gold-antique)', display: 'block', marginBottom: '1.5rem', fontWeight: 300 }}>04</span>
+              <span className="font-serif text-4xl" style={{ color: 'var(--gold-antique)', display: 'block', marginBottom: '1.5rem', fontWeight: 300 }}>{value4Num}</span>
               <div>
-                <h3 className="font-serif text-xl font-medium mb-3" style={{ color: 'var(--text-dark)', marginBottom: '0.75rem', fontSize: '1.25rem' }}>Heritage</h3>
+                <h3 className="font-serif text-xl font-medium mb-3" style={{ color: 'var(--text-dark)', marginBottom: '0.75rem', fontSize: '1.25rem' }}>{value4Title}</h3>
                 <p className="font-sans text-xs font-light text-muted" style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: '1.6' }}>
-                  Recipes preserved across four generations of Siamese culinary guilds and master chefs.
+                  {value4Desc}
                 </p>
               </div>
             </motion.div>

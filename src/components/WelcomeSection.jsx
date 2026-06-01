@@ -1,8 +1,25 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useWebsiteContent } from '../utils/cms';
 import welcomeInterior from '../assets/welcome_interior.png';
 
 export default function WelcomeSection() {
+  const content = useWebsiteContent();
+  const { 
+    subtitle, 
+    title, 
+    paragraph, 
+    pillar1Num, 
+    pillar1Title, 
+    pillar1Desc, 
+    pillar2Num, 
+    pillar2Title, 
+    pillar2Desc, 
+    pillar3Num, 
+    pillar3Title, 
+    pillar3Desc, 
+    buttonText 
+  } = content.welcome;
   const imageVariants = {
     hidden: { opacity: 0, x: -40, scale: 0.98 },
     visible: { 
@@ -88,21 +105,21 @@ export default function WelcomeSection() {
               className="block font-sans text-xs font-bold tracking-[0.3em] uppercase mb-4"
               style={{ color: 'var(--accent-jade)', display: 'block', fontSize: '0.75rem', letterSpacing: '0.3em', marginBottom: '1rem' }}
             >
-              Sawasdee & Welcome
+              {subtitle}
             </span>
             
             <h2 
               className="font-serif text-4xl md:text-5xl font-light leading-tight mb-8"
               style={{ fontSize: 'clamp(2rem, 3.8vw, 3rem)', fontWeight: 300, lineHeight: 1.15, marginBottom: '1.5rem', color: 'var(--text-dark)' }}
             >
-              A Sanctuary of Royal Siamese Dining
+              {title}
             </h2>
             
             <p 
               className="font-sans text-base font-light text-muted mb-10 leading-relaxed"
               style={{ color: 'var(--text-muted)', fontSize: '0.95rem', fontWeight: 300, marginBottom: '2.5rem' }}
             >
-              Step into a space where every corner breathes elegance and every aroma whispers a centuries-old secret. Maha Thai brings the grandeur of the historic Siamese courts to life, offering a peaceful refuge of high culinary craftsmanship and warm, heartfelt hospitality.
+              {paragraph}
             </p>
 
             {/* Core Pillars List */}
@@ -114,10 +131,10 @@ export default function WelcomeSection() {
                 variants={featureVariants}
                 className="welcome-pillar-item"
               >
-                <div className="welcome-pillar-number">I</div>
+                <div className="welcome-pillar-number">{pillar1Num}</div>
                 <div>
-                  <h4 className="welcome-pillar-title">Royal Lineage Recipes</h4>
-                  <p className="welcome-pillar-desc">Inspired by the traditional menus of the Royal Court of Bangkok, balancing all five taste dimensions.</p>
+                  <h4 className="welcome-pillar-title">{pillar1Title}</h4>
+                  <p className="welcome-pillar-desc">{pillar1Desc}</p>
                 </div>
               </motion.div>
 
@@ -127,10 +144,10 @@ export default function WelcomeSection() {
                 variants={featureVariants}
                 className="welcome-pillar-item"
               >
-                <div className="welcome-pillar-number">II</div>
+                <div className="welcome-pillar-number">{pillar2Num}</div>
                 <div>
-                  <h4 className="welcome-pillar-title">Heritage Sourcing</h4>
-                  <p className="welcome-pillar-desc">Fresh, native herbs and cold-pressed botanical oils imported directly from local organic farms in Thailand.</p>
+                  <h4 className="welcome-pillar-title">{pillar2Title}</h4>
+                  <p className="welcome-pillar-desc">{pillar2Desc}</p>
                 </div>
               </motion.div>
 
@@ -140,10 +157,10 @@ export default function WelcomeSection() {
                 variants={featureVariants}
                 className="welcome-pillar-item"
               >
-                <div className="welcome-pillar-number">III</div>
+                <div className="welcome-pillar-number">{pillar3Num}</div>
                 <div>
-                  <h4 className="welcome-pillar-title">The Twelve-Salon Intimacy</h4>
-                  <p className="welcome-pillar-desc">A restricted layout of only twelve tables ensures that each guest receives bespoke, uncompromising service.</p>
+                  <h4 className="welcome-pillar-title">{pillar3Title}</h4>
+                  <p className="welcome-pillar-desc">{pillar3Desc}</p>
                 </div>
               </motion.div>
 
@@ -155,7 +172,7 @@ export default function WelcomeSection() {
               className="btn-filled"
               style={{ textDecoration: 'none' }}
             >
-              Order Now
+              {buttonText}
             </a>
           </motion.div>
         </div>
