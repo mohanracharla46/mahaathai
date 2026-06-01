@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ChevronDown, ShoppingBag, User, LogOut, ShieldAlert } from 'lucide-react';
-import logoImg from '../assets/mahathailogo.png';
+import logoImg from '../assets/mahathailogo_v2.png';
 
 const navLinks = [
   { name: 'Home', href: '#home' },

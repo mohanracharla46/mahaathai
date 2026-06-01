@@ -20,7 +20,7 @@ import ProfilePage from './components/ProfilePage';
 import GiftcardPage from './components/GiftcardPage';
 import MenuPage from './components/MenuPage';
 import AdminPage from './components/AdminPage';
-import logoImg from './assets/mahathailogo.png';
+import logoImg from './assets/mahathailogo_v2.png';
 
 
 export default function App() {

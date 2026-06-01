@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, ArrowRight, Globe } from 'lucide-react';
-import logoImg from '../assets/mahathailogo.png';
+import logoImg from '../assets/mahathailogo_v2.png';
 
 export default function Footer() {
   const [email, setEmail] = useState('');
