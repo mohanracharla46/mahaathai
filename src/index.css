@@ -300,7 +300,11 @@ h1, h2, h3, h4, h5, h6 {
   height: 72px; /* Refined luxury restaurant height */
   width: auto;
   display: block;
-  transition: transform 0.4s var(--ease-premium);
+  transition: height 0.4s var(--ease-premium), transform 0.4s var(--ease-premium);
+}
+
+.header-main.scrolled .header-logo-image {
+  height: 52px; /* Scales down elegantly when scrolled */
 }
 
 .header-logo:hover .header-logo-image {

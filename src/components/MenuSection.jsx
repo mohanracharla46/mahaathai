@@ -566,7 +566,7 @@ export const menuData = {
 
 // Map Lunch, Dinner, and Vegetarian menu keys for the specialized dropdowns and pages
 menuData['Vegetarian'] = menuData['Plant-Based'];
-menuData['Dinner'] = [
+const rawDinnerList = [
   ...menuData['Noodle Bar'],
   ...menuData['Curry Kitchen'],
   ...menuData['Rice & Wok'],
@@ -577,6 +577,9 @@ menuData['Dinner'] = [
   ...menuData['Sweet Endings'],
   ...menuData['Beverages & Sides']
 ];
+menuData['Dinner'] = rawDinnerList.filter((item, index, self) =>
+  self.findIndex(t => t.id === item.id) === index
+);
 menuData['Lunch'] = [
   {
     id: 'lunch-experience',
@@ -680,6 +683,13 @@ try {
   }
 } catch (e) {
   console.error("Failed to parse custom menu data", e);
+}
+
+// Deduplicate the Dinner menu to prevent React key collision warnings
+if (Array.isArray(menuData['Dinner'])) {
+  menuData['Dinner'] = menuData['Dinner'].filter((item, index, self) =>
+    self.findIndex(t => t.id === item.id) === index
+  );
 }
 
 const categories = ['Noodle Bar', 'Curry Kitchen', 'Rice & Wok', 'Street Kitchen', 'From the Sea', 'Chef’s Table', 'Plant-Based', 'Sweet Endings', 'Beverages & Sides'];
