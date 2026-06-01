@@ -195,6 +195,22 @@ export default function AdminPage() {
   const [usersList, setUsersList] = useState([]);
   const [feedbackList, setFeedbackList] = useState([]);
 
+  // Mobile responsiveness check
+  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth < 992 : false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 992;
+      setIsMobile(mobile);
+      if (!mobile) {
+        setIsMobileSidebarOpen(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   // CMS State
   const [cmsContent, setCmsContent] = useState(() => getWebsiteContent());
   const [cmsActiveSection, setCmsActiveSection] = useState('hero'); // 'hero', 'philosophy', 'welcome', 'about', 'contact'
@@ -824,135 +840,190 @@ export default function AdminPage() {
             transition={{ duration: 0.5 }}
             style={{
               display: 'flex',
+              flexDirection: isMobile ? 'column' : 'row',
               minHeight: '90vh',
               fontFamily: 'var(--font-sans)',
               color: 'var(--text-dark)'
             }}
           >
-            {/* SIDEBAR */}
-            <aside 
-              style={{
-                width: isSidebarOpen ? '260px' : '70px',
+            {/* MOBILE TOP NAV BAR */}
+            {isMobile && (
+              <header style={{
+                position: 'sticky',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: '70px',
                 backgroundColor: 'var(--text-dark)',
                 color: 'var(--canvas-primary)',
-                transition: 'width 0.4s var(--ease-premium)',
                 display: 'flex',
-                flexDirection: 'column',
-                borderRight: '1px solid var(--gold-antique)',
-                zIndex: 40,
-                flexShrink: 0
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: isSidebarOpen ? 'space-between' : 'center', padding: '1.5rem', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', minHeight: '75px' }}>
-                {isSidebarOpen && (
-                  <span className="font-serif" style={{ fontSize: '1.2rem', color: 'var(--gold-antique)', tracking: '0.05em' }}>
-                    MAHA STAFF
-                  </span>
-                )}
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '0 1.5rem',
+                borderBottom: '1px solid var(--gold-antique)',
+                zIndex: 50
+              }}>
+                <span className="font-serif" style={{ fontSize: '1.15rem', color: 'var(--gold-antique)', tracking: '0.05em' }}>
+                  MAHA STAFF
+                </span>
                 <button 
-                  onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                  style={{ background: 'none', border: 'none', color: 'var(--gold-antique)', cursor: 'pointer', outline: 'none' }}
+                  onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
+                  style={{ background: 'none', border: 'none', color: 'var(--gold-antique)', cursor: 'pointer', outline: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                 >
-                  <Menu size={20} />
+                  <Menu size={24} />
                 </button>
-              </div>
+              </header>
+            )}
 
-              {isSidebarOpen && (
-                <div style={{ padding: '1.5rem', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', backgroundColor: 'rgba(0,0,0,0.15)' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: 'var(--gold-antique)', color: 'var(--text-dark)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
-                      M
-                    </div>
-                    <div>
-                      <h4 style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--canvas-primary)' }}>Maha Curator</h4>
-                      <p style={{ fontSize: '0.7rem', color: 'var(--gold-antique)' }}>Level 1 Admin</p>
-                    </div>
+            {/* SIDEBAR DRAWER / ASIDE */}
+            {(!isMobile || isMobileSidebarOpen) && (
+              <>
+                {isMobile && (
+                  /* Overlay backdrop to close drawer when clicked outside */
+                  <div 
+                    onClick={() => setIsMobileSidebarOpen(false)}
+                    style={{
+                      position: 'fixed',
+                      inset: 0,
+                      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                      backdropFilter: 'blur(4px)',
+                      zIndex: 80
+                    }}
+                  />
+                )}
+                <aside 
+                  style={{
+                    width: isMobile ? '280px' : (isSidebarOpen ? '260px' : '70px'),
+                    position: isMobile ? 'fixed' : 'relative',
+                    left: 0,
+                    top: 0,
+                    bottom: 0,
+                    height: isMobile ? '100vh' : 'auto',
+                    backgroundColor: 'var(--text-dark)',
+                    color: 'var(--canvas-primary)',
+                    transition: 'width 0.4s var(--ease-premium)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    borderRight: '1px solid var(--gold-antique)',
+                    zIndex: isMobile ? 90 : 40,
+                    flexShrink: 0
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: (isMobile || isSidebarOpen) ? 'space-between' : 'center', padding: '1.5rem', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', minHeight: '75px' }}>
+                    {(isMobile || isSidebarOpen) && (
+                      <span className="font-serif" style={{ fontSize: '1.2rem', color: 'var(--gold-antique)', tracking: '0.05em' }}>
+                        MAHA STAFF
+                      </span>
+                    )}
+                    <button 
+                      onClick={() => isMobile ? setIsMobileSidebarOpen(false) : setIsSidebarOpen(!isSidebarOpen)}
+                      style={{ background: 'none', border: 'none', color: 'var(--gold-antique)', cursor: 'pointer', outline: 'none' }}
+                    >
+                      {isMobile ? <X size={20} /> : <Menu size={20} />}
+                    </button>
                   </div>
-                </div>
-              )}
 
-              <nav style={{ flexGrow: 1, padding: '1.5rem 0.5rem', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-                {[
-                  { id: 'overview', label: 'Dashboard', icon: TrendingUp },
-                  { id: 'orders', label: 'Orders Log', icon: ShoppingBag },
-                  { id: 'items', label: 'Items (Menu)', icon: Edit },
-                  { id: 'coupons', label: 'Coupons', icon: Tag },
-                  { id: 'users', label: 'Users', icon: Users },
-                  { id: 'automation', label: 'Automation', icon: Cpu },
-                  { id: 'feedback', label: 'Feedback', icon: Star },
-                  { id: 'content', label: 'CMS (Pages)', icon: FileText }
-                ].map((item) => {
-                  const Icon = item.icon;
-                  const isActive = activeTab === item.id;
-                  return (
+                  {(isMobile || isSidebarOpen) && (
+                    <div style={{ padding: '1.5rem', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', backgroundColor: 'rgba(0,0,0,0.15)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: 'var(--gold-antique)', color: 'var(--text-dark)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
+                          M
+                        </div>
+                        <div>
+                          <h4 style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--canvas-primary)' }}>Maha Curator</h4>
+                          <p style={{ fontSize: '0.7rem', color: 'var(--gold-antique)' }}>Level 1 Admin</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  <nav style={{ flexGrow: 1, padding: '1.5rem 0.5rem', display: 'flex', flexDirection: 'column', gap: '0.35rem', overflowY: 'auto' }}>
+                    {[
+                      { id: 'overview', label: 'Dashboard', icon: TrendingUp },
+                      { id: 'orders', label: 'Orders Log', icon: ShoppingBag },
+                      { id: 'items', label: 'Items (Menu)', icon: Edit },
+                      { id: 'coupons', label: 'Coupons', icon: Tag },
+                      { id: 'users', label: 'Users', icon: Users },
+                      { id: 'automation', label: 'Automation', icon: Cpu },
+                      { id: 'feedback', label: 'Feedback', icon: Star },
+                      { id: 'content', label: 'CMS (Pages)', icon: FileText }
+                    ].map((item) => {
+                      const Icon = item.icon;
+                      const isActive = activeTab === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          onClick={() => {
+                            setActiveTab(item.id);
+                            setSearchQuery('');
+                            setStatusFilter('All');
+                            setOrderTypeFilter('All');
+                            if (isMobile) {
+                              setIsMobileSidebarOpen(false);
+                            }
+                          }}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: (isMobile || isSidebarOpen) ? 'flex-start' : 'center',
+                            gap: '1rem',
+                            padding: '0.85rem 1rem',
+                            borderRadius: '4px',
+                            border: 'none',
+                            cursor: 'pointer',
+                            fontSize: '0.85rem',
+                            width: '100%',
+                            textAlign: 'left',
+                            transition: 'all 0.3s',
+                            backgroundColor: isActive ? 'var(--gold-antique)' : 'transparent',
+                            color: isActive ? 'var(--text-dark)' : 'rgba(255,255,255,0.7)'
+                          }}
+                          onMouseEnter={(e) => {
+                            if (!isActive) e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.05)';
+                          }}
+                          onMouseLeave={(e) => {
+                            if (!isActive) e.currentTarget.style.backgroundColor = 'transparent';
+                          }}
+                        >
+                          <Icon size={18} style={{ flexShrink: 0 }} />
+                          {(isMobile || isSidebarOpen) && <span>{item.label}</span>}
+                        </button>
+                      );
+                    })}
+                  </nav>
+
+                  <div style={{ padding: '1rem', borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
                     <button
-                      key={item.id}
-                      onClick={() => {
-                        setActiveTab(item.id);
-                        setSearchQuery('');
-                        setStatusFilter('All');
-                        setOrderTypeFilter('All');
-                      }}
+                      onClick={handleLogout}
                       style={{
                         display: 'flex',
                         alignItems: 'center',
-                        justifyContent: isSidebarOpen ? 'flex-start' : 'center',
+                        justifyContent: (isMobile || isSidebarOpen) ? 'flex-start' : 'center',
                         gap: '1rem',
-                        padding: '0.85rem 1rem',
+                        padding: '0.75rem 1rem',
                         borderRadius: '4px',
                         border: 'none',
                         cursor: 'pointer',
                         fontSize: '0.85rem',
                         width: '100%',
+                        backgroundColor: 'rgba(219, 68, 85, 0.15)',
+                        color: '#f8d7da',
                         textAlign: 'left',
-                        transition: 'all 0.3s',
-                        backgroundColor: isActive ? 'var(--gold-antique)' : 'transparent',
-                        color: isActive ? 'var(--text-dark)' : 'rgba(255,255,255,0.7)'
+                        transition: 'opacity 0.2s'
                       }}
-                      onMouseEnter={(e) => {
-                        if (!isActive) e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.05)';
-                      }}
-                      onMouseLeave={(e) => {
-                        if (!isActive) e.currentTarget.style.backgroundColor = 'transparent';
-                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.opacity = 0.8}
+                      onMouseLeave={(e) => e.currentTarget.style.opacity = 1}
                     >
-                      <Icon size={18} style={{ flexShrink: 0 }} />
-                      {isSidebarOpen && <span>{item.label}</span>}
+                      <LogOut size={16} />
+                      {(isMobile || isSidebarOpen) && <span>Exit Portal</span>}
                     </button>
-                  );
-                })}
-              </nav>
-
-              <div style={{ padding: '1rem', borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                <button
-                  onClick={handleLogout}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: isSidebarOpen ? 'flex-start' : 'center',
-                    gap: '1rem',
-                    padding: '0.75rem 1rem',
-                    borderRadius: '4px',
-                    border: 'none',
-                    cursor: 'pointer',
-                    fontSize: '0.85rem',
-                    width: '100%',
-                    backgroundColor: 'rgba(219, 68, 85, 0.15)',
-                    color: '#f8d7da',
-                    textAlign: 'left',
-                    transition: 'opacity 0.2s'
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.opacity = 0.8}
-                  onMouseLeave={(e) => e.currentTarget.style.opacity = 1}
-                >
-                  <LogOut size={16} />
-                  {isSidebarOpen && <span>Exit Portal</span>}
-                </button>
-              </div>
-            </aside>
+                  </div>
+                </aside>
+              </>
+            )}
 
             {/* MAIN CONTENT */}
-            <main style={{ flexGrow: 1, padding: '2.5rem', overflowX: 'hidden' }}>
+            <main style={{ flexGrow: 1, padding: isMobile ? '1.25rem' : '2.5rem', overflowX: 'hidden' }}>
               
               {/* Header */}
               <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', marginBottom: '2.5rem', borderBottom: '1px solid var(--border-light)', paddingBottom: '1.25rem' }}>
@@ -1039,7 +1110,7 @@ export default function AdminPage() {
                     </div>
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
                     <div style={{ backgroundColor: 'var(--canvas-primary)', border: '1px solid var(--border-light)', borderRadius: '8px', padding: '2rem', boxShadow: 'var(--shadow-soft)', display: 'flex', flexDirection: 'column' }}>
                       <h3 className="font-serif" style={{ fontSize: '1.25rem', fontWeight: 300, marginBottom: '1.5rem' }}>Revenue Trajectory (Weekly)</h3>
                       <div style={{ position: 'relative', height: '170px', width: '100%', marginTop: 'auto' }}>
@@ -1543,7 +1614,7 @@ export default function AdminPage() {
                     </div>
                   )}
 
-                  <div style={{ display: 'grid', gridTemplateColumns: '240px 1fr', gap: '2rem', alignItems: 'start' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '240px 1fr', gap: '2rem', alignItems: 'start' }}>
                     
                     {/* CMS Side Sub-navigation */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', backgroundColor: 'var(--canvas-primary)', border: '1px solid var(--border-light)', borderRadius: '8px', padding: '1rem', boxShadow: 'var(--shadow-soft)' }}>
