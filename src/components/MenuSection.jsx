@@ -50,6 +50,9 @@ import massamanComfortCurryImg from '../assets/Massaman Comfort Curry.png';
 import panangSilkCurryImg from '../assets/Panang Silk Curr.png';
 import redCurryWithPumpkinImg from '../assets/Red Curry with Pumpkin.png';
 import redFireCurryImg from '../assets/Red Fire Curry.png';
+import greenCurryFriedRiceImg from '../assets/Green Curry Fried Rice .png';
+import kapiUmamiFriedRiceImg from '../assets/Kapi Umami Fried Rice.png';
+import redCurryFriedRiceImg from '../assets/Red Curry Fried Rice.png';
 
 // Signature dishes matching mockup
 export const signatureDishes = [
@@ -407,7 +410,7 @@ export const menuData = {
       description: 'Fried rice blended with green curry flavors.',
       price: 21,
       rating: 4.7,
-      image: heroDish
+      image: greenCurryFriedRiceImg
     },
     {
       id: 'rice-red-curry',
@@ -415,7 +418,7 @@ export const menuData = {
       description: 'Fried rice with bold red curry seasoning.',
       price: 21,
       rating: 4.7,
-      image: heroDish
+      image: redCurryFriedRiceImg
     },
     {
       id: 'rice-kapi',
@@ -423,7 +426,7 @@ export const menuData = {
       description: 'Shrimp paste fried rice with deep, savory flavor.',
       price: 22,
       rating: 4.8,
-      image: heroDish
+      image: kapiUmamiFriedRiceImg
     },
     {
       id: 'rice-hainanese',
@@ -940,9 +943,9 @@ menuData['Lunch'] = [
 // Load custom admin overrides from localStorage if present
 try {
   if (typeof window !== 'undefined') {
-    if (!localStorage.getItem('maha_menu_reset_curries_v2')) {
+    if (!localStorage.getItem('maha_menu_reset_curries_v3')) {
       localStorage.removeItem('maha_custom_menu');
-      localStorage.setItem('maha_menu_reset_curries_v2', 'true');
+      localStorage.setItem('maha_menu_reset_curries_v3', 'true');
     }
   }
   const customMenuData = localStorage.getItem('maha_custom_menu');
