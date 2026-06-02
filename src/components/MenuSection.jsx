@@ -29,7 +29,7 @@ import somTumPooPlaraImg from '../assets/Som Tum Poo Plara.png';
 import somTumPooImg from '../assets/Som Tum Poo.png';
 import yumSeafoodCombinationImg from '../assets/Yum Seafood Combination .png';
 import yumShrimpOrSquidImg from '../assets/Yum Shrimp or Squid .png';
-import bangkokFireBasilRiceImg from '../assets/Bangkok Fire Basil Rice.png';
+import bangkokFireBasilRiceImg from '../assets/Bangkok Fire BasilRice.png';
 import edamameImg from '../assets/Edamame .png';
 import glassNoodleStirFryImg from '../assets/Glass Noodle Stir Fry (Pad Wun Sen).png';
 import mahaHotPotImg from '../assets/Maha Hot Pot (Seasonal).png';
@@ -39,6 +39,17 @@ import thaiSukiyakiStirFryImg from '../assets/Thai Sukiyaki Stir-Fry (Suki Hang)
 import tomYumCreamyBrothImg from '../assets/Tom Yum Creamy Broth.png';
 import tomYumFireBrothImg from '../assets/Tom Yum Fire Broth (Clear).png';
 import tomKhaCoconutSoupImg from '../assets/Tom kha coconut soup.png';
+import classicThaiFriedRiceImg from '../assets/Classic Thai Fried Rice.png';
+import crabButterFriedRiceImg from '../assets/Crab Butter Fried Rice.png';
+import currySpicedFriedRiceImg from '../assets/Curry Spiced Fried Rice.png';
+import pineappleIslandFriedRiceImg from '../assets/Pineapple Island Fried Rice.png';
+import goldenYellowCurryImg from '../assets/Golden Yellow Curry.png';
+import greenHerbCurryImg from '../assets/Green Herb Curry.png';
+import jungleHeatCurryImg from '../assets/Jungle Heat Curry.png';
+import massamanComfortCurryImg from '../assets/Massaman Comfort Curry.png';
+import panangSilkCurryImg from '../assets/Panang Silk Curr.png';
+import redCurryWithPumpkinImg from '../assets/Red Curry with Pumpkin.png';
+import redFireCurryImg from '../assets/Red Fire Curry.png';
 
 // Signature dishes matching mockup
 export const signatureDishes = [
@@ -298,7 +309,7 @@ export const menuData = {
       description: 'Mild curry with potatoes, onions, and warm spices.',
       price: 24,
       rating: 4.9,
-      image: menuCurry
+      image: massamanComfortCurryImg
     },
     {
       id: 'curry-red',
@@ -306,7 +317,7 @@ export const menuData = {
       description: 'Coconut curry with bold red chili flavor.',
       price: 23,
       rating: 4.8,
-      image: menuCurry
+      image: redFireCurryImg
     },
     {
       id: 'curry-pumpkin',
@@ -314,7 +325,7 @@ export const menuData = {
       description: 'Rich curry served inside pumpkin for a slightly sweet finish.',
       price: 26,
       rating: 5.0,
-      image: menuCurry
+      image: redCurryWithPumpkinImg
     },
     {
       id: 'curry-green',
@@ -322,7 +333,7 @@ export const menuData = {
       description: 'Fresh, aromatic green curry with basil and coconut milk.',
       price: 23,
       rating: 4.9,
-      image: menuCurry
+      image: greenHerbCurryImg
     },
     {
       id: 'curry-yellow',
@@ -330,7 +341,7 @@ export const menuData = {
       description: 'Mild curry with turmeric, potatoes, and vegetables.',
       price: 22,
       rating: 4.7,
-      image: menuCurry
+      image: goldenYellowCurryImg
     },
     {
       id: 'curry-panang',
@@ -338,7 +349,7 @@ export const menuData = {
       description: 'Thick and creamy curry with a slightly sweet, nutty flavor.',
       price: 24,
       rating: 4.9,
-      image: menuCurry
+      image: panangSilkCurryImg
     },
     {
       id: 'curry-jungle',
@@ -346,7 +357,7 @@ export const menuData = {
       description: 'Spicy, herb-forward curry without coconut milk.',
       price: 22,
       rating: 4.6,
-      image: menuCurry
+      image: jungleHeatCurryImg
     }
   ],
   'Rice & Wok': [
@@ -364,7 +375,7 @@ export const menuData = {
       description: 'Sweet and savory fried rice with pineapple and cashews.',
       price: 24,
       rating: 4.8,
-      image: heroDish
+      image: pineappleIslandFriedRiceImg
     },
     {
       id: 'rice-classic',
@@ -372,7 +383,7 @@ export const menuData = {
       description: 'Simple egg fried rice with vegetables.',
       price: 18,
       rating: 4.6,
-      image: heroDish
+      image: classicThaiFriedRiceImg
     },
     {
       id: 'rice-crab',
@@ -380,7 +391,7 @@ export const menuData = {
       description: 'Fried rice with crab meat and rich garlic butter.',
       price: 28,
       rating: 5.0,
-      image: heroDish
+      image: crabButterFriedRiceImg
     },
     {
       id: 'rice-curry-spiced',
@@ -388,7 +399,7 @@ export const menuData = {
       description: 'Fried rice infused with warm curry spices.',
       price: 20,
       rating: 4.7,
-      image: heroDish
+      image: currySpicedFriedRiceImg
     },
     {
       id: 'rice-green-curry',
@@ -874,7 +885,7 @@ menuData['Lunch'] = [
     description: 'Mild curry with potatoes, onions, and warm spices.',
     price: 18,
     rating: 4.9,
-    image: menuCurry
+    image: massamanComfortCurryImg
   },
   {
     id: 'lunch-yellow-curry',
@@ -882,7 +893,7 @@ menuData['Lunch'] = [
     description: 'Mild curry with turmeric, potatoes, and vegetables.',
     price: 17,
     rating: 4.7,
-    image: menuCurry
+    image: goldenYellowCurryImg
   },
   {
     id: 'lunch-basil-rice',
@@ -890,7 +901,7 @@ menuData['Lunch'] = [
     description: 'Spicy basil fried rice with chili and garlic.',
     price: 17,
     rating: 4.8,
-    image: heroDish
+    image: bangkokFireBasilRiceImg
   },
   {
     id: 'lunch-pineapple-rice',
@@ -898,7 +909,7 @@ menuData['Lunch'] = [
     description: 'Sweet and savory fried rice with pineapple and cashews.',
     price: 18,
     rating: 4.8,
-    image: heroDish
+    image: pineappleIslandFriedRiceImg
   },
   {
     id: 'lunch-classic-rice',
@@ -906,7 +917,7 @@ menuData['Lunch'] = [
     description: 'Simple egg fried rice with vegetables.',
     price: 15,
     rating: 4.6,
-    image: heroDish
+    image: classicThaiFriedRiceImg
   },
   {
     id: 'lunch-lemongrass-chicken',
