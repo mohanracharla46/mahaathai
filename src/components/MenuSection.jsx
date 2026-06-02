@@ -939,6 +939,12 @@ menuData['Lunch'] = [
 
 // Load custom admin overrides from localStorage if present
 try {
+  if (typeof window !== 'undefined') {
+    if (!localStorage.getItem('maha_menu_reset_curries_v2')) {
+      localStorage.removeItem('maha_custom_menu');
+      localStorage.setItem('maha_menu_reset_curries_v2', 'true');
+    }
+  }
   const customMenuData = localStorage.getItem('maha_custom_menu');
   if (customMenuData) {
     const parsed = JSON.parse(customMenuData);
