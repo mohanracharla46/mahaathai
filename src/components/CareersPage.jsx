@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Briefcase, Heart, Star, Clock, Users, Award, MapPin, ChevronRight, Send, Coffee, Sparkles, Mail } from 'lucide-react';
+import { ArrowLeft, Briefcase, Clock, MapPin, ChevronRight, Send, Mail } from 'lucide-react';
 
 const openPositions = [
   {
@@ -57,15 +57,6 @@ const openPositions = [
     description: 'Prepare dishes in a fast-paced fine-dining environment, working with premium ingredients to deliver consistent excellence.',
     requirements: ['2+ years cooking experience', 'Knowledge of Thai cooking techniques', 'Ability to work under pressure', 'Team-oriented mindset']
   }
-];
-
-const benefits = [
-  { icon: <Heart size={22} />, title: 'Health & Wellness', desc: 'Comprehensive medical, dental, and wellness benefits for you and your family.' },
-  { icon: <Coffee size={22} />, title: 'Staff Meals', desc: 'Enjoy complimentary daily meals prepared by our talented culinary team.' },
-  { icon: <Award size={22} />, title: 'Growth & Training', desc: 'Ongoing professional development, workshops, and international training opportunities.' },
-  { icon: <Users size={22} />, title: 'Team Culture', desc: 'Join a passionate, collaborative team that celebrates creativity and heritage.' },
-  { icon: <Star size={22} />, title: 'Performance Rewards', desc: 'Competitive salary with quarterly bonuses, tips, and recognition programs.' },
-  { icon: <Clock size={22} />, title: 'Work-Life Balance', desc: 'Flexible scheduling, paid time off, and a supportive management approach.' }
 ];
 
 export default function CareersPage({ onOpenReservation }) {
@@ -195,95 +186,6 @@ export default function CareersPage({ onOpenReservation }) {
               Build your career with one of Bangkok's most distinguished Thai dining destinations.
               We're always looking for passionate individuals who share our love for culinary excellence.
             </p>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════
-          WHY JOIN US
-      ══════════════════════════════════════════ */}
-      <section style={{
-        padding: '5rem 2rem',
-        backgroundColor: 'var(--canvas-secondary)',
-        borderBottom: '1px solid var(--border-light)'
-      }}>
-        <div className="container">
-          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-            <span style={{
-              display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
-              fontFamily: 'var(--font-body)', fontSize: '0.7rem', fontWeight: 700,
-              letterSpacing: '0.3em', textTransform: 'uppercase',
-              color: 'var(--gold-antique)', marginBottom: '0.75rem'
-            }}>
-              <Sparkles size={14} />
-              WHY MAHA THAI
-            </span>
-            <h2 style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: 'clamp(1.8rem, 3vw, 2.5rem)', fontWeight: 300,
-              color: 'var(--text-dark)', marginTop: '0.5rem'
-            }}>
-              Benefits & Perks
-            </h2>
-          </div>
-
-          <motion.div
-            className="careers-benefits-grid"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-50px' }}
-            variants={containerVariants}
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: '1.5rem'
-            }}
-          >
-            {benefits.map((benefit, i) => (
-              <motion.div
-                key={benefit.title}
-                variants={itemVariants}
-                className="careers-benefit-card"
-                style={{
-                  backgroundColor: 'var(--canvas-primary)',
-                  border: '1px solid var(--border-light)',
-                  borderRadius: '12px',
-                  padding: '2rem 1.5rem',
-                  textAlign: 'center',
-                  transition: 'box-shadow 0.4s ease, transform 0.4s ease'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.boxShadow = '0 12px 40px rgba(11,54,61,0.08)';
-                  e.currentTarget.style.transform = 'translateY(-4px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.boxShadow = 'none';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                }}
-              >
-                <div style={{
-                  width: '52px', height: '52px', borderRadius: '50%',
-                  backgroundColor: 'var(--gold-light)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  margin: '0 auto 1.25rem', color: 'var(--gold-antique)'
-                }}>
-                  {benefit.icon}
-                </div>
-                <h3 style={{
-                  fontFamily: 'var(--font-heading)',
-                  fontSize: '1.1rem', fontWeight: 500,
-                  color: 'var(--text-dark)', marginBottom: '0.5rem'
-                }}>
-                  {benefit.title}
-                </h3>
-                <p style={{
-                  fontFamily: 'var(--font-body)', fontSize: '0.85rem',
-                  color: 'var(--text-muted)', fontWeight: 300, lineHeight: 1.6
-                }}>
-                  {benefit.desc}
-                </p>
-              </motion.div>
-            ))}
           </motion.div>
         </div>
       </section>
