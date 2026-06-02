@@ -238,8 +238,8 @@ export default function AdminPage() {
   const [orderTypeFilter, setOrderTypeFilter] = useState('All'); // 'All', 'Pickup', 'Delivery'
   
   // Menu Category state for Items Tab
-  const menuCategories = ['Noodle Bar', 'Curry Kitchen', 'Rice & Wok', 'Street Kitchen', 'From the Sea', 'Chef’s Table', 'Plant-Based', 'Sweet Endings', 'Beverages & Sides', 'Lunch', 'Dinner', 'Vegetarian'];
-  const [selectedMenuCategory, setSelectedMenuCategory] = useState('Noodle Bar');
+  const menuCategories = ['Appetizers', 'Salads', 'Soups & Claypots', 'Noodle Bar', 'Curry Kitchen', 'Rice & Wok', 'Street Kitchen', 'From the Sea', 'Chef’s Table', 'Plant-Based', 'Sweet Endings', 'Beverages & Sides', 'Lunch', 'Dinner', 'Vegetarian'];
+  const [selectedMenuCategory, setSelectedMenuCategory] = useState('Appetizers');
 
   // Automation Settings (Toggles)
   const [automationRules, setAutomationRules] = useState(() => {

@@ -1,8 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useWebsiteContent } from '../utils/cms';
-import chefStoryImg from '../assets/chef_story.png';
-import menuCurryImg from '../assets/menu_curry.png';
+import chefStoryImg from '../assets/Maha Hot Pot (Seasonal).png';
+import menuCurryImg from '../assets/Coconut Shell Seafood.png';
 
 export default function PhilosophySection() {
   const content = useWebsiteContent();

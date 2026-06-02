@@ -7,9 +7,38 @@ import heroDish from '../assets/hero_dish.png';
 import menuAppetizer from '../assets/menu_appetizer.png';
 import menuCurry from '../assets/menu_curry.png';
 import menuDessert from '../assets/menu_dessert.png';
-import mahaStreetPadThaiImg from '../assets/Maha Street Pad Thai .png';
-import coconutShellSeafoodImg from '../assets/Coconut Shell Seafood (Hor Mok).png';
+import mahaStreetPadThaiImg from '../assets/Maha Street Pad Thai.png';
+import coconutShellSeafoodImg from '../assets/Coconut Shell Seafood.png';
 import shrimpToastImg from '../assets/Shrimp Toast .png';
+import crispySpringRollsImg from '../assets/Crispy Spring Rolls (veg  shrimp  chicken).png';
+import crunchyMahaRollsImg from '../assets/Crunchy Maha Rolls.png';
+import firecrackerShrimpImg from '../assets/Firecracker Shrimp.png';
+import freshGardenRollsImg from '../assets/Fresh Garden Rolls.png';
+import goldenFriedTofuImg from '../assets/Golden Fried Tofu.png';
+import mahaCrispyCrabBitesImg from '../assets/Maha Crispy Crab Bites.png';
+import panSearedDumplingsImg from '../assets/Pan-Seared Dumplings (chicken  pork  veg).png';
+import streetSataySkewersImg from '../assets/Street Satay Skewers (chicken  spicy chicken 🌶️  tofu).png';
+import vietnameseFreshRollsImg from '../assets/Vietnamese Fresh Rolls.png';
+import caramelizedPadSeeEwImg from '../assets/Caramelized Pad See Ew.png';
+import glassNoodleSeafoodSaladImg from '../assets/Glass Noodle Seafood Salad (Yum Woon Sen).png';
+import greenPapayaCrunchImg from '../assets/Green Papaya Crunch (Som Tum Thai).png';
+import midnightDrunkenNoodlesImg from '../assets/Midnight Drunken Noodles .png';
+import northernLarbHerbSaladImg from '../assets/Northern Larb Herb Salad .png';
+import padThaiOmeletteWrapImg from '../assets/Pad Thai Omelette Wrap.png';
+import somTumPooPlaraImg from '../assets/Som Tum Poo Plara.png';
+import somTumPooImg from '../assets/Som Tum Poo.png';
+import yumSeafoodCombinationImg from '../assets/Yum Seafood Combination .png';
+import yumShrimpOrSquidImg from '../assets/Yum Shrimp or Squid .png';
+import bangkokFireBasilRiceImg from '../assets/Bangkok Fire Basil Rice.png';
+import edamameImg from '../assets/Edamame .png';
+import glassNoodleStirFryImg from '../assets/Glass Noodle Stir Fry (Pad Wun Sen).png';
+import mahaHotPotImg from '../assets/Maha Hot Pot (Seasonal).png';
+import northernKhaoSoiImg from '../assets/Northern Khao Soi.png';
+import riceComfortSoupImg from '../assets/Rice Comfort Soup (Khao Tom).png';
+import thaiSukiyakiStirFryImg from '../assets/Thai Sukiyaki Stir-Fry (Suki Hang).png';
+import tomYumCreamyBrothImg from '../assets/Tom Yum Creamy Broth.png';
+import tomYumFireBrothImg from '../assets/Tom Yum Fire Broth (Clear).png';
+import tomKhaCoconutSoupImg from '../assets/Tom kha coconut soup.png';
 
 // Signature dishes matching mockup
 export const signatureDishes = [
@@ -34,12 +63,160 @@ export const signatureDishes = [
     name: 'Northern Khao Soi',
     price: 36,
     description: 'Slow-simmered aromatic coconut curry broth with tender egg noodles, mustard greens, red shallots, and lime, topped with crispy noodles and house chili oil.',
-    image: heroDish,
+    image: northernKhaoSoiImg,
     tags: ['Signature', 'Spicy']
   }
 ];
 
 export const menuData = {
+  'Appetizers': [
+    {
+      id: 'app-edamame',
+      name: 'Steamed Salted Edamame',
+      description: 'Plump green soybeans steamed in their pods, tossed with coarse sea salt, offering a light, clean, and nutritious starter.',
+      price: 8,
+      rating: 4.7,
+      image: edamameImg
+    },
+    {
+      id: 'app-spring-rolls',
+      name: 'Crispy Spring Rolls',
+      description: 'Crispy golden wrappers filled with seasoned glass noodles, cabbage, carrots, and wood ear mushrooms, served with sweet chili sauce.',
+      price: 12,
+      rating: 4.8,
+      image: crispySpringRollsImg
+    },
+    {
+      id: 'app-maha-rolls',
+      name: 'Crunchy Maha Rolls',
+      description: 'Signature deep-fried rolls filled with premium crab meat, cream cheese, and scallions, served with a sweet-and-sour plum glaze.',
+      price: 15,
+      rating: 4.9,
+      image: crunchyMahaRollsImg
+    },
+    {
+      id: 'app-firecracker-shrimp',
+      name: 'Firecracker Shrimp',
+      description: 'Jumbo prawns marinated in garlic and coriander, wrapped in crispy spring roll pastry, and served with a spicy honey-plum sauce.',
+      price: 16,
+      rating: 4.9,
+      image: firecrackerShrimpImg
+    },
+    {
+      id: 'app-garden-rolls',
+      name: 'Fresh Garden Rolls',
+      description: 'Refreshing rice paper rolls packed with crisp lettuce, cucumber, mint, sweet basil, and vermicelli, served with house peanut dipping sauce.',
+      price: 11,
+      rating: 4.7,
+      image: freshGardenRollsImg
+    },
+    {
+      id: 'app-fried-tofu',
+      name: 'Golden Fried Tofu',
+      description: 'Crispy organic tofu cubes, golden-fried until airy, served with sweet tamarind sauce topped with crushed roasted peanuts.',
+      price: 10,
+      rating: 4.7,
+      image: goldenFriedTofuImg
+    },
+    {
+      id: 'app-crab-bites',
+      name: 'Maha Crispy Crab Bites',
+      description: 'Bite-sized crispy pouches stuffed with blue crab meat, cream cheese, and Thai spices, served with a roasted chili garlic dip.',
+      price: 14,
+      rating: 4.8,
+      image: mahaCrispyCrabBitesImg
+    },
+    {
+      id: 'app-dumplings',
+      name: 'Pan-Seared Dumplings',
+      description: 'Handmade dumplings with seasoned chicken, pork, or vegetables, pan-seared until bottom is crispy, served with ginger-soy vinegar.',
+      price: 13,
+      rating: 4.8,
+      image: panSearedDumplingsImg
+    },
+    {
+      id: 'app-shrimp-toast',
+      name: 'Shrimp Toast',
+      description: 'Crispy toasted brioche topped with a savory minced shrimp spread and white sesame seeds, served with sweet cucumber relish.',
+      price: 14,
+      rating: 4.8,
+      image: shrimpToastImg
+    },
+    {
+      id: 'app-satay-skewers',
+      name: 'Street Satay Skewers',
+      description: 'Tender flame-grilled skewers of marinated chicken or tofu, served with signature creamy peanut sauce and fresh cucumber pickle.',
+      price: 14,
+      rating: 4.9,
+      image: streetSataySkewersImg
+    },
+    {
+      id: 'app-vietnamese-rolls',
+      name: 'Vietnamese Fresh Rolls',
+      description: 'Traditional summer rolls with delicate rice paper, steamed shrimp, pork, fresh mint, and lettuce, paired with rich hoisin peanut sauce.',
+      price: 12,
+      rating: 4.8,
+      image: vietnameseFreshRollsImg
+    }
+  ],
+  'Salads': [
+    {
+      id: 'salad-som-tum',
+      name: 'Green Papaya Crunch (Som Tum Thai)',
+      description: 'Hand-shredded green papaya hammered with fresh lime juice, palm sugar, bird’s eye chilies, garlic, green beans, cherry tomatoes, and roasted peanuts.',
+      price: 15,
+      rating: 4.8,
+      image: greenPapayaCrunchImg
+    },
+    {
+      id: 'salad-som-tum-poo',
+      name: 'Som Tum Poo',
+      description: 'Authentic Isan-style papaya salad containing salted black crab for a rich, deeply savory umami punch, mixed with fresh herbs and spices.',
+      price: 17,
+      rating: 4.7,
+      image: somTumPooImg
+    },
+    {
+      id: 'salad-som-tum-poo-plara',
+      name: 'Som Tum Poo Plara',
+      description: 'Traditional street-style green papaya salad loaded with salted black crab and house-fermented fish sauce (Plara) for the ultimate bold flavor.',
+      price: 18,
+      rating: 4.8,
+      image: somTumPooPlaraImg
+    },
+    {
+      id: 'salad-larb',
+      name: 'Northern Larb Herb Salad',
+      description: 'Aromatic minced chicken, pork, or tofu salad tossed with toasted ground rice, mint, fresh coriander, scallions, shallots, and lime-chili dressing.',
+      price: 16,
+      rating: 4.8,
+      image: northernLarbHerbSaladImg
+    },
+    {
+      id: 'salad-yum-woon-sen',
+      name: 'Glass Noodle Seafood Salad (Yum Woon Sen)',
+      description: 'Vibrant glass noodles tossed with jumbo shrimp, calamari, minced chicken, wood ear mushrooms, onions, fresh cilantro, and a spicy garlic-lime dressing.',
+      price: 20,
+      rating: 4.9,
+      image: glassNoodleSeafoodSaladImg
+    },
+    {
+      id: 'salad-yum-seafood',
+      name: 'Yum Seafood Combination',
+      description: 'Zesty lemongrass-infused seafood medley of scallops, shrimp, mussels, and squid, tossed with fresh herbs in sweet-sour chili paste vinaigrette.',
+      price: 24,
+      rating: 4.9,
+      image: yumSeafoodCombinationImg
+    },
+    {
+      id: 'salad-yum-shrimp-squid',
+      name: 'Yum Shrimp or Squid',
+      description: 'Choice of poached tiger prawns or tender squid rings dressed with celery, red onions, tomatoes, coriander, and fresh chili-lime marinade.',
+      price: 21,
+      rating: 4.8,
+      image: yumShrimpOrSquidImg
+    }
+  ],
   'Noodle Bar': [
     {
       id: 'sig-1',
@@ -55,7 +232,7 @@ export const menuData = {
       description: 'Classic Pad Thai wrapped in a thin egg omelette for a rich presentation.',
       price: 26,
       rating: 4.9,
-      image: heroDish
+      image: padThaiOmeletteWrapImg
     },
     {
       id: 'noodle-drunken',
@@ -63,7 +240,7 @@ export const menuData = {
       description: 'Wide noodles stir-fried with chili, garlic, and Thai basil.',
       price: 22,
       rating: 4.8,
-      image: menuAppetizer
+      image: midnightDrunkenNoodlesImg
     },
     {
       id: 'noodle-padseeew',
@@ -71,7 +248,7 @@ export const menuData = {
       description: 'Flat noodles stir-fried with egg and Chinese broccoli in a savory soy glaze.',
       price: 22,
       rating: 4.8,
-      image: menuAppetizer
+      image: caramelizedPadSeeEwImg
     },
     {
       id: 'noodle-padwunsen',
@@ -79,7 +256,7 @@ export const menuData = {
       description: 'Light stir-fried glass noodles with vegetables and egg.',
       price: 21,
       rating: 4.7,
-      image: heroDish
+      image: glassNoodleStirFryImg
     },
     {
       id: 'sig-suki',
@@ -87,7 +264,7 @@ export const menuData = {
       description: 'Glass noodles stir-fried with napa cabbage, egg, and vegetables in a savory suki sauce.',
       price: 23,
       rating: 4.7,
-      image: heroDish
+      image: thaiSukiyakiStirFryImg
     },
     {
       id: 'sig-3',
@@ -95,7 +272,7 @@ export const menuData = {
       description: 'Coconut curry noodle soup with crispy noodles and rich broth.',
       price: 25,
       rating: 4.9,
-      image: heroDish
+      image: northernKhaoSoiImg
     },
     {
       id: 'noodle-pho',
@@ -179,7 +356,7 @@ export const menuData = {
       description: 'Spicy basil fried rice with chili and garlic.',
       price: 22,
       rating: 4.8,
-      image: heroDish
+      image: bangkokFireBasilRiceImg
     },
     {
       id: 'rice-pineapple',
@@ -269,7 +446,7 @@ export const menuData = {
       description: 'Rich coconut curry noodle soup with crispy topping.',
       price: 25,
       rating: 4.9,
-      image: heroDish
+      image: northernKhaoSoiImg
     },
     {
       id: 'street-pho',
@@ -350,6 +527,38 @@ export const menuData = {
   ],
   'Plant-Based': [
     {
+      id: 'plant-som-tum',
+      name: 'Vegetarian Som Tum Thai',
+      description: 'Hand-shredded green papaya hammered with fresh lime juice, palm sugar, bird’s eye chilies, garlic, green beans, cherry tomatoes, and roasted peanuts, dressed with mushroom soy sauce.',
+      price: 15,
+      rating: 4.8,
+      image: greenPapayaCrunchImg
+    },
+    {
+      id: 'plant-larb-tofu',
+      name: 'Larb Tofu Herb Salad',
+      description: 'Aromatic minced organic tofu tossed with toasted ground rice, mint, fresh coriander, scallions, shallots, and a zesty lime-chili dressing.',
+      price: 16,
+      rating: 4.8,
+      image: northernLarbHerbSaladImg
+    },
+    {
+      id: 'plant-garden-rolls',
+      name: 'Fresh Garden Rolls',
+      description: 'Refreshing rice paper rolls packed with crisp lettuce, cucumber, mint, sweet basil, and vermicelli, served with house peanut dipping sauce.',
+      price: 11,
+      rating: 4.7,
+      image: freshGardenRollsImg
+    },
+    {
+      id: 'plant-fried-tofu',
+      name: 'Golden Fried Tofu',
+      description: 'Crispy organic tofu cubes, golden-fried until airy, served with sweet tamarind sauce topped with crushed roasted peanuts.',
+      price: 10,
+      rating: 4.7,
+      image: goldenFriedTofuImg
+    },
+    {
       id: 'plant-kana',
       name: 'KA-NA HED HORM',
       description: 'Chinese broccoli and mushrooms sautéed in savory sauce.',
@@ -387,7 +596,7 @@ export const menuData = {
       description: 'Coconut soup with vegetables and herbs.',
       price: 18,
       rating: 4.8,
-      image: menuCurry
+      image: tomKhaCoconutSoupImg
     },
     {
       id: 'plant-tomyum',
@@ -395,7 +604,7 @@ export const menuData = {
       description: 'Spicy and sour vegetable soup.',
       price: 18,
       rating: 4.8,
-      image: menuCurry
+      image: tomYumFireBrothImg
     },
     {
       id: 'plant-eggplant-curry',
@@ -561,12 +770,57 @@ export const menuData = {
       rating: 4.9,
       image: menuAppetizer
     }
+  ],
+  'Soups & Claypots': [
+    {
+      id: 'soup-tomyum-creamy',
+      name: 'Tom Yum Creamy Broth',
+      description: 'Vibrant, spicy-sour lemongrass broth enriched with a touch of evaporated milk, loaded with giant tiger prawns, oyster mushrooms, tomatoes, and fresh kaffir lime leaves.',
+      price: 19,
+      rating: 4.9,
+      image: tomYumCreamyBrothImg
+    },
+    {
+      id: 'soup-tomyum-clear',
+      name: 'Tom Yum Fire Broth (Clear)',
+      description: 'Traditional, fiery-sharp clear hot and sour broth infused with crushed lemongrass, galangal, fresh chili, fresh lime juice, kaffir lime leaves, and wild mushrooms.',
+      price: 18,
+      rating: 4.8,
+      image: tomYumFireBrothImg
+    },
+    {
+      id: 'soup-tomkha',
+      name: 'Tom Kha Coconut Soup',
+      description: 'Silky, aromatic coconut milk broth simmered with tender chicken breast, wild mushrooms, fresh galangal, lemongrass, kaffir lime, and roasted chili oil.',
+      price: 19,
+      rating: 4.9,
+      image: tomKhaCoconutSoupImg
+    },
+    {
+      id: 'soup-khao-tom',
+      name: 'Rice Comfort Soup (Khao Tom)',
+      description: 'Traditional comforting Thai rice soup cooked in a rich, savory pork bone broth with hand-rolled seasoned pork meatballs, fresh ginger, celery, and golden fried garlic.',
+      price: 16,
+      rating: 4.7,
+      image: riceComfortSoupImg
+    },
+    {
+      id: 'soup-hot-pot',
+      name: 'Maha Hot Pot (Seasonal)',
+      description: 'A grand communal ceramic pot bubbling with our premium herbal broth, thin-sliced ribeye beef, scallop medallions, prawns, glass noodles, and fresh morning glory.',
+      price: 38,
+      rating: 5.0,
+      image: mahaHotPotImg
+    }
   ]
 };
 
 // Map Lunch, Dinner, and Vegetarian menu keys for the specialized dropdowns and pages
 menuData['Vegetarian'] = menuData['Plant-Based'];
 const rawDinnerList = [
+  ...menuData['Appetizers'],
+  ...menuData['Salads'],
+  ...menuData['Soups & Claypots'],
   ...menuData['Noodle Bar'],
   ...menuData['Curry Kitchen'],
   ...menuData['Rice & Wok'],
@@ -692,10 +946,10 @@ if (Array.isArray(menuData['Dinner'])) {
   );
 }
 
-const categories = ['Noodle Bar', 'Curry Kitchen', 'Rice & Wok', 'Street Kitchen', 'From the Sea', 'Chef’s Table', 'Plant-Based', 'Sweet Endings', 'Beverages & Sides'];
+const categories = ['Appetizers', 'Salads', 'Soups & Claypots', 'Noodle Bar', 'Curry Kitchen', 'Rice & Wok', 'Street Kitchen', 'From the Sea', 'Chef’s Table', 'Plant-Based', 'Sweet Endings', 'Beverages & Sides'];
 
 export default function MenuSection({ cart = {}, addToCart, removeFromCart }) {
-  const [selectedCategory, setSelectedCategory] = useState('Noodle Bar');
+  const [selectedCategory, setSelectedCategory] = useState('Appetizers');
 
   useEffect(() => {
     const handleCategoryChange = (e) => {
