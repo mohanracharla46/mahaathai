@@ -67,7 +67,7 @@ export const signatureDishes = [
   {
     id: 'sig-2',
     name: 'Coconut Shell Seafood (Hor Mok)',
-    price: 42,
+    price: 19.99,
     description: 'Rich, fragrant red curry soufflé steamed inside a young coconut shell with fresh sea scallops, calamari, jumbo shrimp, kaffir lime leaves, and sweet basil.',
     image: coconutShellSeafoodImg,
     tags: ['Signature', 'Spicy']
@@ -75,7 +75,7 @@ export const signatureDishes = [
   {
     id: 'sig-3',
     name: 'Northern Khao Soi',
-    price: 36,
+    price: 18.99,
     description: 'Slow-simmered aromatic coconut curry broth with tender egg noodles, mustard greens, red shallots, and lime, topped with crispy noodles and house chili oil.',
     image: northernKhaoSoiImg,
     tags: ['Signature', 'Spicy']
@@ -86,91 +86,107 @@ export const menuData = {
   'Appetizers': [
     {
       id: 'app-edamame',
-      name: 'Steamed Salted Edamame',
-      description: 'Plump green soybeans steamed in their pods, tossed with coarse sea salt, offering a light, clean, and nutritious starter.',
-      price: 8,
+      name: 'Edamame',
+      description: 'Steamed soybeans lightly salted for a simple, healthy starter.',
+      price: 5.99,
       rating: 4.7,
       image: edamameImg
     },
     {
       id: 'app-spring-rolls',
-      name: 'Crispy Spring Rolls',
-      description: 'Crispy golden wrappers filled with seasoned glass noodles, cabbage, carrots, and wood ear mushrooms, served with sweet chili sauce.',
-      price: 12,
+      name: 'Crispy Spring Rolls (Veg / Shrimp / Chicken)',
+      description: 'Classic fried rolls filled with seasoned vegetables or protein, served crisp and hot.',
+      price: 5.99,
       rating: 4.8,
       image: crispySpringRollsImg
     },
     {
       id: 'app-maha-rolls',
       name: 'Crunchy Maha Rolls',
-      description: 'Signature deep-fried rolls filled with premium crab meat, cream cheese, and scallions, served with a sweet-and-sour plum glaze.',
-      price: 15,
+      description: 'Deep-fried rolls with shredded texture, filled with chicken, mushroom, and glass noodles.',
+      price: 10.99,
       rating: 4.9,
       image: crunchyMahaRollsImg
     },
     {
       id: 'app-firecracker-shrimp',
-      name: 'Firecracker Shrimp',
-      description: 'Jumbo prawns marinated in garlic and coriander, wrapped in crispy spring roll pastry, and served with a spicy honey-plum sauce.',
-      price: 16,
+      name: 'Firecracker Shrimp Blanket',
+      description: 'Whole shrimp wrapped in thin pastry and fried crispy, served with a bright chili-lime dipping sauce.',
+      price: 8.99,
       rating: 4.9,
       image: firecrackerShrimpImg
     },
     {
       id: 'app-garden-rolls',
       name: 'Fresh Garden Rolls',
-      description: 'Refreshing rice paper rolls packed with crisp lettuce, cucumber, mint, sweet basil, and vermicelli, served with house peanut dipping sauce.',
-      price: 11,
+      description: 'Soft rice paper wraps filled with fresh vegetables and noodles, served with peanut sauce.',
+      price: 7.99,
       rating: 4.7,
       image: freshGardenRollsImg
     },
     {
       id: 'app-fried-tofu',
       name: 'Golden Fried Tofu',
-      description: 'Crispy organic tofu cubes, golden-fried until airy, served with sweet tamarind sauce topped with crushed roasted peanuts.',
-      price: 10,
+      description: 'Crispy fried tofu with a crunchy exterior and soft center, served with dipping sauce.',
+      price: 6.99,
       rating: 4.7,
       image: goldenFriedTofuImg
     },
     {
       id: 'app-crab-bites',
       name: 'Maha Crispy Crab Bites',
-      description: 'Bite-sized crispy pouches stuffed with blue crab meat, cream cheese, and Thai spices, served with a roasted chili garlic dip.',
-      price: 14,
+      description: 'Cream cheese and crab wrapped in wonton skin and fried until golden and crispy.',
+      price: 8.99,
       rating: 4.8,
       image: mahaCrispyCrabBitesImg
     },
     {
       id: 'app-dumplings',
-      name: 'Pan-Seared Dumplings',
-      description: 'Handmade dumplings with seasoned chicken, pork, or vegetables, pan-seared until bottom is crispy, served with ginger-soy vinegar.',
-      price: 13,
+      name: 'Pan-Seared Dumplings (Chicken / Veg)',
+      description: 'Dumplings with crispy bottoms and juicy filling, served with savory soy sauce.',
+      price: 7.99,
       rating: 4.8,
       image: panSearedDumplingsImg
     },
     {
       id: 'app-shrimp-toast',
-      name: 'Shrimp Toast',
-      description: 'Crispy toasted brioche topped with a savory minced shrimp spread and white sesame seeds, served with sweet cucumber relish.',
-      price: 14,
+      name: 'Shrimp Toast (Signature)',
+      description: 'Fried bread topped with seasoned shrimp mixture, crisp on the outside and rich inside.',
+      price: 9.99,
       rating: 4.8,
       image: shrimpToastImg
     },
     {
-      id: 'app-satay-skewers',
-      name: 'Street Satay Skewers',
-      description: 'Tender flame-grilled skewers of marinated chicken or tofu, served with signature creamy peanut sauce and fresh cucumber pickle.',
-      price: 14,
+      id: 'app-satay-chicken',
+      name: 'Street Satay Chicken',
+      description: 'Grilled marinated chicken in Thai spices, served with peanut sauce and cucumber relish.',
+      price: 9.99,
       rating: 4.9,
+      image: streetSataySkewersImg
+    },
+    {
+      id: 'app-satay-tofu',
+      name: 'Tofu Satay',
+      description: 'Grilled Tofu marinated in Thai spices, served with peanut sauce and cucumber relish.',
+      price: 8.99,
+      rating: 4.8,
       image: streetSataySkewersImg
     },
     {
       id: 'app-vietnamese-rolls',
       name: 'Vietnamese Fresh Rolls',
-      description: 'Traditional summer rolls with delicate rice paper, steamed shrimp, pork, fresh mint, and lettuce, paired with rich hoisin peanut sauce.',
-      price: 12,
+      description: 'Fresh shrimp, herbs, and vermicelli wrapped in rice paper for a light, refreshing bite.',
+      price: 7.99,
       rating: 4.8,
       image: vietnameseFreshRollsImg
+    },
+    {
+      id: 'app-fish-cakes',
+      name: 'Thai Fish Cakes',
+      description: 'Fried fish cakes blended with Thai herbs and green beans for a slightly spicy bite.',
+      price: 9.99,
+      rating: 4.8,
+      image: menuAppetizer
     }
   ],
   'Salads': [
@@ -178,7 +194,7 @@ export const menuData = {
       id: 'salad-som-tum',
       name: 'Green Papaya Crunch (Som Tum Thai)',
       description: 'Hand-shredded green papaya hammered with fresh lime juice, palm sugar, bird’s eye chilies, garlic, green beans, cherry tomatoes, and roasted peanuts.',
-      price: 15,
+      price: 11.99,
       rating: 4.8,
       image: greenPapayaCrunchImg
     },
@@ -186,7 +202,7 @@ export const menuData = {
       id: 'salad-som-tum-poo',
       name: 'Som Tum Poo',
       description: 'Authentic Isan-style papaya salad containing salted black crab for a rich, deeply savory umami punch, mixed with fresh herbs and spices.',
-      price: 17,
+      price: 12.99,
       rating: 4.7,
       image: somTumPooImg
     },
@@ -194,7 +210,7 @@ export const menuData = {
       id: 'salad-som-tum-poo-plara',
       name: 'Som Tum Poo Plara',
       description: 'Traditional street-style green papaya salad loaded with salted black crab and house-fermented fish sauce (Plara) for the ultimate bold flavor.',
-      price: 18,
+      price: 13.99,
       rating: 4.8,
       image: somTumPooPlaraImg
     },
@@ -202,15 +218,15 @@ export const menuData = {
       id: 'salad-larb',
       name: 'Northern Larb Herb Salad',
       description: 'Aromatic minced chicken, pork, or tofu salad tossed with toasted ground rice, mint, fresh coriander, scallions, shallots, and lime-chili dressing.',
-      price: 16,
+      price: 12.99,
       rating: 4.8,
       image: northernLarbHerbSaladImg
     },
     {
       id: 'salad-yum-woon-sen',
       name: 'Glass Noodle Seafood Salad (Yum Woon Sen)',
-      description: 'Vibrant glass noodles tossed with jumbo shrimp, calamari, minced chicken, wood ear mushrooms, onions, fresh cilantro, and a spicy garlic-lime dressing.',
-      price: 20,
+      description: 'Vibrant glass noodles tossed with jumbo shrimp, calamari, minced chicken, wood ear mushrooms, onions, fresh cilantro, and a zesty lime-chili dressing.',
+      price: 13.99,
       rating: 4.9,
       image: glassNoodleSeafoodSaladImg
     },
@@ -218,7 +234,7 @@ export const menuData = {
       id: 'salad-yum-seafood',
       name: 'Yum Seafood Combination',
       description: 'Zesty lemongrass-infused seafood medley of scallops, shrimp, mussels, and squid, tossed with fresh herbs in sweet-sour chili paste vinaigrette.',
-      price: 24,
+      price: 14.99,
       rating: 4.9,
       image: yumSeafoodCombinationImg
     },
@@ -226,7 +242,7 @@ export const menuData = {
       id: 'salad-yum-shrimp-squid',
       name: 'Yum Shrimp or Squid',
       description: 'Choice of poached tiger prawns or tender squid rings dressed with celery, red onions, tomatoes, coriander, and fresh chili-lime marinade.',
-      price: 21,
+      price: 13.99,
       rating: 4.8,
       image: yumShrimpOrSquidImg
     }
@@ -276,7 +292,7 @@ export const menuData = {
       id: 'sig-suki',
       name: 'Thai Sukiyaki Stir-Fry (Suki Hang)',
       description: 'Glass noodles stir-fried with napa cabbage, egg, and vegetables in a savory suki sauce.',
-      price: 14.99,
+      price: 15.99,
       rating: 4.7,
       image: thaiSukiyakiStirFryImg
     },
@@ -284,7 +300,7 @@ export const menuData = {
       id: 'sig-3',
       name: 'Northern Khao Soi',
       description: 'Coconut curry noodle soup with crispy noodles and rich broth.',
-      price: 15.99,
+      price: 18.99,
       rating: 4.9,
       image: northernKhaoSoiImg
     },
@@ -376,7 +392,7 @@ export const menuData = {
       id: 'sig-basil-rice',
       name: 'Bangkok Fire Basil Rice',
       description: 'Spicy basil fried rice with chili and garlic.',
-      price: 22,
+      price: 15.99,
       rating: 4.8,
       image: bangkokFireBasilRiceImg
     },
@@ -384,7 +400,7 @@ export const menuData = {
       id: 'rice-pineapple',
       name: 'Pineapple Island Fried Rice',
       description: 'Sweet and savory fried rice with pineapple and cashews.',
-      price: 24,
+      price: 15.99,
       rating: 4.8,
       image: pineappleIslandFriedRiceImg
     },
@@ -392,7 +408,7 @@ export const menuData = {
       id: 'rice-classic',
       name: 'Classic Thai Fried Rice',
       description: 'Simple egg fried rice with vegetables.',
-      price: 18,
+      price: 15.99,
       rating: 4.6,
       image: classicThaiFriedRiceImg
     },
@@ -400,7 +416,7 @@ export const menuData = {
       id: 'rice-crab',
       name: 'Crab Butter Fried Rice',
       description: 'Fried rice with crab meat and rich garlic butter.',
-      price: 28,
+      price: 17.99,
       rating: 5.0,
       image: crabButterFriedRiceImg
     },
@@ -408,7 +424,7 @@ export const menuData = {
       id: 'rice-curry-spiced',
       name: 'Curry Spiced Fried Rice',
       description: 'Fried rice infused with warm curry spices.',
-      price: 20,
+      price: 14.99,
       rating: 4.7,
       image: currySpicedFriedRiceImg
     },
@@ -416,7 +432,7 @@ export const menuData = {
       id: 'rice-green-curry',
       name: 'Green Curry Fried Rice',
       description: 'Fried rice blended with green curry flavors.',
-      price: 21,
+      price: 15.99,
       rating: 4.7,
       image: greenCurryFriedRiceImg
     },
@@ -424,7 +440,7 @@ export const menuData = {
       id: 'rice-red-curry',
       name: 'Red Curry Fried Rice',
       description: 'Fried rice with bold red curry seasoning.',
-      price: 21,
+      price: 15.99,
       rating: 4.7,
       image: redCurryFriedRiceImg
     },
@@ -432,7 +448,7 @@ export const menuData = {
       id: 'rice-kapi',
       name: 'Kapi Umami Fried Rice',
       description: 'Shrimp paste fried rice with deep, savory flavor.',
-      price: 22,
+      price: 17.99,
       rating: 4.8,
       image: kapiUmamiFriedRiceImg
     },
@@ -440,7 +456,7 @@ export const menuData = {
       id: 'rice-hainanese',
       name: 'Hainanese Chicken Rice',
       description: 'Tender poached chicken served with fragrant rice and ginger sauce.',
-      price: 23,
+      price: 13.99,
       rating: 4.8,
       image: heroDish
     }
@@ -450,15 +466,15 @@ export const menuData = {
       id: 'street-hainanese',
       name: 'Hainanese Chicken Rice',
       description: 'Classic Southeast Asian dish with poached chicken and aromatic rice.',
-      price: 23,
+      price: 13.99,
       rating: 4.8,
       image: menuAppetizer
     },
     {
       id: 'street-biryani',
-      name: 'Thai Biryani',
+      name: 'Thai Chicken Biryani',
       description: 'Spiced rice dish layered with herbs and protein.',
-      price: 24,
+      price: 16.99,
       rating: 4.8,
       image: menuAppetizer
     },
@@ -466,7 +482,7 @@ export const menuData = {
       id: 'sig-3',
       name: 'Northern Khao Soi',
       description: 'Rich coconut curry noodle soup with crispy topping.',
-      price: 25,
+      price: 18.99,
       rating: 4.9,
       image: northernKhaoSoiImg
     },
@@ -485,6 +501,38 @@ export const menuData = {
       price: 23,
       rating: 4.7,
       image: menuCurry
+    },
+    {
+      id: 'street-orange-chicken',
+      name: 'Thai Orange Sesame Chicken',
+      description: 'Zesty, bright notes of a traditional orange glaze with the aromatic, savory foundations of Thai cuisine.',
+      price: 15.99,
+      rating: 4.8,
+      image: menuAppetizer
+    },
+    {
+      id: 'street-sweet-sour',
+      name: 'Thai Sweet and Sour Chicken',
+      description: 'Vibrant dish that balances sweet, tangy, and savory flavors.',
+      price: 15.99,
+      rating: 4.7,
+      image: menuAppetizer
+    },
+    {
+      id: 'street-spicy-basil',
+      name: 'Spicy Basil Leaves',
+      description: 'Authentic street-style taste with the right balance of heat and seasoning.',
+      price: 15.99,
+      rating: 4.8,
+      image: menuAppetizer
+    },
+    {
+      id: 'street-rama-garden',
+      name: 'Thai Rama Garden',
+      description: 'Southeast Asian dish with rich, creamy peanut sauce served over a bed of vibrant green vegetables.',
+      price: 15.99,
+      rating: 4.7,
+      image: menuAppetizer
     }
   ],
   'From the Sea': [
@@ -492,7 +540,7 @@ export const menuData = {
       id: 'sig-2',
       name: 'Coconut Shell Seafood (Hor Mok)',
       description: 'Steamed seafood curry in coconut custard served inside a coconut shell.',
-      price: 42,
+      price: 19.99,
       rating: 5.0,
       image: coconutShellSeafoodImg
     },
@@ -500,7 +548,7 @@ export const menuData = {
       id: 'sea-choochee',
       name: 'Choo Chee Seafood Curry',
       description: 'Rich coconut curry with shrimp, squid, and mussels.',
-      price: 38,
+      price: 19.99,
       rating: 4.9,
       image: menuCurry
     },
@@ -508,16 +556,40 @@ export const menuData = {
       id: 'sea-salmon',
       name: 'Salmon (Choo Chee / Garlic / Sweet Chili)',
       description: 'Pan-seared salmon served with your choice of savory sauce.',
-      price: 36,
+      price: 19.99,
       rating: 4.8,
       image: heroDish
     },
     {
-      id: 'sea-whole-fish',
-      name: 'Whole Fish Selection',
-      description: 'Deep-fried whole fish served with garlic or chili-based sauces.',
-      price: 48,
+      id: 'sea-whole-fish-swai',
+      name: 'Whole Fish Selection (Swai Filet)',
+      description: 'Deep-fried whole Swai fish filet served with garlic or chili-based sauces.',
+      price: 18.99,
+      rating: 4.8,
+      image: heroDish
+    },
+    {
+      id: 'sea-whole-fish-redsnapper',
+      name: 'Whole Fish Selection (Redsnapper)',
+      description: 'Deep-fried whole Redsnapper served with garlic or chili-based sauces.',
+      price: 31.00,
       rating: 4.9,
+      image: heroDish
+    },
+    {
+      id: 'sea-whole-fish-pomfret',
+      name: 'Whole Fish Selection (Pomfret)',
+      description: 'Deep-fried whole Pomfret served with garlic or chili-based sauces.',
+      price: 25.00,
+      rating: 4.8,
+      image: heroDish
+    },
+    {
+      id: 'sea-whole-fish-pompano',
+      name: 'Whole Fish Selection (Pompano)',
+      description: 'Deep-fried whole Pompano served with garlic or chili-based sauces.',
+      price: 25.00,
+      rating: 4.8,
       image: heroDish
     }
   ],
@@ -592,7 +664,7 @@ export const menuData = {
       id: 'plant-kana',
       name: 'KA-NA HED HORM',
       description: 'Chinese broccoli and mushrooms sautéed in savory sauce.',
-      price: 18,
+      price: 14.00,
       rating: 4.8,
       image: menuAppetizer
     },
@@ -600,7 +672,7 @@ export const menuData = {
       id: 'plant-fried-rice',
       name: 'Vegetarian Thai Fried Rice',
       description: 'Fried rice with vegetables and soy-based seasoning.',
-      price: 18,
+      price: 14.00,
       rating: 4.6,
       image: heroDish
     },
@@ -608,7 +680,7 @@ export const menuData = {
       id: 'plant-basil-rice',
       name: 'Basil Fried Rice',
       description: 'Spicy vegetarian fried rice with basil and chili.',
-      price: 19,
+      price: 14.00,
       rating: 4.7,
       image: heroDish
     },
@@ -616,7 +688,7 @@ export const menuData = {
       id: 'plant-padthai',
       name: 'Vegetarian Pad Thai',
       description: 'Rice noodles stir-fried with vegetables and tofu.',
-      price: 15.99,
+      price: 14.00,
       rating: 4.8,
       image: mahaStreetPadThaiImg
     },
@@ -624,7 +696,7 @@ export const menuData = {
       id: 'plant-tomkha-sm',
       name: 'Tom Kha (veg) - Small',
       description: 'Coconut soup with vegetables and herbs.',
-      price: 6.99,
+      price: 5.99,
       rating: 4.8,
       image: tomKhaCoconutSoupImg
     },
@@ -632,7 +704,7 @@ export const menuData = {
       id: 'plant-tomkha-lg',
       name: 'Tom Kha (veg) - Large',
       description: 'Coconut soup with vegetables and herbs.',
-      price: 13.99,
+      price: 11.99,
       rating: 4.8,
       image: tomKhaCoconutSoupImg
     },
@@ -654,9 +726,9 @@ export const menuData = {
     },
     {
       id: 'plant-eggplant-curry',
-      name: 'Eggplant & Tofu Curry',
-      description: 'Eggplant and tofu in a rich curry sauce.',
-      price: 15.99,
+      name: 'Eggplant & Tofu Prik Pao',
+      description: 'Eggplant and tofu in a rich prik pao chili sauce.',
+      price: 14.00,
       rating: 4.7,
       image: menuCurry
     },
@@ -664,7 +736,7 @@ export const menuData = {
       id: 'plant-choochee',
       name: 'Choo Chee Tofu',
       description: 'Tofu cooked in a creamy red curry sauce.',
-      price: 15.99,
+      price: 18.00,
       rating: 4.7,
       image: menuCurry
     },
@@ -672,7 +744,7 @@ export const menuData = {
       id: 'plant-kheemao',
       name: 'Tofu Khee Mao',
       description: 'Stir-fried tofu with chili, garlic, and basil.',
-      price: 15.99,
+      price: 14.00,
       rating: 4.7,
       image: menuAppetizer
     }
@@ -680,9 +752,9 @@ export const menuData = {
   'Sweet Endings': [
     {
       id: 'sweet-rubies',
-      name: 'Thai Rubies in Coconut Milk (weekends)',
+      name: 'Thai Rubies in Coconut Milk (Fri, Sat & Sun only)',
       description: 'Water chestnuts served in sweet coconut milk with crushed ice.',
-      price: 12,
+      price: 9.99,
       rating: 4.9,
       image: menuDessert
     },
@@ -690,7 +762,7 @@ export const menuData = {
       id: 'sweet-mango-sticky',
       name: 'Mango Sticky Rice',
       description: 'Fresh mango served with sweet coconut sticky rice.',
-      price: 14,
+      price: 9.99,
       rating: 5.0,
       image: menuDessert
     },
@@ -698,7 +770,7 @@ export const menuData = {
       id: 'sweet-banana-sticky',
       name: 'Banana Sticky Rice',
       description: 'Warm sticky rice with banana and coconut.',
-      price: 12,
+      price: 8.99,
       rating: 4.8,
       image: menuDessert
     },
@@ -706,7 +778,7 @@ export const menuData = {
       id: 'sweet-black-rice',
       name: 'Black Rice Mango Dessert',
       description: 'Nutty black rice paired with fresh mango.',
-      price: 14,
+      price: 9.99,
       rating: 4.8,
       image: menuDessert
     },
@@ -714,7 +786,7 @@ export const menuData = {
       id: 'sweet-roti',
       name: 'Sweet Roti',
       description: 'Crispy Thai flatbread topped with condensed milk.',
-      price: 10,
+      price: 6.99,
       rating: 4.7,
       image: menuDessert
     },
@@ -722,7 +794,7 @@ export const menuData = {
       id: 'sweet-banana-honey',
       name: 'Fried Banana with Honey',
       description: 'Golden fried banana drizzled with honey.',
-      price: 10,
+      price: 6.99,
       rating: 4.7,
       image: menuDessert
     },
@@ -730,15 +802,15 @@ export const menuData = {
       id: 'sweet-cheesecake',
       name: 'Fried Cheesecake',
       description: 'Crispy outside with a creamy cheesecake center.',
-      price: 12,
+      price: 6.99,
       rating: 4.8,
       image: menuDessert
     },
     {
       id: 'sweet-ice-cream',
-      name: 'Deep Fried Ice Cream',
+      name: 'Deep Fried Ice Cream (Vanilla / Chocolate)',
       description: 'Ice cream wrapped and fried for a hot and cold contrast.',
-      price: 12,
+      price: 7.99,
       rating: 4.7,
       image: menuDessert
     },
@@ -746,7 +818,7 @@ export const menuData = {
       id: 'sweet-pancakes',
       name: 'Thai Coconut Pancakes (Kanom Krok)',
       description: 'Bite-sized coconut rice pancakes with crispy edges and soft centers.',
-      price: 10,
+      price: 8.99,
       rating: 4.8,
       image: menuDessert
     }
@@ -965,7 +1037,7 @@ menuData['Lunch'] = [
     id: 'lunch-experience',
     name: 'Maha Lunch Experience (Mon-Fri)',
     description: 'A curated multi-course midday feast. Includes your choice of one appetizer, one soup or salad, and one signature entrée (curry, noodle, or wok rice dish).',
-    price: 34,
+    price: 12.99,
     rating: 5.0,
     image: menuAppetizer,
     tags: ['Lunch Special', 'Multi-Course']
@@ -998,7 +1070,7 @@ menuData['Lunch'] = [
     id: 'lunch-massaman',
     name: 'Lunch Massaman Comfort Curry',
     description: 'Mild curry with potatoes, onions, and warm spices.',
-    price: 13.99,
+    price: 12.99,
     rating: 4.9,
     image: massamanComfortCurryImg
   },
@@ -1022,7 +1094,7 @@ menuData['Lunch'] = [
     id: 'lunch-pineapple-rice',
     name: 'Lunch Pineapple Island Fried Rice',
     description: 'Sweet and savory fried rice with pineapple and cashews.',
-    price: 13.99,
+    price: 12.99,
     rating: 4.8,
     image: pineappleIslandFriedRiceImg
   },
@@ -1030,7 +1102,7 @@ menuData['Lunch'] = [
     id: 'lunch-classic-rice',
     name: 'Lunch Classic Thai Fried Rice',
     description: 'Simple egg fried rice with vegetables.',
-    price: 10.99,
+    price: 12.99,
     rating: 4.6,
     image: classicThaiFriedRiceImg
   },
@@ -1046,7 +1118,7 @@ menuData['Lunch'] = [
     id: 'lunch-veg-padthai',
     name: 'Lunch Vegetarian Pad Thai',
     description: 'Rice noodles stir-fried with vegetables and tofu.',
-    price: 11.99,
+    price: 12.99,
     rating: 4.8,
     image: mahaStreetPadThaiImg
   }
@@ -1055,9 +1127,9 @@ menuData['Lunch'] = [
 // Load custom admin overrides from localStorage if present
 try {
   if (typeof window !== 'undefined') {
-    if (!localStorage.getItem('maha_menu_reset_prices_v1')) {
+    if (!localStorage.getItem('maha_menu_reset_prices_v3')) {
       localStorage.removeItem('maha_custom_menu');
-      localStorage.setItem('maha_menu_reset_prices_v1', 'true');
+      localStorage.setItem('maha_menu_reset_prices_v3', 'true');
     }
   }
   const customMenuData = localStorage.getItem('maha_custom_menu');
