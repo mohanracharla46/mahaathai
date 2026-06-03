@@ -59,7 +59,7 @@ export const signatureDishes = [
   {
     id: 'sig-1',
     name: 'Maha Street Pad Thai',
-    price: 38,
+    price: 15.99,
     description: 'Aromatic wok-fired rice ribbon noodles with egg, pressed tofu, sweet turnip, chives, bean sprouts, crushed peanuts, and fresh lime in our signature tamarind reduction.',
     image: mahaStreetPadThaiImg,
     tags: ['Signature', 'Wok-Fired']
@@ -236,7 +236,7 @@ export const menuData = {
       id: 'sig-1',
       name: 'Maha Street Pad Thai',
       description: 'Signature stir-fried rice noodles with tamarind sauce, egg, and peanuts.',
-      price: 24,
+      price: 15.99,
       rating: 5.0,
       image: mahaStreetPadThaiImg
     },
@@ -244,7 +244,7 @@ export const menuData = {
       id: 'noodle-omelette',
       name: 'Pad Thai Omelette Wrap',
       description: 'Classic Pad Thai wrapped in a thin egg omelette for a rich presentation.',
-      price: 26,
+      price: 17.99,
       rating: 4.9,
       image: padThaiOmeletteWrapImg
     },
@@ -252,7 +252,7 @@ export const menuData = {
       id: 'noodle-drunken',
       name: 'Midnight Drunken Noodles',
       description: 'Wide noodles stir-fried with chili, garlic, and Thai basil.',
-      price: 22,
+      price: 15.99,
       rating: 4.8,
       image: midnightDrunkenNoodlesImg
     },
@@ -260,7 +260,7 @@ export const menuData = {
       id: 'noodle-padseeew',
       name: 'Caramelized Pad See Ew',
       description: 'Flat noodles stir-fried with egg and Chinese broccoli in a savory soy glaze.',
-      price: 22,
+      price: 15.99,
       rating: 4.8,
       image: caramelizedPadSeeEwImg
     },
@@ -268,7 +268,7 @@ export const menuData = {
       id: 'noodle-padwunsen',
       name: 'Glass Noodle Stir Fry (Pad Wun Sen)',
       description: 'Light stir-fried glass noodles with vegetables and egg.',
-      price: 21,
+      price: 15.99,
       rating: 4.7,
       image: glassNoodleStirFryImg
     },
@@ -276,7 +276,7 @@ export const menuData = {
       id: 'sig-suki',
       name: 'Thai Sukiyaki Stir-Fry (Suki Hang)',
       description: 'Glass noodles stir-fried with napa cabbage, egg, and vegetables in a savory suki sauce.',
-      price: 23,
+      price: 14.99,
       rating: 4.7,
       image: thaiSukiyakiStirFryImg
     },
@@ -284,15 +284,23 @@ export const menuData = {
       id: 'sig-3',
       name: 'Northern Khao Soi',
       description: 'Coconut curry noodle soup with crispy noodles and rich broth.',
-      price: 25,
+      price: 15.99,
       rating: 4.9,
       image: northernKhaoSoiImg
     },
     {
+      id: 'noodle-suki-soup',
+      name: 'Thai Sukiyaki Soup',
+      description: 'Glass noodles with napa cabbage, egg, and vegetables in a savory suki sauce.',
+      price: 13.99,
+      rating: 4.8,
+      image: thaiSukiyakiStirFryImg
+    },
+    {
       id: 'noodle-pho',
-      name: 'Vietnamese Pho (Beef / Chicken / Seafood)',
+      name: 'Vietnamese Pho',
       description: 'Slow-simmered broth with rice noodles, herbs, and your choice of protein.',
-      price: 22,
+      price: 14.99,
       rating: 4.8,
       image: menuCurry
     },
@@ -300,7 +308,7 @@ export const menuData = {
       id: 'noodle-yentafo',
       name: 'Yen Ta Fo Pink Noodle Soup',
       description: 'Sweet and tangy Thai noodle soup with a distinctive pink broth.',
-      price: 23,
+      price: 14.99,
       rating: 4.7,
       image: menuCurry
     }
@@ -310,7 +318,7 @@ export const menuData = {
       id: 'curry-massaman',
       name: 'Massaman Comfort Curry',
       description: 'Mild curry with potatoes, onions, and warm spices.',
-      price: 24,
+      price: 15.99,
       rating: 4.9,
       image: massamanComfortCurryImg
     },
@@ -318,15 +326,15 @@ export const menuData = {
       id: 'curry-red',
       name: 'Red Fire Curry',
       description: 'Coconut curry with bold red chili flavor.',
-      price: 23,
+      price: 15.99,
       rating: 4.8,
       image: redFireCurryImg
     },
     {
       id: 'curry-pumpkin',
-      name: 'Red Curry with Pumpkin',
+      name: 'Pineapple Curry with Pumpkin',
       description: 'Rich curry served inside pumpkin for a slightly sweet finish.',
-      price: 26,
+      price: 15.99,
       rating: 5.0,
       image: redCurryWithPumpkinImg
     },
@@ -334,7 +342,7 @@ export const menuData = {
       id: 'curry-green',
       name: 'Green Herb Curry',
       description: 'Fresh, aromatic green curry with basil and coconut milk.',
-      price: 23,
+      price: 15.99,
       rating: 4.9,
       image: greenHerbCurryImg
     },
@@ -342,7 +350,7 @@ export const menuData = {
       id: 'curry-yellow',
       name: 'Golden Yellow Curry',
       description: 'Mild curry with turmeric, potatoes, and vegetables.',
-      price: 22,
+      price: 15.99,
       rating: 4.7,
       image: goldenYellowCurryImg
     },
@@ -350,7 +358,7 @@ export const menuData = {
       id: 'curry-panang',
       name: 'Panang Silk Curry',
       description: 'Thick and creamy curry with a slightly sweet, nutty flavor.',
-      price: 24,
+      price: 15.99,
       rating: 4.9,
       image: panangSilkCurryImg
     },
@@ -358,7 +366,7 @@ export const menuData = {
       id: 'curry-jungle',
       name: 'Jungle Heat Curry',
       description: 'Spicy, herb-forward curry without coconut milk.',
-      price: 22,
+      price: 13.99,
       rating: 4.6,
       image: jungleHeatCurryImg
     }
@@ -518,7 +526,7 @@ export const menuData = {
       id: 'chef-lamb',
       name: 'Lamb Chops',
       description: 'Grilled lamb chops seasoned with Thai spices.',
-      price: 42,
+      price: 25.00,
       rating: 4.9,
       image: heroDish
     },
@@ -526,7 +534,7 @@ export const menuData = {
       id: 'chef-lemongrass-chicken',
       name: 'Lemongrass Chicken',
       description: 'Grilled chicken infused with lemongrass and herbs.',
-      price: 28,
+      price: 15.00,
       rating: 4.8,
       image: menuAppetizer
     },
@@ -534,8 +542,16 @@ export const menuData = {
       id: 'chef-omelette',
       name: 'Thai Style Omelette',
       description: 'Fluffy omelette seasoned with fish sauce and herbs.',
-      price: 18,
+      price: 12.00,
       rating: 4.6,
+      image: heroDish
+    },
+    {
+      id: 'chef-massaman-stew',
+      name: 'Massaman Beef Stew with Roti',
+      description: 'Rich, slow-simmered beef stew in massaman curry paste, served with crispy roti bread.',
+      price: 18.00,
+      rating: 4.9,
       image: heroDish
     }
   ],
@@ -600,23 +616,39 @@ export const menuData = {
       id: 'plant-padthai',
       name: 'Vegetarian Pad Thai',
       description: 'Rice noodles stir-fried with vegetables and tofu.',
-      price: 20,
+      price: 15.99,
       rating: 4.8,
       image: mahaStreetPadThaiImg
     },
     {
-      id: 'plant-tomkha',
-      name: 'Tom Kha (veg)',
+      id: 'plant-tomkha-sm',
+      name: 'Tom Kha (veg) - Small',
       description: 'Coconut soup with vegetables and herbs.',
-      price: 18,
+      price: 6.99,
       rating: 4.8,
       image: tomKhaCoconutSoupImg
     },
     {
-      id: 'plant-tomyum',
-      name: 'Tom Yum (veg)',
+      id: 'plant-tomkha-lg',
+      name: 'Tom Kha (veg) - Large',
+      description: 'Coconut soup with vegetables and herbs.',
+      price: 13.99,
+      rating: 4.8,
+      image: tomKhaCoconutSoupImg
+    },
+    {
+      id: 'plant-tomyum-sm',
+      name: 'Tom Yum (veg) - Small',
       description: 'Spicy and sour vegetable soup.',
-      price: 18,
+      price: 5.99,
+      rating: 4.8,
+      image: tomYumFireBrothImg
+    },
+    {
+      id: 'plant-tomyum-lg',
+      name: 'Tom Yum (veg) - Large',
+      description: 'Spicy and sour vegetable soup.',
+      price: 11.99,
       rating: 4.8,
       image: tomYumFireBrothImg
     },
@@ -624,7 +656,7 @@ export const menuData = {
       id: 'plant-eggplant-curry',
       name: 'Eggplant & Tofu Curry',
       description: 'Eggplant and tofu in a rich curry sauce.',
-      price: 20,
+      price: 15.99,
       rating: 4.7,
       image: menuCurry
     },
@@ -632,7 +664,7 @@ export const menuData = {
       id: 'plant-choochee',
       name: 'Choo Chee Tofu',
       description: 'Tofu cooked in a creamy red curry sauce.',
-      price: 21,
+      price: 15.99,
       rating: 4.7,
       image: menuCurry
     },
@@ -640,7 +672,7 @@ export const menuData = {
       id: 'plant-kheemao',
       name: 'Tofu Khee Mao',
       description: 'Stir-fried tofu with chili, garlic, and basil.',
-      price: 20,
+      price: 15.99,
       rating: 4.7,
       image: menuAppetizer
     }
@@ -721,10 +753,18 @@ export const menuData = {
   ],
   'Beverages & Sides': [
     {
-      id: 'side-jasmine',
-      name: 'Jasmine Rice',
+      id: 'side-jasmine-sm',
+      name: 'Jasmine Rice - Small',
       description: 'Fragrant, steaming Jasmine rice.',
-      price: 4,
+      price: 3.00,
+      rating: 4.8,
+      image: heroDish
+    },
+    {
+      id: 'side-jasmine-lg',
+      name: 'Jasmine Rice - Large',
+      description: 'Fragrant, steaming Jasmine rice.',
+      price: 5.00,
       rating: 4.8,
       image: heroDish
     },
@@ -732,7 +772,7 @@ export const menuData = {
       id: 'side-brown',
       name: 'Brown Rice',
       description: 'Healthy, fiber-rich steamed brown rice.',
-      price: 4,
+      price: 3.00,
       rating: 4.6,
       image: heroDish
     },
@@ -740,15 +780,15 @@ export const menuData = {
       id: 'side-sticky',
       name: 'Sticky Rice',
       description: 'Traditional sweet-savory sticky rice.',
-      price: 5,
+      price: 4.00,
       rating: 4.8,
       image: heroDish
     },
     {
       id: 'side-noodles',
-      name: 'Steamed Noodles',
+      name: 'Steamed Noodles (choice of glass/ pad thai / flat noodles)',
       description: 'Freshly steamed rice ribbon noodles.',
-      price: 4,
+      price: 5.99,
       rating: 4.7,
       image: heroDish
     },
@@ -756,7 +796,7 @@ export const menuData = {
       id: 'side-veg',
       name: 'Steamed Vegetables',
       description: 'A fresh mix of seasonal steamed greens and vegetables.',
-      price: 6,
+      price: 3.99,
       rating: 4.7,
       image: heroDish
     },
@@ -764,7 +804,7 @@ export const menuData = {
       id: 'side-peanut',
       name: 'Peanut Sauce',
       description: 'Our house-made aromatic peanut dipping sauce.',
-      price: 3,
+      price: 3.00,
       rating: 4.9,
       image: heroDish
     },
@@ -772,7 +812,7 @@ export const menuData = {
       id: 'bev-thai-tea',
       name: 'Thai Iced Tea',
       description: 'Traditional sweetened Thai iced tea topped with rich cream.',
-      price: 5,
+      price: 5.00,
       rating: 4.9,
       image: menuAppetizer
     },
@@ -780,33 +820,57 @@ export const menuData = {
       id: 'bev-boba',
       name: 'Boba Selection',
       description: 'Explore our rich and creamy Boba Milk Teas and fruit teas. (See Boba menu for full selection).',
-      price: 6,
+      price: 6.00,
       rating: 4.9,
       image: menuAppetizer
     }
   ],
   'Soups & Claypots': [
     {
-      id: 'soup-tomyum-creamy',
-      name: 'Tom Yum Creamy Broth',
-      description: 'Vibrant, spicy-sour lemongrass broth enriched with a touch of evaporated milk, loaded with giant tiger prawns, oyster mushrooms, tomatoes, and fresh kaffir lime leaves.',
-      price: 19,
-      rating: 4.9,
-      image: tomYumCreamyBrothImg
-    },
-    {
-      id: 'soup-tomyum-clear',
-      name: 'Tom Yum Fire Broth (Clear)',
+      id: 'soup-tomyum-clear-sm',
+      name: 'Tom Yum Fire Broth (Clear) - Small',
       description: 'Traditional, fiery-sharp clear hot and sour broth infused with crushed lemongrass, galangal, fresh chili, fresh lime juice, kaffir lime leaves, and wild mushrooms.',
-      price: 18,
+      price: 5.99,
       rating: 4.8,
       image: tomYumFireBrothImg
     },
     {
-      id: 'soup-tomkha',
-      name: 'Tom Kha Coconut Soup',
+      id: 'soup-tomyum-clear-lg',
+      name: 'Tom Yum Fire Broth (Clear) - Large',
+      description: 'Traditional, fiery-sharp clear hot and sour broth infused with crushed lemongrass, galangal, fresh chili, fresh lime juice, kaffir lime leaves, and wild mushrooms.',
+      price: 11.99,
+      rating: 4.8,
+      image: tomYumFireBrothImg
+    },
+    {
+      id: 'soup-tomyum-creamy-sm',
+      name: 'Tom Yum Creamy Broth - Small',
+      description: 'Vibrant, spicy-sour lemongrass broth enriched with a touch of evaporated milk, loaded with giant tiger prawns, oyster mushrooms, tomatoes, and fresh kaffir lime leaves.',
+      price: 6.99,
+      rating: 4.9,
+      image: tomYumCreamyBrothImg
+    },
+    {
+      id: 'soup-tomyum-creamy-lg',
+      name: 'Tom Yum Creamy Broth - Large',
+      description: 'Vibrant, spicy-sour lemongrass broth enriched with a touch of evaporated milk, loaded with giant tiger prawns, oyster mushrooms, tomatoes, and fresh kaffir lime leaves.',
+      price: 12.99,
+      rating: 4.9,
+      image: tomYumCreamyBrothImg
+    },
+    {
+      id: 'soup-tomkha-sm',
+      name: 'Tom Kha Coconut Soup - Small',
       description: 'Silky, aromatic coconut milk broth simmered with tender chicken breast, wild mushrooms, fresh galangal, lemongrass, kaffir lime, and roasted chili oil.',
-      price: 19,
+      price: 6.99,
+      rating: 4.9,
+      image: tomKhaCoconutSoupImg
+    },
+    {
+      id: 'soup-tomkha-lg',
+      name: 'Tom Kha Coconut Soup - Large',
+      description: 'Silky, aromatic coconut milk broth simmered with tender chicken breast, wild mushrooms, fresh galangal, lemongrass, kaffir lime, and roasted chili oil.',
+      price: 13.99,
       rating: 4.9,
       image: tomKhaCoconutSoupImg
     },
@@ -814,9 +878,57 @@ export const menuData = {
       id: 'soup-khao-tom',
       name: 'Rice Comfort Soup (Khao Tom)',
       description: 'Traditional comforting Thai rice soup cooked in a rich, savory pork bone broth with hand-rolled seasoned pork meatballs, fresh ginger, celery, and golden fried garlic.',
-      price: 16,
+      price: 11.99,
       rating: 4.7,
       image: riceComfortSoupImg
+    },
+    {
+      id: 'soup-egg-drop-sm',
+      name: 'Egg Drop Soup Small',
+      description: 'Light broth with delicate ribbons of egg.',
+      price: 6.99,
+      rating: 4.7,
+      image: tomYumFireBrothImg
+    },
+    {
+      id: 'soup-hot-sour-sm',
+      name: 'Hot & Sour Soup - Small',
+      description: 'Tangy, savory soup with vegetables and a mild spicy kick.',
+      price: 6.99,
+      rating: 4.8,
+      image: tomYumFireBrothImg
+    },
+    {
+      id: 'soup-hot-sour-lg',
+      name: 'Hot & Sour Soup - Large',
+      description: 'Tangy, savory soup with vegetables and a mild spicy kick.',
+      price: 13.99,
+      rating: 4.8,
+      image: tomYumFireBrothImg
+    },
+    {
+      id: 'soup-miso-sm',
+      name: 'Miso Soup Small',
+      description: 'Traditional Japanese-style soybean broth with tofu and seaweed.',
+      price: 5.99,
+      rating: 4.7,
+      image: tomYumFireBrothImg
+    },
+    {
+      id: 'soup-shrimp-wonton-sm',
+      name: 'Shrimp Wonton Soup - Small',
+      description: 'Savory broth filled with house-made shrimp wontons and vegetables.',
+      price: 6.99,
+      rating: 4.8,
+      image: tomYumFireBrothImg
+    },
+    {
+      id: 'soup-shrimp-wonton-lg',
+      name: 'Shrimp Wonton Soup - Large',
+      description: 'Savory broth filled with house-made shrimp wontons and vegetables.',
+      price: 13.99,
+      rating: 4.8,
+      image: tomYumFireBrothImg
     },
     {
       id: 'soup-hot-pot',
@@ -862,7 +974,7 @@ menuData['Lunch'] = [
     id: 'lunch-pad-thai',
     name: 'Lunch Maha Street Pad Thai',
     description: 'Midday portion of our signature stir-fried rice noodles with tamarind sauce, egg, and peanuts.',
-    price: 18,
+    price: 12.99,
     rating: 4.9,
     image: mahaStreetPadThaiImg
   },
@@ -870,7 +982,7 @@ menuData['Lunch'] = [
     id: 'lunch-drunken-noodles',
     name: 'Lunch Midnight Drunken Noodles',
     description: 'Wide noodles stir-fried with chili, garlic, and Thai basil.',
-    price: 17,
+    price: 12.99,
     rating: 4.8,
     image: menuAppetizer
   },
@@ -878,7 +990,7 @@ menuData['Lunch'] = [
     id: 'lunch-pad-see-ew',
     name: 'Lunch Caramelized Pad See Ew',
     description: 'Flat noodles stir-fried with egg and Chinese broccoli in a savory soy glaze.',
-    price: 17,
+    price: 12.99,
     rating: 4.8,
     image: menuAppetizer
   },
@@ -886,7 +998,7 @@ menuData['Lunch'] = [
     id: 'lunch-massaman',
     name: 'Lunch Massaman Comfort Curry',
     description: 'Mild curry with potatoes, onions, and warm spices.',
-    price: 18,
+    price: 13.99,
     rating: 4.9,
     image: massamanComfortCurryImg
   },
@@ -894,7 +1006,7 @@ menuData['Lunch'] = [
     id: 'lunch-yellow-curry',
     name: 'Lunch Golden Yellow Curry',
     description: 'Mild curry with turmeric, potatoes, and vegetables.',
-    price: 17,
+    price: 12.99,
     rating: 4.7,
     image: goldenYellowCurryImg
   },
@@ -902,7 +1014,7 @@ menuData['Lunch'] = [
     id: 'lunch-basil-rice',
     name: 'Lunch Bangkok Fire Basil Rice',
     description: 'Spicy basil fried rice with chili and garlic.',
-    price: 17,
+    price: 12.99,
     rating: 4.8,
     image: bangkokFireBasilRiceImg
   },
@@ -910,7 +1022,7 @@ menuData['Lunch'] = [
     id: 'lunch-pineapple-rice',
     name: 'Lunch Pineapple Island Fried Rice',
     description: 'Sweet and savory fried rice with pineapple and cashews.',
-    price: 18,
+    price: 13.99,
     rating: 4.8,
     image: pineappleIslandFriedRiceImg
   },
@@ -918,7 +1030,7 @@ menuData['Lunch'] = [
     id: 'lunch-classic-rice',
     name: 'Lunch Classic Thai Fried Rice',
     description: 'Simple egg fried rice with vegetables.',
-    price: 15,
+    price: 10.99,
     rating: 4.6,
     image: classicThaiFriedRiceImg
   },
@@ -926,7 +1038,7 @@ menuData['Lunch'] = [
     id: 'lunch-lemongrass-chicken',
     name: 'Lunch Lemongrass Chicken',
     description: 'Grilled chicken infused with lemongrass and herbs.',
-    price: 22,
+    price: 12.99,
     rating: 4.8,
     image: menuAppetizer
   },
@@ -934,7 +1046,7 @@ menuData['Lunch'] = [
     id: 'lunch-veg-padthai',
     name: 'Lunch Vegetarian Pad Thai',
     description: 'Rice noodles stir-fried with vegetables and tofu.',
-    price: 16,
+    price: 11.99,
     rating: 4.8,
     image: mahaStreetPadThaiImg
   }
@@ -943,9 +1055,9 @@ menuData['Lunch'] = [
 // Load custom admin overrides from localStorage if present
 try {
   if (typeof window !== 'undefined') {
-    if (!localStorage.getItem('maha_menu_reset_curries_v3')) {
+    if (!localStorage.getItem('maha_menu_reset_prices_v1')) {
       localStorage.removeItem('maha_custom_menu');
-      localStorage.setItem('maha_menu_reset_curries_v3', 'true');
+      localStorage.setItem('maha_menu_reset_prices_v1', 'true');
     }
   }
   const customMenuData = localStorage.getItem('maha_custom_menu');
