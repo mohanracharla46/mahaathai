@@ -14,6 +14,10 @@ import lambChopsImg from '../assets/Lamb Chops.png';
 import salmonImg from '../assets/Salmon .png';
 import wholeFishSelectionImg from '../assets/Whole Fish Selection.png';
 import yentafoImg from '../assets/Yen Ta Fo .png';
+import kanaHedHormImg from '../assets/KA-NA HED HORM.png';
+import lemongrassChickenImg from '../assets/Lemongrass Chicken.png';
+import thaiStyleOmeletteImg from '../assets/Thai Style Omelette.png';
+import vegThaiFriedRiceImg from '../assets/Vegetarian Thai Fried Rice.png';
 import shrimpToastImg from '../assets/Shrimp Toast .png';
 import crispySpringRollsImg from '../assets/Crispy Spring Rolls (veg  shrimp  chicken).png';
 import crunchyMahaRollsImg from '../assets/Crunchy Maha Rolls.png';
@@ -613,7 +617,7 @@ export const menuData = {
       description: 'Grilled chicken infused with lemongrass and herbs.',
       price: 15.00,
       rating: 4.8,
-      image: menuAppetizer
+      image: lemongrassChickenImg
     },
     {
       id: 'chef-omelette',
@@ -621,7 +625,7 @@ export const menuData = {
       description: 'Fluffy omelette seasoned with fish sauce and herbs.',
       price: 12.00,
       rating: 4.6,
-      image: heroDish
+      image: thaiStyleOmeletteImg
     },
     {
       id: 'chef-massaman-stew',
@@ -671,7 +675,7 @@ export const menuData = {
       description: 'Chinese broccoli and mushrooms sautéed in savory sauce.',
       price: 14.00,
       rating: 4.8,
-      image: menuAppetizer
+      image: kanaHedHormImg
     },
     {
       id: 'plant-fried-rice',
@@ -679,7 +683,7 @@ export const menuData = {
       description: 'Fried rice with vegetables and soy-based seasoning.',
       price: 14.00,
       rating: 4.6,
-      image: heroDish
+      image: vegThaiFriedRiceImg
     },
     {
       id: 'plant-basil-rice',
