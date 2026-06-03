@@ -62,6 +62,16 @@ import redFireCurryImg from '../assets/Red Fire Curry.png';
 import greenCurryFriedRiceImg from '../assets/Green Curry Fried Rice .png';
 import kapiUmamiFriedRiceImg from '../assets/Kapi Umami Fried Rice.png';
 import redCurryFriedRiceImg from '../assets/Red Curry Fried Rice.png';
+import plantBasilRiceImg from '../assets/Basil Fried Rice 🌶️.png';
+import plantChooCheeTofuImg from '../assets/Choo Chee Tofu.png';
+import plantEggplantTofuImg from '../assets/Eggplant & Tofu Curry.png';
+import kanaHedHormImgNew from '../assets/KANA HED HORM.png';
+import mangoStickyRiceImg from '../assets/Mango Sticky Rice.png';
+import rubiesCoconutImg from '../assets/Red Rubies in Coconut Milk..png';
+import plantTofuKheeMaoImg from '../assets/Tofu Khee Mao.png';
+import plantTomKhaImg from '../assets/Tom Kha (veg).png';
+import plantTomYumImg from '../assets/Tom Yum (veg).png';
+import plantPadThaiImg from '../assets/Vegetarian Pad Thai.png';
 
 // Signature dishes matching mockup
 export const signatureDishes = [
@@ -675,7 +685,7 @@ export const menuData = {
       description: 'Chinese broccoli and mushrooms sautéed in savory sauce.',
       price: 14.00,
       rating: 4.8,
-      image: kanaHedHormImg
+      image: kanaHedHormImgNew
     },
     {
       id: 'plant-fried-rice',
@@ -691,7 +701,7 @@ export const menuData = {
       description: 'Spicy vegetarian fried rice with basil and chili.',
       price: 14.00,
       rating: 4.7,
-      image: heroDish
+      image: plantBasilRiceImg
     },
     {
       id: 'plant-padthai',
@@ -699,7 +709,7 @@ export const menuData = {
       description: 'Rice noodles stir-fried with vegetables and tofu.',
       price: 14.00,
       rating: 4.8,
-      image: mahaStreetPadThaiImg
+      image: plantPadThaiImg
     },
     {
       id: 'plant-tomkha-sm',
@@ -707,7 +717,7 @@ export const menuData = {
       description: 'Coconut soup with vegetables and herbs.',
       price: 5.99,
       rating: 4.8,
-      image: tomKhaCoconutSoupImg
+      image: plantTomKhaImg
     },
     {
       id: 'plant-tomkha-lg',
@@ -715,7 +725,7 @@ export const menuData = {
       description: 'Coconut soup with vegetables and herbs.',
       price: 11.99,
       rating: 4.8,
-      image: tomKhaCoconutSoupImg
+      image: plantTomKhaImg
     },
     {
       id: 'plant-tomyum-sm',
@@ -723,7 +733,7 @@ export const menuData = {
       description: 'Spicy and sour vegetable soup.',
       price: 5.99,
       rating: 4.8,
-      image: tomYumFireBrothImg
+      image: plantTomYumImg
     },
     {
       id: 'plant-tomyum-lg',
@@ -731,7 +741,7 @@ export const menuData = {
       description: 'Spicy and sour vegetable soup.',
       price: 11.99,
       rating: 4.8,
-      image: tomYumFireBrothImg
+      image: plantTomYumImg
     },
     {
       id: 'plant-eggplant-curry',
@@ -739,7 +749,7 @@ export const menuData = {
       description: 'Eggplant and tofu in a rich prik pao chili sauce.',
       price: 14.00,
       rating: 4.7,
-      image: menuCurry
+      image: plantEggplantTofuImg
     },
     {
       id: 'plant-choochee',
@@ -747,7 +757,7 @@ export const menuData = {
       description: 'Tofu cooked in a creamy red curry sauce.',
       price: 18.00,
       rating: 4.7,
-      image: menuCurry
+      image: plantChooCheeTofuImg
     },
     {
       id: 'plant-kheemao',
@@ -755,7 +765,7 @@ export const menuData = {
       description: 'Stir-fried tofu with chili, garlic, and basil.',
       price: 14.00,
       rating: 4.7,
-      image: menuAppetizer
+      image: plantTofuKheeMaoImg
     }
   ],
   'Sweet Endings': [
@@ -765,7 +775,7 @@ export const menuData = {
       description: 'Water chestnuts served in sweet coconut milk with crushed ice.',
       price: 9.99,
       rating: 4.9,
-      image: menuDessert
+      image: rubiesCoconutImg
     },
     {
       id: 'sweet-mango-sticky',
@@ -773,7 +783,7 @@ export const menuData = {
       description: 'Fresh mango served with sweet coconut sticky rice.',
       price: 9.99,
       rating: 5.0,
-      image: menuDessert
+      image: mangoStickyRiceImg
     },
     {
       id: 'sweet-banana-sticky',
