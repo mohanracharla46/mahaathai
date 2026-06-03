@@ -8,7 +8,12 @@ import menuAppetizer from '../assets/menu_appetizer.png';
 import menuCurry from '../assets/menu_curry.png';
 import menuDessert from '../assets/menu_dessert.png';
 import mahaStreetPadThaiImg from '../assets/Maha Street Pad Thai.png';
-import coconutShellSeafoodImg from '../assets/Coconut Shell Seafood.png';
+import coconutShellSeafoodImg from '../assets/Coconut Shell Seafood (Hor Mok.png';
+import chooCheeSeafoodCurryImg from '../assets/Choo Chee Seafood Curry.png';
+import lambChopsImg from '../assets/Lamb Chops.png';
+import salmonImg from '../assets/Salmon .png';
+import wholeFishSelectionImg from '../assets/Whole Fish Selection.png';
+import yentafoImg from '../assets/Yen Ta Fo .png';
 import shrimpToastImg from '../assets/Shrimp Toast .png';
 import crispySpringRollsImg from '../assets/Crispy Spring Rolls (veg  shrimp  chicken).png';
 import crunchyMahaRollsImg from '../assets/Crunchy Maha Rolls.png';
@@ -326,7 +331,7 @@ export const menuData = {
       description: 'Sweet and tangy Thai noodle soup with a distinctive pink broth.',
       price: 14.99,
       rating: 4.7,
-      image: menuCurry
+      image: yentafoImg
     }
   ],
   'Curry Kitchen': [
@@ -550,7 +555,7 @@ export const menuData = {
       description: 'Rich coconut curry with shrimp, squid, and mussels.',
       price: 19.99,
       rating: 4.9,
-      image: menuCurry
+      image: chooCheeSeafoodCurryImg
     },
     {
       id: 'sea-salmon',
@@ -558,7 +563,7 @@ export const menuData = {
       description: 'Pan-seared salmon served with your choice of savory sauce.',
       price: 19.99,
       rating: 4.8,
-      image: heroDish
+      image: salmonImg
     },
     {
       id: 'sea-whole-fish-swai',
@@ -566,7 +571,7 @@ export const menuData = {
       description: 'Deep-fried whole Swai fish filet served with garlic or chili-based sauces.',
       price: 18.99,
       rating: 4.8,
-      image: heroDish
+      image: wholeFishSelectionImg
     },
     {
       id: 'sea-whole-fish-redsnapper',
@@ -574,7 +579,7 @@ export const menuData = {
       description: 'Deep-fried whole Redsnapper served with garlic or chili-based sauces.',
       price: 31.00,
       rating: 4.9,
-      image: heroDish
+      image: wholeFishSelectionImg
     },
     {
       id: 'sea-whole-fish-pomfret',
@@ -582,7 +587,7 @@ export const menuData = {
       description: 'Deep-fried whole Pomfret served with garlic or chili-based sauces.',
       price: 25.00,
       rating: 4.8,
-      image: heroDish
+      image: wholeFishSelectionImg
     },
     {
       id: 'sea-whole-fish-pompano',
@@ -590,7 +595,7 @@ export const menuData = {
       description: 'Deep-fried whole Pompano served with garlic or chili-based sauces.',
       price: 25.00,
       rating: 4.8,
-      image: heroDish
+      image: wholeFishSelectionImg
     }
   ],
   'Chef’s Table': [
@@ -600,7 +605,7 @@ export const menuData = {
       description: 'Grilled lamb chops seasoned with Thai spices.',
       price: 25.00,
       rating: 4.9,
-      image: heroDish
+      image: lambChopsImg
     },
     {
       id: 'chef-lemongrass-chicken',
