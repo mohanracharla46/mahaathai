@@ -8,7 +8,7 @@ import menuAppetizer from '../assets/menu_appetizer.png';
 import menuCurry from '../assets/menu_curry.png';
 import menuDessert from '../assets/menu_dessert.png';
 import mahaStreetPadThaiImg from '../assets/Maha Street Pad Thai.png';
-import coconutShellSeafoodImg from '../assets/Coconut Shell Seafood (Hor Mok.png';
+import coconutShellSeafoodImg from '../assets/Coconut Shell Seafood.png';
 import chooCheeSeafoodCurryImg from '../assets/Choo Chee Seafood Curry.png';
 import lambChopsImg from '../assets/Lamb Chops.png';
 import salmonImg from '../assets/Salmon .png';
@@ -1161,9 +1161,9 @@ menuData['Lunch'] = [
 // Load custom admin overrides from localStorage if present
 try {
   if (typeof window !== 'undefined') {
-    if (!localStorage.getItem('maha_menu_reset_prices_v4')) {
+    if (!localStorage.getItem('maha_menu_reset_prices_v5')) {
       localStorage.removeItem('maha_custom_menu');
-      localStorage.setItem('maha_menu_reset_prices_v4', 'true');
+      localStorage.setItem('maha_menu_reset_prices_v5', 'true');
     }
   }
   const customMenuData = localStorage.getItem('maha_custom_menu');
