@@ -1184,20 +1184,12 @@ if (Array.isArray(menuData['Dinner'])) {
   );
 }
 
-const categories = ['Appetizers', 'Salads', 'Soups & Claypots', 'Noodle Bar', 'Curry Kitchen', 'Rice & Wok', 'Street Kitchen', 'From the Sea', 'Chef’s Table', 'Plant-Based', 'Sweet Endings', 'Beverages & Sides'];
-
 export default function MenuSection({ cart = {}, addToCart, removeFromCart }) {
-  const [selectedCategory, setSelectedCategory] = useState('Appetizers');
-
-  useEffect(() => {
-    const handleCategoryChange = (e) => {
-      if (categories.includes(e.detail)) {
-        setSelectedCategory(e.detail);
-      }
-    };
-    window.addEventListener('changeMenuCategory', handleCategoryChange);
-    return () => window.removeEventListener('changeMenuCategory', handleCategoryChange);
-  }, []);
+  const seasonalItems = [
+    menuData['Soups & Claypots'].find(item => item.id === 'soup-hot-pot'),
+    menuData['Curry Kitchen'].find(item => item.id === 'curry-jungle'),
+    menuData['Soups & Claypots'].find(item => item.id === 'soup-khao-tom')
+  ].filter(Boolean);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -1239,210 +1231,130 @@ export default function MenuSection({ cart = {}, addToCart, removeFromCart }) {
           </h2>
         </div>
 
-        {/* State-Driven Tab Filtering System */}
-        <div 
-          className="flex justify-start md:justify-center mb-16" 
-          style={{ 
-            display: 'flex', 
-            marginBottom: '4rem',
-            width: '100%',
-            overflowX: 'auto',
-            WebkitOverflowScrolling: 'touch',
-            scrollbarWidth: 'none',
-            msOverflowStyle: 'none'
+        {/* Grid Showcase of Seasonal Menu Cards */}
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+            gap: '2rem'
           }}
         >
-          <div 
-            className="flex p-1.5 rounded-full border"
-            style={{ 
-              display: 'flex', 
-              padding: '0.375rem', 
-              borderRadius: '9999px', 
-              borderColor: 'var(--border-light)',
-              backgroundColor: 'rgba(255, 255, 255, 0.6)',
-              backdropFilter: 'blur(8px)',
-              position: 'relative',
-              flexWrap: 'nowrap',
-              minWidth: 'max-content'
-            }}
-          >
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                className="relative px-6 py-3 font-sans text-xs font-semibold uppercase tracking-wider transition-colors duration-300"
-                style={{
-                  position: 'relative',
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  borderRadius: '9999px',
-                  fontSize: '0.75rem',
-                  letterSpacing: '0.15em',
-                  padding: '0.75rem 1.75rem',
-                  outline: 'none',
-                  userSelect: 'none'
-                }}
+          {seasonalItems.map((item) => (
+            <motion.div
+              key={item.id}
+              variants={itemVariants}
+              whileHover={{ y: -6 }}
+              transition={{ duration: 0.4 }}
+              className="group flex flex-col"
+              style={{ display: 'flex', flexDirection: 'column' }}
+            >
+              {/* Image Container */}
+              <div 
+                className="relative overflow-hidden w-full aspect-[4/3] rounded-md mb-6"
+                style={{ overflow: 'hidden', position: 'relative', width: '100%', aspectRatio: '4/3', borderRadius: '8px', marginBottom: '1.5rem' }}
               >
-                {selectedCategory === category && (
-                  <motion.div
-                    layoutId="activeCategoryTab"
-                    className="absolute inset-0 z-0"
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      zIndex: 0,
-                      backgroundColor: 'var(--text-dark)',
-                      borderRadius: '9999px'
-                    }}
-                    transition={{ type: 'spring', stiffness: 260, damping: 26 }}
-                  />
-                )}
-                <span 
-                  className="relative z-10 transition-colors duration-300"
-                  style={{ 
-                    position: 'relative',
-                    zIndex: 10,
-                    color: selectedCategory === category ? 'var(--canvas-primary)' : 'var(--text-dark)' 
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  className="w-full h-full object-cover"
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover'
+                  }}
+                />
+                
+                <div 
+                  className="absolute bottom-3 left-3 flex items-center gap-1 bg-white/95 px-2 py-1 rounded"
+                  style={{
+                    position: 'absolute',
+                    bottom: '0.75rem',
+                    left: '0.75rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.25rem',
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    padding: '0.25rem 0.5rem',
+                    borderRadius: '4px',
+                    boxShadow: '0 2px 8px rgba(11, 54, 61, 0.05)'
                   }}
                 >
-                  {category}
-                </span>
-              </button>
-            ))}
-          </div>
-        </div>
+                  <Star size={12} fill="var(--gold-antique)" color="var(--gold-antique)" />
+                  <span style={{ fontSize: '10px', color: 'var(--text-dark)', fontWeight: 'bold' }}>
+                    {item.rating.toFixed(1)}
+                  </span>
+                </div>
+              </div>
 
-        {/* Grid Showcase of Category Menu Cards */}
-        <AnimatePresence mode="wait">
-          <motion.div 
-            key={selectedCategory}
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-              gap: '2rem'
-            }}
-          >
-            {menuData[selectedCategory].slice(0, 3).map((item) => (
-              <motion.div
-                key={item.id}
-                variants={itemVariants}
-                whileHover={{ y: -6 }}
-                transition={{ duration: 0.4 }}
-                className="group flex flex-col"
-                style={{ display: 'flex', flexDirection: 'column' }}
-              >
-                {/* Image Container */}
-                <div 
-                  className="relative overflow-hidden w-full aspect-[4/3] rounded-md mb-6"
-                  style={{ overflow: 'hidden', position: 'relative', width: '100%', aspectRatio: '4/3', borderRadius: '8px', marginBottom: '1.5rem' }}
-                >
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-full h-full object-cover"
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover'
-                    }}
-                  />
-                  
-                  <div 
-                    className="absolute bottom-3 left-3 flex items-center gap-1 bg-white/95 px-2 py-1 rounded"
-                    style={{
-                      position: 'absolute',
-                      bottom: '0.75rem',
-                      left: '0.75rem',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.25rem',
-                      backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                      padding: '0.25rem 0.5rem',
-                      borderRadius: '4px',
-                      boxShadow: '0 2px 8px rgba(11, 54, 61, 0.05)'
-                    }}
-                  >
-                    <Star size={12} fill="var(--gold-antique)" color="var(--gold-antique)" />
-                    <span style={{ fontSize: '10px', color: 'var(--text-dark)', fontWeight: 'bold' }}>
-                      {item.rating.toFixed(1)}
-                    </span>
-                  </div>
+              <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+                <div className="menu-leader-row">
+                  <h3 className="menu-leader-title">{item.name}</h3>
+                  <div className="menu-leader-dots" />
+                  <span className="menu-leader-price">${item.price}</span>
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
-                  <div className="menu-leader-row">
-                    <h3 className="menu-leader-title">{item.name}</h3>
-                    <div className="menu-leader-dots" />
-                    <span className="menu-leader-price">${item.price}</span>
-                  </div>
+                <p className="menu-card-desc" style={{ flexGrow: 1 }}>{item.description}</p>
 
-                  <p className="menu-card-desc" style={{ flexGrow: 1 }}>{item.description}</p>
-
-                  <div style={{ marginTop: '0.5rem', display: 'flex', justifyContent: 'flex-start' }}>
-                    {(() => {
-                      const cartItem = cart[item.id];
-                      const quantity = cartItem ? cartItem.quantity : 0;
-                      if (quantity > 0) {
-                        return (
-                          <div className="qty-controls" style={{ border: '1px solid var(--gold-antique)', borderRadius: '9999px', padding: '0.25rem 0.6rem' }}>
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                removeFromCart(item.id);
-                              }}
-                              className="qty-btn"
-                              style={{ border: 'none', background: 'none', color: 'var(--text-dark)', cursor: 'pointer', fontWeight: 'bold' }}
-                            >
-                              -
-                            </button>
-                            <span className="qty-val" style={{ margin: '0 0.75rem', fontWeight: 700 }}>{quantity}</span>
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                addToCart(item);
-                              }}
-                              className="qty-btn"
-                              style={{ border: 'none', background: 'none', color: 'var(--text-dark)', cursor: 'pointer', fontWeight: 'bold' }}
-                            >
-                              +
-                            </button>
-                          </div>
-                        );
-                      }
+                <div style={{ marginTop: '0.5rem', display: 'flex', justifyContent: 'flex-start' }}>
+                  {(() => {
+                    const cartItem = cart[item.id];
+                    const quantity = cartItem ? cartItem.quantity : 0;
+                    if (quantity > 0) {
                       return (
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            addToCart(item);
-                          }}
-                          className="card-btn"
-                        >
-                          + Add to Cart
-                        </button>
+                        <div className="qty-controls" style={{ border: '1px solid var(--gold-antique)', borderRadius: '9999px', padding: '0.25rem 0.6rem' }}>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeFromCart(item.id);
+                            }}
+                            className="qty-btn"
+                            style={{ border: 'none', background: 'none', color: 'var(--text-dark)', cursor: 'pointer', fontWeight: 'bold' }}
+                          >
+                            -
+                          </button>
+                          <span className="qty-val" style={{ margin: '0 0.75rem', fontWeight: 700 }}>{quantity}</span>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              addToCart(item);
+                            }}
+                            className="qty-btn"
+                            style={{ border: 'none', background: 'none', color: 'var(--text-dark)', cursor: 'pointer', fontWeight: 'bold' }}
+                          >
+                            +
+                          </button>
+                        </div>
                       );
-                    })()}
-                  </div>
+                    }
+                    return (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          addToCart(item);
+                        }}
+                        className="card-btn"
+                      >
+                        + Add to Cart
+                      </button>
+                    );
+                  })()}
                 </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </AnimatePresence>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
 
         {/* View Full Menu Button */}
         <div style={{ display: 'flex', justifyContent: 'center', marginTop: '3rem' }}>
           <a
-            href={`#/menu/${selectedCategory.toLowerCase()}`}
+            href="#/menu/dinner"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
