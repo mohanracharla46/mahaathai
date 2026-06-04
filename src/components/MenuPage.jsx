@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Star, ArrowLeft, SlidersHorizontal, X, ChevronDown } from 'lucide-react';
+import { Star, ArrowLeft, SlidersHorizontal, X, ChevronDown, Search } from 'lucide-react';
 import { menuData } from './MenuSection';
 
 const ALL_CATEGORIES = ['Lunch', 'Dinner', 'Vegetarian'];
@@ -32,6 +32,7 @@ export default function MenuPage({ onOpenReservation, cart = {}, addToCart, remo
   const [sortBy, setSortBy]                         = useState('default');
   const [isSortOpen, setIsSortOpen]                 = useState(false);
   const [filtersVisible, setFiltersVisible]          = useState(true);
+  const [searchQuery, setSearchQuery]               = useState('');
 
   const containerVariants = {
     hidden:  { opacity: 0 },
@@ -45,11 +46,23 @@ export default function MenuPage({ onOpenReservation, cart = {}, addToCart, remo
   // ── Source items from selected category ─────────────────────────────────────
   const categoryItems = useMemo(() => menuData[selectedCategory] || [], [selectedCategory]);
 
-  // ── Price filter ─────────────────────────────────────────────────────────────
+  // ── Search & Price filter ───────────────────────────────────────────────────
   const priceFiltered = useMemo(() => {
+    let result = categoryItems;
+
+    // Search filter
+    if (searchQuery.trim() !== '') {
+      const query = searchQuery.toLowerCase().trim();
+      result = result.filter(item =>
+        item.name.toLowerCase().includes(query) ||
+        item.description.toLowerCase().includes(query)
+      );
+    }
+
+    // Price filter
     const { min, max } = PRICE_RANGES[selectedPriceRange];
-    return categoryItems.filter(item => item.price >= min && item.price < max);
-  }, [categoryItems, selectedPriceRange]);
+    return result.filter(item => item.price >= min && item.price < max);
+  }, [categoryItems, searchQuery, selectedPriceRange]);
 
   // ── Sort ─────────────────────────────────────────────────────────────────────
   const displayedItems = useMemo(() => {
@@ -60,13 +73,14 @@ export default function MenuPage({ onOpenReservation, cart = {}, addToCart, remo
     return copy;
   }, [priceFiltered, sortBy]);
 
-  const hasActiveFilters = selectedPriceRange !== 0 || sortBy !== 'default';
+  const hasActiveFilters = selectedPriceRange !== 0 || sortBy !== 'default' || searchQuery.trim() !== '';
   const currentSort      = SORT_OPTIONS.find(o => o.value === sortBy);
   const meta             = CATEGORY_META[selectedCategory];
 
   function clearFilters() {
     setSelectedPriceRange(0);
     setSortBy('default');
+    setSearchQuery('');
   }
 
   return (
@@ -187,22 +201,61 @@ export default function MenuPage({ onOpenReservation, cart = {}, addToCart, remo
           }}>
             {/* Top row */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
-              <button
-                onClick={() => setFiltersVisible(v => !v)}
-                style={{
-                  display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
-                  background: 'none', border: '1px solid var(--border-light)',
-                  borderRadius: '6px', padding: '0.5rem 1rem', cursor: 'pointer',
-                  fontFamily: 'var(--font-body)', fontSize: '0.72rem',
-                  fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase',
-                  color: 'var(--text-dark)', transition: 'all 0.3s'
-                }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--gold-antique)'; e.currentTarget.style.color = 'var(--gold-antique)'; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border-light)'; e.currentTarget.style.color = 'var(--text-dark)'; }}
-              >
-                <SlidersHorizontal size={13} />
-                {filtersVisible ? 'Hide Filters' : 'Filters'}
-              </button>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexGrow: 1, flexWrap: 'wrap' }}>
+                <button
+                  onClick={() => setFiltersVisible(v => !v)}
+                  style={{
+                    display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+                    background: 'none', border: '1px solid var(--border-light)',
+                    borderRadius: '6px', padding: '0.5rem 1rem', cursor: 'pointer',
+                    fontFamily: 'var(--font-body)', fontSize: '0.72rem',
+                    fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase',
+                    color: 'var(--text-dark)', transition: 'all 0.3s'
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--gold-antique)'; e.currentTarget.style.color = 'var(--gold-antique)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border-light)'; e.currentTarget.style.color = 'var(--text-dark)'; }}
+                >
+                  <SlidersHorizontal size={13} />
+                  {filtersVisible ? 'Hide Filters' : 'Filters'}
+                </button>
+
+                {/* Search Bar */}
+                <div style={{ position: 'relative', width: '100%', maxWidth: '320px' }}>
+                  <input
+                    type="text"
+                    placeholder="Search dishes..."
+                    value={searchQuery}
+                    onChange={e => setSearchQuery(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '0.5rem 1rem 0.5rem 2.2rem',
+                      borderRadius: '6px',
+                      border: '1px solid var(--border-light)',
+                      backgroundColor: 'var(--canvas-primary)',
+                      color: 'var(--text-dark)',
+                      fontFamily: 'var(--font-body)',
+                      fontSize: '0.8rem',
+                      outline: 'none',
+                      transition: 'all 0.3s'
+                    }}
+                    onFocus={e => e.target.style.borderColor = 'var(--gold-antique)'}
+                    onBlur={e => e.target.style.borderColor = 'var(--border-light)'}
+                  />
+                  <Search size={14} style={{ position: 'absolute', left: '0.8rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                  {searchQuery && (
+                    <button 
+                      onClick={() => setSearchQuery('')} 
+                      style={{
+                        position: 'absolute', right: '0.6rem', top: '50%', transform: 'translateY(-50%)',
+                        background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer',
+                        padding: '2px', display: 'flex', alignItems: 'center'
+                      }}
+                    >
+                      <X size={12} />
+                    </button>
+                  )}
+                </div>
+              </div>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', flexWrap: 'wrap' }}>
                 <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
