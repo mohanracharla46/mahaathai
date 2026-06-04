@@ -90,6 +90,12 @@ const listeners = new Set();
 
 // Load initial content from local storage safely
 try {
+  if (typeof window !== 'undefined') {
+    if (!localStorage.getItem('maha_content_reset_v4')) {
+      localStorage.removeItem('maha_website_content');
+      localStorage.setItem('maha_content_reset_v4', 'true');
+    }
+  }
   const saved = localStorage.getItem('maha_website_content');
   if (saved) {
     const parsed = JSON.parse(saved);
