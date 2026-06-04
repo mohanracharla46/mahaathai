@@ -10,7 +10,7 @@ import menuDessert from '../assets/menu_dessert.png';
 import mahaStreetPadThaiImg from '../assets/Maha Street Pad Thai.png';
 import coconutShellSeafoodImg from '../assets/Coconut Shell Seafood.png';
 import chooCheeSeafoodCurryImg from '../assets/Choo Chee Seafood Curry.png';
-import lambChopsImg from '../assets/Lamb Chops.png';
+import lambChopsImg from '../assets/Lamb Chops.jpeg';
 import salmonImg from '../assets/Salmon .png';
 import wholeFishSelectionImg from '../assets/Whole Fish Selection.png';
 import yentafoImg from '../assets/Yen Ta Fo .png';
