@@ -509,7 +509,7 @@ export default function ContactPage({ onOpenReservation }) {
               }}>
                 <iframe
                   title="Maha Thai Location"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3875.5!2d100.5!3d13.74!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTPCsDQ0JzI0LjAiTiAxMDDCsDMwJzAwLjAiRQ!5e0!3m2!1sen!2sth!4v1"
+                  src="https://maps.google.com/maps?q=1901%20Long%20Prairie%20Rd%20Ste%20260,%20Flower%20Mound,%20TX%2075022&t=&z=15&ie=UTF8&iwloc=&output=embed"
                   width="100%" height="100%"
                   style={{ border: 0 }}
                   allowFullScreen=""
@@ -535,10 +535,10 @@ export default function ContactPage({ onOpenReservation }) {
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                   {[
-                    { icon: <MapPin size={16} />, text: '12 Heritage Court, Sukhumvit, Bangkok 10110' },
-                    { icon: <Phone size={16} />, text: '+66 2 888 7890' },
-                    { icon: <Mail size={16} />, text: 'dining@mahathai.com' },
-                    { icon: <Globe size={16} />, text: 'www.mahathai.com' }
+                    { icon: <MapPin size={16} />, text: '1901 Long Prairie Rd, Ste 260, Flower Mound, TX 75022' },
+                    { icon: <Phone size={16} />, text: '+1 (469) 993-1399' },
+                    { icon: <Mail size={16} />, text: 'info@mahaathai.com' },
+                    { icon: <Globe size={16} />, text: 'www.mahaathai.com' }
                   ].map((item, i) => (
                     <div key={i} style={{
                       display: 'flex', alignItems: 'center', gap: '0.75rem'
@@ -586,7 +586,7 @@ export default function ContactPage({ onOpenReservation }) {
                     Reserve Table
                   </button>
                   <a
-                    href="tel:+6628887890"
+                    href="tel:+14699931399"
                     style={{
                       flex: 1, minWidth: '140px',
                       padding: '0.75rem 1.25rem',

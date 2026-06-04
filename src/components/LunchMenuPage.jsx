@@ -119,7 +119,7 @@ export default function LunchMenuPage({ onOpenReservation, cart = {}, addToCart,
           display: 'flex', justifyContent: 'center', gap: '2rem', flexWrap: 'wrap'
         }}>
           {[
-            { icon: <Clock size={18} />, label: 'Served 11:30 AM – 3:00 PM' },
+            { icon: <Clock size={18} />, label: 'Served 11:00 AM – 3:00 PM' },
             { icon: <Sun size={18} />, label: 'Fresh Seasonal Plates' },
             { icon: <Leaf size={18} />, label: 'Locally Sourced Ingredients' }
           ].map((badge, i) => (

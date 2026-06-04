@@ -102,11 +102,11 @@ export default function Footer() {
               <h4 className="footer-col-title" style={{ fontFamily: 'var(--font-sans)', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--text-dark)', marginBottom: '1.5rem' }}>VISIT US</h4>
               <div className="contact-list" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
                 <p style={{ margin: 0, fontWeight: 300, lineHeight: 1.5 }}>
-                  12 Heritage Court,<br />
-                  Sukhumvit, Bangkok 10110
+                  1901 Long Prairie Rd, Ste 260,<br />
+                  Flower Mound, TX 75022
                 </p>
-                <p style={{ margin: 0, fontWeight: 300 }}>Tel: +66 2 888 7890</p>
-                <p style={{ margin: 0, fontWeight: 300 }}>Email: dining@mahathai.com</p>
+                <p style={{ margin: 0, fontWeight: 300 }}>Tel: +1 (469) 993-1399</p>
+                <p style={{ margin: 0, fontWeight: 300 }}>Email: info@mahaathai.com</p>
               </div>
             </div>
 
@@ -116,11 +116,11 @@ export default function Footer() {
               <div className="hours-block" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
                 <div>
                   <span style={{ display: 'block', fontWeight: 700, fontSize: '0.8rem', color: 'var(--text-dark)', marginBottom: '0.2rem' }}>Lunch:</span>
-                  <span style={{ fontWeight: 300 }}>Mon – Sun, 12:00 – 14:30</span>
+                  <span style={{ fontWeight: 300 }}>Mon – Sun, 11:00 AM – 3:00 PM</span>
                 </div>
                 <div>
                   <span style={{ display: 'block', fontWeight: 700, fontSize: '0.8rem', color: 'var(--text-dark)', marginBottom: '0.2rem' }}>Dinner:</span>
-                  <span style={{ fontWeight: 300 }}>Mon – Sun, 18:00 – 22:30</span>
+                  <span style={{ fontWeight: 300 }}>Served All Day</span>
                 </div>
               </div>
             </div>

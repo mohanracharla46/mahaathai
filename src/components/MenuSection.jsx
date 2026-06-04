@@ -38,7 +38,7 @@ import somTumPooPlaraImg from '../assets/Som Tum Poo Plara.png';
 import somTumPooImg from '../assets/Som Tum Poo.png';
 import yumSeafoodCombinationImg from '../assets/Yum Seafood Combination .png';
 import yumShrimpOrSquidImg from '../assets/Yum Shrimp or Squid .png';
-import bangkokFireBasilRiceImg from '../assets/Bangkok Fire BasilRice.png';
+import bangkokFireBasilRiceImg from '../assets/Bangkok Fire Basil Rice.png';
 import edamameImg from '../assets/Edamame .png';
 import glassNoodleStirFryImg from '../assets/Glass Noodle Stir Fry (Pad Wun Sen).png';
 import mahaHotPotImg from '../assets/Maha Hot Pot (Seasonal).png';
@@ -72,6 +72,13 @@ import plantTofuKheeMaoImg from '../assets/Tofu Khee Mao.png';
 import plantTomKhaImg from '../assets/Tom Kha (veg).png';
 import plantTomYumImg from '../assets/Tom Yum (veg).png';
 import plantPadThaiImg from '../assets/Vegetarian Pad Thai.png';
+import bananaStickyRiceImg from '../assets/Banana Sticky Rice.png';
+import blackRiceMangoImg from '../assets/Black Rice Mango.png';
+import eggDropSoupImg from '../assets/Egg Drop Soup.png';
+import hotSourSoupImg from '../assets/Hot & Sour Soup.png';
+import misoSoupImg from '../assets/Miso Soup.png';
+import shrimpWontonSoupImg from '../assets/Shrimp Wonton Soup.png';
+import lunchImg from '../assets/lunchimg.png';
 
 // Signature dishes matching mockup
 export const signatureDishes = [
@@ -588,6 +595,14 @@ export const menuData = {
       image: wholeFishSelectionImg
     },
     {
+      id: 'sea-whole-fish-tilapia',
+      name: 'Whole Fish Selection (Tilapia)',
+      description: 'Deep-fried whole Tilapia fish served with garlic or chili-based sauces.',
+      price: 22.99,
+      rating: 4.8,
+      image: wholeFishSelectionImg
+    },
+    {
       id: 'sea-whole-fish-redsnapper',
       name: 'Whole Fish Selection (Redsnapper)',
       description: 'Deep-fried whole Redsnapper served with garlic or chili-based sauces.',
@@ -791,7 +806,7 @@ export const menuData = {
       description: 'Warm sticky rice with banana and coconut.',
       price: 8.99,
       rating: 4.8,
-      image: menuDessert
+      image: bananaStickyRiceImg
     },
     {
       id: 'sweet-black-rice',
@@ -799,7 +814,7 @@ export const menuData = {
       description: 'Nutty black rice paired with fresh mango.',
       price: 9.99,
       rating: 4.8,
-      image: menuDessert
+      image: blackRiceMangoImg
     },
     {
       id: 'sweet-roti',
@@ -979,7 +994,7 @@ export const menuData = {
       description: 'Light broth with delicate ribbons of egg.',
       price: 6.99,
       rating: 4.7,
-      image: tomYumFireBrothImg
+      image: eggDropSoupImg
     },
     {
       id: 'soup-hot-sour-sm',
@@ -987,7 +1002,7 @@ export const menuData = {
       description: 'Tangy, savory soup with vegetables and a mild spicy kick.',
       price: 6.99,
       rating: 4.8,
-      image: tomYumFireBrothImg
+      image: hotSourSoupImg
     },
     {
       id: 'soup-hot-sour-lg',
@@ -995,7 +1010,7 @@ export const menuData = {
       description: 'Tangy, savory soup with vegetables and a mild spicy kick.',
       price: 13.99,
       rating: 4.8,
-      image: tomYumFireBrothImg
+      image: hotSourSoupImg
     },
     {
       id: 'soup-miso-sm',
@@ -1003,7 +1018,7 @@ export const menuData = {
       description: 'Traditional Japanese-style soybean broth with tofu and seaweed.',
       price: 5.99,
       rating: 4.7,
-      image: tomYumFireBrothImg
+      image: misoSoupImg
     },
     {
       id: 'soup-shrimp-wonton-sm',
@@ -1011,7 +1026,7 @@ export const menuData = {
       description: 'Savory broth filled with house-made shrimp wontons and vegetables.',
       price: 6.99,
       rating: 4.8,
-      image: tomYumFireBrothImg
+      image: shrimpWontonSoupImg
     },
     {
       id: 'soup-shrimp-wonton-lg',
@@ -1019,7 +1034,7 @@ export const menuData = {
       description: 'Savory broth filled with house-made shrimp wontons and vegetables.',
       price: 13.99,
       rating: 4.8,
-      image: tomYumFireBrothImg
+      image: shrimpWontonSoupImg
     },
     {
       id: 'soup-hot-pot',
@@ -1058,7 +1073,7 @@ menuData['Lunch'] = [
     description: 'A curated multi-course midday feast. Includes your choice of one appetizer, one soup or salad, and one signature entrée (curry, noodle, or wok rice dish).',
     price: 12.99,
     rating: 5.0,
-    image: menuAppetizer,
+    image: lunchImg,
     tags: ['Lunch Special', 'Multi-Course']
   },
   {
@@ -1075,7 +1090,7 @@ menuData['Lunch'] = [
     description: 'Wide noodles stir-fried with chili, garlic, and Thai basil.',
     price: 12.99,
     rating: 4.8,
-    image: menuAppetizer
+    image: midnightDrunkenNoodlesImg
   },
   {
     id: 'lunch-pad-see-ew',
@@ -1083,7 +1098,7 @@ menuData['Lunch'] = [
     description: 'Flat noodles stir-fried with egg and Chinese broccoli in a savory soy glaze.',
     price: 12.99,
     rating: 4.8,
-    image: menuAppetizer
+    image: caramelizedPadSeeEwImg
   },
   {
     id: 'lunch-massaman',
@@ -1131,7 +1146,7 @@ menuData['Lunch'] = [
     description: 'Grilled chicken infused with lemongrass and herbs.',
     price: 12.99,
     rating: 4.8,
-    image: menuAppetizer
+    image: lemongrassChickenImg
   },
   {
     id: 'lunch-veg-padthai',

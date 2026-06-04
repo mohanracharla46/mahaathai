@@ -137,7 +137,7 @@ export default function CateringPage({ onOpenReservation }) {
             >
               {/* Phone Card */}
               <a 
-                href="tel:+6628887890"
+                href="tel:+14699931399"
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -168,13 +168,13 @@ export default function CateringPage({ onOpenReservation }) {
                 </div>
                 <div style={{ textAlign: 'left' }}>
                   <span style={{ display: 'block', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>Call Us</span>
-                  <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.9rem', color: 'var(--text-dark)', fontWeight: 400 }}>+66 2 888 7890</span>
+                  <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.9rem', color: 'var(--text-dark)', fontWeight: 400 }}>+1 (469) 993-1399</span>
                 </div>
               </a>
 
               {/* Email Card */}
               <a 
-                href="mailto:dining@mahathai.com"
+                href="mailto:info@mahaathai.com"
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -204,8 +204,8 @@ export default function CateringPage({ onOpenReservation }) {
                   <Mail size={18} />
                 </div>
                 <div style={{ textAlign: 'left' }}>
-                  <span style={{ display: 'block', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>Email Us</span>
-                  <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.9rem', color: 'var(--text-dark)', fontWeight: 400 }}>dining@mahathai.com</span>
+                  <span style={{ display: 'block', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>Email Us</span>
+                  <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.9rem', color: 'var(--text-dark)', fontWeight: 400 }}>info@mahaathai.com</span>
                 </div>
               </a>
             </motion.div>
