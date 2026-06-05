@@ -79,6 +79,17 @@ import hotSourSoupImg from '../assets/Hot & Sour Soup.png';
 import misoSoupImg from '../assets/Miso Soup.png';
 import shrimpWontonSoupImg from '../assets/Shrimp Wonton Soup.png';
 import lunchImg from '../assets/lunchimg.png';
+import brownRiceImg from '../assets/Brown Rice.png';
+import deepFriedIceCreamImg from '../assets/Deep Fried Ice Cream.png';
+import friedBananaWithHoneyImg from '../assets/Fried Banana with Honey.png';
+import jasmineRiceImg from '../assets/Jasmine Rice.png';
+import peanutSauceImg from '../assets/Peanut Sauce.png';
+import steamedNoodlesImg from '../assets/Steamed Noodles.png';
+import steamedVegetablesImg from '../assets/Steamed Vegetables.png';
+import stickyRiceImg from '../assets/Sticky Rice.png';
+import sweetRotiImg from '../assets/Sweet Roti.png';
+import thaiCoconutPancakesImg from '../assets/Thai Coconut Pancakes.png';
+import thaiIcedTeaImg from '../assets/Thai Iced Tea.png';
 
 // Signature dishes matching mockup
 export const signatureDishes = [
@@ -822,7 +833,7 @@ export const menuData = {
       description: 'Crispy Thai flatbread topped with condensed milk.',
       price: 6.99,
       rating: 4.7,
-      image: menuDessert
+      image: sweetRotiImg
     },
     {
       id: 'sweet-banana-honey',
@@ -830,7 +841,7 @@ export const menuData = {
       description: 'Golden fried banana drizzled with honey.',
       price: 6.99,
       rating: 4.7,
-      image: menuDessert
+      image: friedBananaWithHoneyImg
     },
     {
       id: 'sweet-cheesecake',
@@ -846,7 +857,7 @@ export const menuData = {
       description: 'Ice cream wrapped and fried for a hot and cold contrast.',
       price: 7.99,
       rating: 4.7,
-      image: menuDessert
+      image: deepFriedIceCreamImg
     },
     {
       id: 'sweet-pancakes',
@@ -854,7 +865,7 @@ export const menuData = {
       description: 'Bite-sized coconut rice pancakes with crispy edges and soft centers.',
       price: 8.99,
       rating: 4.8,
-      image: menuDessert
+      image: thaiCoconutPancakesImg
     }
   ],
   'Beverages & Sides': [
@@ -864,7 +875,7 @@ export const menuData = {
       description: 'Fragrant, steaming Jasmine rice.',
       price: 3.00,
       rating: 4.8,
-      image: heroDish
+      image: jasmineRiceImg
     },
     {
       id: 'side-jasmine-lg',
@@ -872,7 +883,7 @@ export const menuData = {
       description: 'Fragrant, steaming Jasmine rice.',
       price: 5.00,
       rating: 4.8,
-      image: heroDish
+      image: jasmineRiceImg
     },
     {
       id: 'side-brown',
@@ -880,7 +891,7 @@ export const menuData = {
       description: 'Healthy, fiber-rich steamed brown rice.',
       price: 3.00,
       rating: 4.6,
-      image: heroDish
+      image: brownRiceImg
     },
     {
       id: 'side-sticky',
@@ -888,7 +899,7 @@ export const menuData = {
       description: 'Traditional sweet-savory sticky rice.',
       price: 4.00,
       rating: 4.8,
-      image: heroDish
+      image: stickyRiceImg
     },
     {
       id: 'side-noodles',
@@ -896,7 +907,7 @@ export const menuData = {
       description: 'Freshly steamed rice ribbon noodles.',
       price: 5.99,
       rating: 4.7,
-      image: heroDish
+      image: steamedNoodlesImg
     },
     {
       id: 'side-veg',
@@ -904,7 +915,7 @@ export const menuData = {
       description: 'A fresh mix of seasonal steamed greens and vegetables.',
       price: 3.99,
       rating: 4.7,
-      image: heroDish
+      image: steamedVegetablesImg
     },
     {
       id: 'side-peanut',
@@ -912,7 +923,7 @@ export const menuData = {
       description: 'Our house-made aromatic peanut dipping sauce.',
       price: 3.00,
       rating: 4.9,
-      image: heroDish
+      image: peanutSauceImg
     },
     {
       id: 'bev-thai-tea',
@@ -920,7 +931,7 @@ export const menuData = {
       description: 'Traditional sweetened Thai iced tea topped with rich cream.',
       price: 5.00,
       rating: 4.9,
-      image: menuAppetizer
+      image: thaiIcedTeaImg
     },
     {
       id: 'bev-boba',
