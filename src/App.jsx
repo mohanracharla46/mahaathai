@@ -21,6 +21,8 @@ import ProfilePage from './components/ProfilePage';
 import GiftcardPage from './components/GiftcardPage';
 import MenuPage from './components/MenuPage';
 import AdminPage from './components/AdminPage';
+import CustomizeModal from './components/CustomizeModal';
+import { menuData } from './components/MenuSection';
 import logoImg from './assets/mahathailogo_v2.png';
 
 
@@ -30,6 +32,7 @@ export default function App() {
   const [isReservationOpen, setIsReservationOpen] = useState(false);
   const [reservationTab, setReservationTab] = useState('reservation');
   const [cart, setCart] = useState({});
+  const [customizingItem, setCustomizingItem] = useState(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [couponCode, setCouponCode] = useState('');
   const [couponDiscount, setCouponDiscount] = useState(0);
@@ -193,18 +196,93 @@ export default function App() {
     }
   }, [currentUser]);
 
-  const addToCart = (item) => {
-    setCart((prevCart) => {
-      const existing = prevCart[item.id];
-      if (existing) {
+  const addToCart = (item, customizations = null) => {
+    // If this is the already-customized Lunch Special, add directly
+    if (item.id && item.id.startsWith('lunch-special-')) {
+      setCart((prevCart) => {
+        const existing = prevCart[item.id];
+        if (existing) {
+          return {
+            ...prevCart,
+            [item.id]: { ...existing, quantity: existing.quantity + 1 }
+          };
+        }
+        return {
+          ...prevCart,
+          [item.id]: { ...item, quantity: 1 }
+        };
+      });
+      return;
+    }
+
+    // If customizations is provided, serialize customized item
+    if (customizations) {
+      setCart((prevCart) => {
+        const addonNames = customizations.addons.map(a => a.name).join(', ');
+        const customId = `${item.id}-spice-${customizations.spice.toLowerCase()}${customizations.addons.length > 0 ? `-addons-${customizations.addons.map(a => a.name.toLowerCase().replace(/[^a-z0-9]/g, '')).join('-')}` : ''}${customizations.requirements ? `-req-${customizations.requirements.toLowerCase().replace(/[^a-z0-9]/g, '-').slice(0, 10)}` : ''}`;
+        
+        const addonsPrice = customizations.addons.reduce((sum, a) => sum + a.price, 0);
+        const customPrice = Number((item.price + addonsPrice).toFixed(2));
+        
+        // Build customized name & details
+        const customName = `${item.name} (${customizations.spice}${addonNames ? ` + ${addonNames}` : ''})`;
+        
+        const existing = prevCart[customId];
+        if (existing) {
+          return {
+            ...prevCart,
+            [customId]: { ...existing, quantity: existing.quantity + 1 }
+          };
+        }
+        
+        return {
+          ...prevCart,
+          [customId]: {
+            ...item,
+            id: customId,
+            baseId: item.id,
+            name: customName,
+            price: customPrice,
+            quantity: 1,
+            customizations: {
+              ...customizations,
+              baseName: item.name,
+              basePrice: item.price
+            }
+          }
+        };
+      });
+      return;
+    }
+
+    // If customizations is null:
+    // 1. If it's already in the cart (e.g. incrementing from cart drawer), increment quantity
+    if (cart[item.id]) {
+      setCart((prevCart) => {
+        const existing = prevCart[item.id];
         return {
           ...prevCart,
           [item.id]: { ...existing, quantity: existing.quantity + 1 }
         };
+      });
+    } else {
+      // 2. Open customization modal
+      setCustomizingItem(item);
+    }
+  };
+
+  const handleAddSuggestedItem = (sugItem) => {
+    setCart((prevCart) => {
+      const existing = prevCart[sugItem.id];
+      if (existing) {
+        return {
+          ...prevCart,
+          [sugItem.id]: { ...existing, quantity: existing.quantity + 1 }
+        };
       }
       return {
         ...prevCart,
-        [item.id]: { ...item, quantity: 1 }
+        [sugItem.id]: { ...sugItem, quantity: 1 }
       };
     });
   };
@@ -591,6 +669,23 @@ export default function App() {
             )}
           </AnimatePresence>
 
+          {/* Customize Item Modal */}
+          <AnimatePresence>
+            {customizingItem && (
+              <CustomizeModal
+                item={customizingItem}
+                onClose={() => setCustomizingItem(null)}
+                onConfirm={(customizations) => {
+                  addToCart(customizingItem, customizations);
+                  setCustomizingItem(null);
+                }}
+                onAddSuggestion={(sugItem) => {
+                  handleAddSuggestedItem(sugItem);
+                }}
+              />
+            )}
+          </AnimatePresence>
+
           {/* Cart Drawer Overlay */}
           <AnimatePresence>
             {isCartOpen && (
@@ -663,14 +758,33 @@ export default function App() {
                         <div className="receipt-box">
                           <div className="receipt-header">Receipt of Aromatic Siam</div>
                           {Object.values(cart).map(item => (
-                            <div key={item.id} className="receipt-item-row">
-                              <span>{item.quantity}x {item.name}</span>
-                              <span>${item.price * item.quantity}</span>
+                            <div key={item.id} style={{ marginBottom: '0.6rem', borderBottom: '1px dashed var(--border-light)', paddingBottom: '0.4rem' }}>
+                              <div className="receipt-item-row" style={{ marginBottom: 0 }}>
+                                <span>{item.quantity}x {item.name}</span>
+                                <span>${(item.price * item.quantity).toFixed(2)}</span>
+                              </div>
+                              {item.customizations && (
+                                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textAlign: 'left', marginTop: '0.15rem', display: 'flex', flexDirection: 'column', gap: '0.1rem', lineHeight: '1.25' }}>
+                                  <span>Spice: {item.customizations.spice}</span>
+                                  {item.customizations.addons && item.customizations.addons.length > 0 && (
+                                    <span>Add-ons: {item.customizations.addons.map(a => a.name).join(', ')}</span>
+                                  )}
+                                  {item.customizations.requirements && (
+                                    <span style={{ fontStyle: 'italic', color: 'var(--gold-antique)' }}>Note: "{item.customizations.requirements}"</span>
+                                  )}
+                                </div>
+                              )}
                             </div>
                           ))}
+                          {couponDiscount > 0 && (
+                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--accent-jade)', marginBottom: '0.4rem', borderTop: '1px dashed var(--border-light)', paddingTop: '0.4rem' }}>
+                              <span>Promo Discount ({appliedCoupon?.code})</span>
+                              <span>-${couponDiscount.toFixed(2)}</span>
+                            </div>
+                          )}
                           <div className="receipt-total-row">
                             <span>Total (USD)</span>
-                            <span>${getCartTotal()}.00</span>
+                            <span>${getCartFinalTotal().toFixed(2)}</span>
                           </div>
                         </div>
 
@@ -717,7 +831,13 @@ export default function App() {
                             const newOrder = {
                               id: 'o-' + Date.now(),
                               date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-                              items: Object.values(cart).map(item => `${item.quantity}x ${item.name}`).join(', '),
+                              items: Object.values(cart).map(item => {
+                                let details = `${item.quantity}x ${item.name}`;
+                                if (item.customizations?.requirements) {
+                                  details += ` (Req: ${item.customizations.requirements})`;
+                                }
+                                return details;
+                              }).join(', '),
                               total: getCartFinalTotal(),
                               type: cartCheckoutData.serviceType === 'delivery' ? 'Delivery' : 'Pickup',
                               status: 'Preparing',
@@ -843,13 +963,13 @@ export default function App() {
                           {couponDiscount > 0 && (
                             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--accent-jade)', marginTop: '0.5rem', borderTop: '1px dashed var(--border-light)', paddingTop: '0.5rem' }}>
                               <span>Promo Discount ({appliedCoupon?.code})</span>
-                              <span>-${couponDiscount}.00</span>
+                              <span>-${couponDiscount.toFixed(2)}</span>
                             </div>
                           )}
 
                           <div className="order-subtotal-row" style={{ marginTop: '0.5rem', paddingTop: '0.75rem', borderTop: '1px solid var(--border-light)' }}>
                             <span className="subtotal-label" style={{ fontSize: '0.75rem' }}>Order Total</span>
-                            <span className="subtotal-price" style={{ fontSize: '1.2rem' }}>${getCartFinalTotal()}.00</span>
+                            <span className="subtotal-price" style={{ fontSize: '1.2rem' }}>${getCartFinalTotal().toFixed(2)}</span>
                           </div>
 
                           <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
@@ -887,7 +1007,18 @@ export default function App() {
                             
                             <div className="order-item-info">
                               <h5 className="order-item-title" style={{ fontSize: '0.95rem' }}>{item.name}</h5>
-                              <span className="order-item-price" style={{ fontSize: '0.85rem' }}>${item.price}</span>
+                              {item.customizations && (
+                                <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.2rem', display: 'flex', flexDirection: 'column', gap: '0.1rem', lineHeight: '1.25' }}>
+                                  <span>Spice: <strong style={{ color: 'var(--text-dark)' }}>{item.customizations.spice}</strong></span>
+                                  {item.customizations.addons && item.customizations.addons.length > 0 && (
+                                    <span>Add-ons: <strong style={{ color: 'var(--text-dark)' }}>{item.customizations.addons.map(a => a.name).join(', ')}</strong></span>
+                                  )}
+                                  {item.customizations.requirements && (
+                                    <span style={{ fontStyle: 'italic', color: 'var(--gold-antique)', marginTop: '0.1rem' }}>Note: "{item.customizations.requirements}"</span>
+                                  )}
+                                </div>
+                              )}
+                              <span className="order-item-price" style={{ fontSize: '0.85rem', display: 'block', marginTop: '0.25rem' }}>${item.price.toFixed(2)}</span>
                             </div>
                             <div className="qty-controls">
                               <button
@@ -917,7 +1048,7 @@ export default function App() {
                     <div style={{ borderTop: '1px solid var(--border-light)', paddingTop: '1.25rem' }}>
                       <div className="order-subtotal-row" style={{ marginTop: 0, paddingTop: 0, marginBottom: '1.25rem' }}>
                         <span className="subtotal-label">Subtotal</span>
-                        <span className="subtotal-price">${getCartTotal()}.00</span>
+                        <span className="subtotal-price">${getCartTotal().toFixed(2)}</span>
                       </div>
 
                       <button 
