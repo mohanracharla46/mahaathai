@@ -1185,29 +1185,29 @@ export default function MenuSection({ cart = {}, addToCart, removeFromCart }) {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
-      transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } 
+      transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] }
     }
   };
 
   return (
-    <section 
-      id="menu" 
-      className="section-padding" 
+    <section
+      id="menu"
+      className="section-padding"
       style={{ backgroundColor: 'var(--canvas-secondary)', borderBottom: '1px solid var(--border-light)' }}
     >
       <div className="container">
         {/* Title Block */}
         <div className="text-center max-w-2xl mx-auto mb-12" style={{ textAlign: 'center', maxWidth: '42rem', margin: '0 auto 3rem' }}>
-          <span 
+          <span
             className="block font-sans text-xs font-bold tracking-[0.3em] uppercase mb-4"
             style={{ color: 'var(--gold-antique)', display: 'block', fontSize: '0.75rem', letterSpacing: '0.3em', marginBottom: '1rem' }}
           >
             THE COLLECTION
           </span>
-          <h2 
+          <h2
             className="font-serif text-4xl md:text-5xl font-light mb-6"
             style={{ fontSize: 'clamp(2rem, 3.5vw, 3rem)', fontWeight: 300, color: 'var(--text-dark)' }}
           >
@@ -1216,7 +1216,7 @@ export default function MenuSection({ cart = {}, addToCart, removeFromCart }) {
         </div>
 
         {/* Grid Showcase of Seasonal Menu Cards */}
-        <motion.div 
+        <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -1237,7 +1237,7 @@ export default function MenuSection({ cart = {}, addToCart, removeFromCart }) {
               style={{ display: 'flex', flexDirection: 'column' }}
             >
               {/* Image Container */}
-              <div 
+              <div
                 className="relative overflow-hidden w-full aspect-[4/3] rounded-md mb-6"
                 style={{ overflow: 'hidden', position: 'relative', width: '100%', aspectRatio: '4/3', borderRadius: '8px', marginBottom: '1.5rem' }}
               >
@@ -1251,8 +1251,8 @@ export default function MenuSection({ cart = {}, addToCart, removeFromCart }) {
                     objectFit: 'cover'
                   }}
                 />
-                
-                <div 
+
+                <div
                   className="absolute bottom-3 left-3 flex items-center gap-1 bg-white/95 px-2 py-1 rounded"
                   style={{
                     position: 'absolute',

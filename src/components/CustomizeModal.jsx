@@ -7,6 +7,7 @@ export default function CustomizeModal({ item, cart = {}, onClose, onConfirm, on
   const [spice, setSpice] = useState('Medium');
   const [selectedAddons, setSelectedAddons] = useState([]);
   const [requirements, setRequirements] = useState('');
+  const [suggestedQuantities, setSuggestedQuantities] = useState({});
 
   const spiceLevels = ['Mild', 'Medium', 'Spicy', 'More Spicy'];
 
@@ -34,9 +35,26 @@ export default function CustomizeModal({ item, cart = {}, onClose, onConfirm, on
     return selectedAddons.reduce((sum, a) => sum + a.price, 0);
   };
 
-  const currentPrice = Number((item.price + getAddonsTotal()).toFixed(2));
+  const handleAddSuggested = (sug) => {
+    setSuggestedQuantities(prev => ({
+      ...prev,
+      [sug.id]: (prev[sug.id] || 0) + 1
+    }));
+  };
 
-  // Extract suggestions dynamically
+  const handleRemoveSuggested = (sugId) => {
+    setSuggestedQuantities(prev => {
+      const next = { ...prev };
+      if (next[sugId] <= 1) {
+        delete next[sugId];
+      } else {
+        next[sugId] -= 1;
+      }
+      return next;
+    });
+  };
+
+  // Extract suggestions dynamically — must be defined BEFORE getSuggestionsTotal
   const getSuggestions = () => {
     const list = [];
     // 1. Appetizer (e.g., Spring Rolls)
@@ -55,6 +73,15 @@ export default function CustomizeModal({ item, cart = {}, onClose, onConfirm, on
   };
 
   const suggestions = getSuggestions();
+
+  const getSuggestionsTotal = () => {
+    return suggestions.reduce((sum, sug) => {
+      const qty = suggestedQuantities[sug.id] || 0;
+      return sum + (sug.price * qty);
+    }, 0);
+  };
+
+  const currentPrice = Number((item.price + getAddonsTotal() + getSuggestionsTotal()).toFixed(2));
 
   return (
     <div 
@@ -234,7 +261,7 @@ export default function CustomizeModal({ item, cart = {}, onClose, onConfirm, on
             </h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {suggestions.map((sug) => {
-                const quantityInCart = cart[sug.id] ? cart[sug.id].quantity : 0;
+                const qtySelected = suggestedQuantities[sug.id] || 0;
                 return (
                   <div 
                     key={sug.id} 
@@ -261,11 +288,11 @@ export default function CustomizeModal({ item, cart = {}, onClose, onConfirm, on
                         <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>${sug.price}</span>
                       </div>
                     </div>
-                    {quantityInCart > 0 ? (
+                    {qtySelected > 0 ? (
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                         <button
                           type="button"
-                          onClick={() => onRemoveSuggestion && onRemoveSuggestion(sug.id)}
+                          onClick={() => handleRemoveSuggested(sug.id)}
                           style={{
                             width: '24px',
                             height: '24px',
@@ -285,11 +312,11 @@ export default function CustomizeModal({ item, cart = {}, onClose, onConfirm, on
                           -
                         </button>
                         <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-dark)', minWidth: '14px', textAlign: 'center' }}>
-                          {quantityInCart}
+                          {qtySelected}
                         </span>
                         <button
                           type="button"
-                          onClick={() => onAddSuggestion && onAddSuggestion(sug)}
+                          onClick={() => handleAddSuggested(sug)}
                           style={{
                             width: '24px',
                             height: '24px',
@@ -312,7 +339,7 @@ export default function CustomizeModal({ item, cart = {}, onClose, onConfirm, on
                     ) : (
                       <button
                         type="button"
-                        onClick={() => onAddSuggestion && onAddSuggestion(sug)}
+                        onClick={() => handleAddSuggested(sug)}
                         style={{
                           display: 'inline-flex',
                           alignItems: 'center',
@@ -367,7 +394,7 @@ export default function CustomizeModal({ item, cart = {}, onClose, onConfirm, on
           </button>
           <button
             type="button"
-            onClick={() => onConfirm({ spice, addons: selectedAddons, requirements })}
+            onClick={() => onConfirm({ spice, addons: selectedAddons, requirements, suggestions: suggestedQuantities })}
             className="btn-filled"
             style={{
               flex: 2,

@@ -22,7 +22,7 @@ import GiftcardPage from './components/GiftcardPage';
 import MenuPage from './components/MenuPage';
 import AdminPage from './components/AdminPage';
 import CustomizeModal from './components/CustomizeModal';
-import { menuData } from './components/MenuSection';
+import { menuData, signatureDishes } from './components/MenuSection';
 import logoImg from './assets/mahathailogo_v2.png';
 
 
@@ -196,6 +196,20 @@ export default function App() {
       }));
     }
   }, [currentUser]);
+
+  const findMenuItemById = (id) => {
+    for (const category in menuData) {
+      if (Array.isArray(menuData[category])) {
+        const found = menuData[category].find(item => item && item.id === id);
+        if (found) return found;
+      }
+    }
+    if (Array.isArray(signatureDishes)) {
+      const sigFound = signatureDishes.find(item => item && item.id === id);
+      if (sigFound) return sigFound;
+    }
+    return null;
+  };
 
   const addToCart = (item, customizations = null) => {
     // If this is the already-customized Lunch Special, add directly
@@ -684,13 +698,17 @@ export default function App() {
                 onClose={() => setCustomizingItem(null)}
                 onConfirm={(customizations) => {
                   addToCart(customizingItem, customizations);
+                  if (customizations.suggestions) {
+                    Object.entries(customizations.suggestions).forEach(([sugId, qty]) => {
+                      const sugItem = findMenuItemById(sugId);
+                      if (sugItem) {
+                        for (let i = 0; i < qty; i++) {
+                          handleAddSuggestedItem(sugItem);
+                        }
+                      }
+                    });
+                  }
                   setCustomizingItem(null);
-                }}
-                onAddSuggestion={(sugItem) => {
-                  handleAddSuggestedItem(sugItem);
-                }}
-                onRemoveSuggestion={(sugId) => {
-                  removeFromCart(sugId);
                 }}
               />
             )}
