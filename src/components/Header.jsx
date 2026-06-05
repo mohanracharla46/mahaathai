@@ -19,14 +19,7 @@ const navLinks = [
   { name: 'Catering', href: '#/catering' },
   { name: 'Rewards', href: '#/rewards' },
   { name: 'Careers', href: '#/careers' },
-  {
-    name: 'Contact',
-    href: '#/contact',
-    dropdown: [
-      { name: 'Contact Us', href: '#/contact' },
-      { name: 'Gift Cards', href: '#/giftcards' }
-    ]
-  }
+  { name: 'Contact', href: '#/contact' }
 ];
 
 export default function Header({ onOpenReservation, cartCount = 0, onOpenCart, currentUser = null, onSignOut }) {

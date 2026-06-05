@@ -403,7 +403,7 @@ export default function App() {
   const isCareersPage = currentHash === '#/careers';
   const isAuthPage = currentHash === '#/login' || currentHash === '#/signin' || currentHash === '#/auth';
   const isProfilePage = currentHash === '#/profile' || currentHash === '#profile-page';
-  const isGiftcardPage = currentHash === '#/giftcards' || currentHash === '#/giftcard';
+  const isGiftcardPage = false; // currentHash === '#/giftcards' || currentHash === '#/giftcard';
   const isAdminPage = currentHash === '#/admin';
 
   useEffect(() => {
