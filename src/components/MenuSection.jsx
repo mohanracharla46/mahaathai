@@ -1086,7 +1086,7 @@ menuData['Lunch'] = [
   },
   {
     id: 'lunch-drunken-noodles',
-    name: 'Lunch Midnight Drunken Noodles',
+    name: 'Lunch Midnight Drunken Noodles 🌶️🔥',
     description: 'Wide noodles stir-fried with chili, garlic, and Thai basil.',
     price: 12.99,
     rating: 4.8,
@@ -1118,7 +1118,7 @@ menuData['Lunch'] = [
   },
   {
     id: 'lunch-basil-rice',
-    name: 'Lunch Bangkok Fire Basil Rice',
+    name: 'Lunch Bangkok Fire Basil Rice 🌶️🔥',
     description: 'Spicy basil fried rice with chili and garlic.',
     price: 12.99,
     rating: 4.8,

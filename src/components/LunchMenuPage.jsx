@@ -5,7 +5,7 @@ import lunchImg from '../assets/lunchimg.png';
 
 export default function LunchMenuPage({ onOpenReservation, cart = {}, addToCart, removeFromCart }) {
   const [appetizer, setAppetizer] = useState('Crispy Spring Roll');
-  const [entree, setEntree] = useState('Basil Fried Rice');
+  const [entree, setEntree] = useState('Basil Fried Rice 🌶️');
   const [protein, setProtein] = useState('Veggies');
 
   const appetizers = [
@@ -15,16 +15,16 @@ export default function LunchMenuPage({ onOpenReservation, cart = {}, addToCart,
   ];
 
   const entrees = [
-    'Basil Fried Rice',
+    'Basil Fried Rice 🌶️',
     'Thai Fried Rice',
     'Curry Fried Rice',
-    'Green Curry',
-    'Red Curry',
+    'Green Curry 🌶️',
+    'Red Curry 🌶️',
     'Yellow Curry',
-    'Panang Curry',
+    'Panang Curry 🌶️',
     'Caramelized Pad See Ew',
     'Pad Thai',
-    'Drunken Noodles',
+    'Drunken Noodles 🌶️🔥',
     'Pad Wunsen'
   ];
 
@@ -46,7 +46,8 @@ export default function LunchMenuPage({ onOpenReservation, cart = {}, addToCart,
   const extra = getProteinExtra(protein);
   const currentPrice = 12.99 + extra;
 
-  const currentItemId = `lunch-special-${appetizer.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${entree.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${protein.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+  const sanitizeForId = (str) => str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-').replace(/-+$/, '').replace(/^-+/, '');
+  const currentItemId = `lunch-special-${sanitizeForId(appetizer)}-${sanitizeForId(entree)}-${sanitizeForId(protein)}`;
 
   const currentItem = {
     id: currentItemId,
