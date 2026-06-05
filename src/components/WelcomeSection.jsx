@@ -168,7 +168,7 @@ export default function WelcomeSection() {
 
             {/* Order Now Call to Action */}
             <a 
-              href="#reservations" 
+              href="#/menu" 
               className="btn-filled"
               style={{ textDecoration: 'none' }}
             >

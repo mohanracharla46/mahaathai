@@ -174,7 +174,7 @@ export default function Header({ onOpenReservation, cartCount = 0, onOpenCart, c
           {/* Desktop Reservation CTA & Shopping Cart & User Profile */}
           <div className="nav-desktop-cta">
             <button
-              onClick={() => onOpenReservation('order')}
+              onClick={() => window.location.hash = '#/menu'}
               className="btn-filled"
               style={{
                 textDecoration: 'none',
@@ -733,7 +733,7 @@ export default function Header({ onOpenReservation, cartCount = 0, onOpenCart, c
                 <button
                   onClick={() => {
                     setIsOpen(false);
-                    onOpenReservation('order');
+                    window.location.hash = '#/menu';
                   }}
                   className="btn-filled"
                   style={{
