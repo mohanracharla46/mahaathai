@@ -8,14 +8,16 @@ import menuAppetizer from '../assets/menu_appetizer.png';
 import menuCurry from '../assets/menu_curry.png';
 import menuDessert from '../assets/menu_dessert.png';
 import mahaStreetPadThaiImg from '../assets/Maha Street Pad Thai.png';
-import coconutShellSeafoodImg from '../assets/Coconut Shell Seafood.png';
+import coconutShellSeafoodImg from '../assets/Coconut Shell.png';
 import chooCheeSeafoodCurryImg from '../assets/Choo Chee Seafood Curry.png';
 import lambChopsImg from '../assets/Lamb Chops.jpeg';
 import salmonImg from '../assets/Salmon .png';
 import wholeFishSelectionImg from '../assets/Whole Fish Selection.png';
-import yentafoImg from '../assets/Yen Ta Fo .png';
+import yentafoImg from '../assets/Yen Ta Fo.png';
 import kanaHedHormImg from '../assets/KA-NA HED HORM.png';
-import lemongrassChickenImg from '../assets/Lemongrass Chicken.png';
+import lemongrassChickenImg from '../assets/Lemongrass.png';
+import massamanBeefStewImg from '../assets/Massaman Beef Stew with Roti.png';
+import thaiRamaGardenImg from '../assets/Thai Rama Garden.png';
 import thaiStyleOmeletteImg from '../assets/Thai Style Omelette.png';
 import vegThaiFriedRiceImg from '../assets/Vegetarian Thai Fried Rice.png';
 import shrimpToastImg from '../assets/Shrimp Toast .png';
@@ -537,7 +539,7 @@ export const menuData = {
       description: 'Sweet-tangy Thai noodle soup with bold flavor.',
       price: 23,
       rating: 4.7,
-      image: menuCurry
+      image: yentafoImg
     },
     {
       id: 'street-orange-chicken',
@@ -569,7 +571,7 @@ export const menuData = {
       description: 'Southeast Asian dish with rich, creamy peanut sauce served over a bed of vibrant green vegetables.',
       price: 15.99,
       rating: 4.7,
-      image: menuAppetizer
+      image: thaiRamaGardenImg
     }
   ],
   'From the Sea': [
@@ -669,7 +671,7 @@ export const menuData = {
       description: 'Rich, slow-simmered beef stew in massaman curry paste, served with crispy roti bread.',
       price: 18.00,
       rating: 4.9,
-      image: heroDish
+      image: massamanBeefStewImg
     }
   ],
   'Plant-Based': [
