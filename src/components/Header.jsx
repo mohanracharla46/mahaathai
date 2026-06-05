@@ -17,6 +17,7 @@ const navLinks = [
   },
   { name: 'Private Events', href: '#/events' },
   { name: 'Catering', href: '#/catering' },
+  { name: 'Rewards', href: '#/rewards' },
   { name: 'Careers', href: '#/careers' },
   {
     name: 'Contact',

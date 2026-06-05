@@ -12,6 +12,7 @@ import DinnerMenuPage from './components/DinnerMenuPage';
 import VegetarianMenuPage from './components/VegetarianMenuPage';
 import ContactPage from './components/ContactPage';
 import CareersPage from './components/CareersPage';
+import RewardsPage from './components/RewardsPage';
 import MenuSection from './components/MenuSection';
 import ReservationSection from './components/ReservationSection';
 import Footer from './components/Footer';
@@ -119,12 +120,7 @@ export default function App() {
     if (currentUser) {
       const updated = {
         ...currentUser,
-        name: updatedDetails.name || currentUser.name,
-        phone: updatedDetails.phone || currentUser.phone,
-        bookings: updatedDetails.bookings || currentUser.bookings,
-        orders: updatedDetails.orders || currentUser.orders,
-        supportTickets: updatedDetails.supportTickets || currentUser.supportTickets,
-        feedbackReviews: updatedDetails.feedbackReviews || currentUser.feedbackReviews
+        ...updatedDetails
       };
       setCurrentUser(updated);
       localStorage.setItem(`maha_user_${currentUser.email}`, JSON.stringify(updated));
@@ -320,6 +316,7 @@ export default function App() {
   const isAboutPage = currentHash === '#/about' || currentHash === '#about-page';
   const isEventsPage = currentHash === '#/events';
   const isCateringPage = currentHash === '#/catering';
+  const isRewardsPage = currentHash === '#/rewards' || currentHash === '#rewards';
   const isMenuPage = currentHash.startsWith('#/menu') || currentHash === '#menu';
   const isLunchPage = currentHash === '#/menu/lunch';
   const isDinnerPage = currentHash === '#/menu/dinner';
@@ -332,7 +329,7 @@ export default function App() {
   const isAdminPage = currentHash === '#/admin';
 
   useEffect(() => {
-    if (isAboutPage || isEventsPage || isCateringPage || isMenuPage || isContactPage || isCareersPage || isAuthPage || isProfilePage || isGiftcardPage || isAdminPage) {
+    if (isAboutPage || isEventsPage || isCateringPage || isRewardsPage || isMenuPage || isContactPage || isCareersPage || isAuthPage || isProfilePage || isGiftcardPage || isAdminPage) {
       window.scrollTo(0, 0);
     } else {
       if (currentHash && currentHash !== '#/') {
@@ -347,7 +344,7 @@ export default function App() {
         }
       }
     }
-  }, [currentHash, isAboutPage, isEventsPage, isCateringPage, isMenuPage, isContactPage, isCareersPage, isAuthPage, isProfilePage, isAdminPage]);
+  }, [currentHash, isAboutPage, isEventsPage, isCateringPage, isRewardsPage, isMenuPage, isContactPage, isCareersPage, isAuthPage, isProfilePage, isAdminPage]);
 
   return (
     <>
@@ -494,6 +491,12 @@ export default function App() {
               <EventsPage onOpenReservation={openReservation} />
             ) : isCateringPage ? (
               <CateringPage onOpenReservation={openReservation} />
+            ) : isRewardsPage ? (
+              <RewardsPage 
+                currentUser={currentUser} 
+                onOpenReservation={openReservation} 
+                onUpdateProfile={handleUpdateProfile}
+              />
             ) : isLunchPage ? (
               <LunchMenuPage 
                 onOpenReservation={openReservation} 

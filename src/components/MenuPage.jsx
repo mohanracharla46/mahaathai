@@ -150,7 +150,13 @@ export default function MenuPage({ onOpenReservation, cart = {}, addToCart, remo
               const m = CATEGORY_META[cat];
               const active = selectedCategory === cat;
               return (
-                <button key={cat} onClick={() => setSelectedCategory(cat)} style={{
+                <button key={cat} onClick={() => {
+                  if (cat === 'Lunch') {
+                    window.location.hash = '#/menu/lunch';
+                  } else {
+                    setSelectedCategory(cat);
+                  }
+                }} style={{
                   display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
                   padding: '0.65rem 1.5rem', borderRadius: '9999px',
                   border: `1.5px solid ${active ? 'var(--gold-antique)' : 'rgba(255,255,255,0.25)'}`,
