@@ -331,14 +331,6 @@ export const menuData = {
       image: northernKhaoSoiImg
     },
     {
-      id: 'noodle-suki-soup',
-      name: 'Thai Sukiyaki Soup',
-      description: 'Glass noodles with napa cabbage, egg, and vegetables in a savory suki sauce.',
-      price: 13.99,
-      rating: 4.8,
-      image: thaiSukiyakiStirFryImg
-    },
-    {
       id: 'noodle-pho',
       name: 'Vietnamese Pho',
       description: 'Slow-simmered broth with rice noodles, herbs, and your choice of protein.',
@@ -823,14 +815,6 @@ export const menuData = {
       price: 6.99,
       rating: 4.7,
       image: friedBananaWithHoneyImg
-    },
-    {
-      id: 'sweet-cheesecake',
-      name: 'Fried Cheesecake',
-      description: 'Crispy outside with a creamy cheesecake center.',
-      price: 6.99,
-      rating: 4.8,
-      image: menuDessert
     },
     {
       id: 'sweet-ice-cream',
