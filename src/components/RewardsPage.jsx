@@ -27,7 +27,7 @@ export default function RewardsPage({ currentUser, onOpenReservation, onUpdatePr
     return { name: 'Jade Tier', color: 'var(--accent-jade)', perk: '1x Points Multiplier, Complimentary Birthday Dessert' };
   };
 
-  const userTier = getTier(totalEarnedPoints);
+  const userTier = getTier(currentPoints);
 
   // Points progress details
   const getNextTierDetails = (points) => {
@@ -43,7 +43,7 @@ export default function RewardsPage({ currentUser, onOpenReservation, onUpdatePr
     }
   };
 
-  const nextTierInfo = getNextTierDetails(totalEarnedPoints);
+  const nextTierInfo = getNextTierDetails(currentPoints);
 
   // Estimate rewards unlocks for slider
   const getUnlockedRewards = (spend) => {
