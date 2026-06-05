@@ -7,6 +7,7 @@ export default function LunchMenuPage({ onOpenReservation, cart = {}, addToCart,
   const [appetizer, setAppetizer] = useState('Crispy Spring Roll');
   const [entree, setEntree] = useState('Basil Fried Rice 🌶️');
   const [protein, setProtein] = useState('Vegetable');
+  const [spice, setSpice] = useState('Medium');
   const [addons, setAddons] = useState({
     'Chicken': false,
     'Pork': false,
@@ -101,15 +102,15 @@ export default function LunchMenuPage({ onOpenReservation, cart = {}, addToCart,
   const addonsIdPart = addonList.length > 0
     ? `-addons-${addonList.map(a => sanitizeForId(a.name)).join('-')}`
     : '';
-  const currentItemId = `lunch-special-${sanitizeForId(appetizer)}-${sanitizeForId(entree)}-${sanitizeForId(protein)}${addonsIdPart}`;
+  const currentItemId = `lunch-special-${sanitizeForId(appetizer)}-${sanitizeForId(entree)}-${sanitizeForId(protein)}-spice-${spice.toLowerCase()}${addonsIdPart}`;
 
   const addonNames = addonList.map(a => a.name).join(', ');
   const currentItem = {
     id: currentItemId,
-    name: `Lunch Special (${appetizer}, ${entree}, ${protein}${addonNames ? ` + ${addonNames}` : ''})`,
+    name: `Lunch Special (${appetizer}, ${entree}, ${protein}, ${spice}${addonNames ? ` + ${addonNames}` : ''})`,
     price: currentPrice,
     image: lunchImg,
-    description: `Lunch Combo: ${appetizer}, Soup & Salad, ${entree} with ${protein}.${addonNames ? ` Extras: ${addonNames}.` : ''}`,
+    description: `Lunch Combo: ${appetizer}, Soup & Salad, ${entree} with ${protein} (${spice} Spice).${addonNames ? ` Extras: ${addonNames}.` : ''}`,
     rating: 5.0
   };
 
@@ -351,6 +352,10 @@ export default function LunchMenuPage({ onOpenReservation, cart = {}, addToCart,
                       <span>• Protein:</span>
                       <strong style={{ color: 'var(--text-dark)', fontWeight: 500 }}>{protein} {extra > 0 ? `(+$${extra})` : ''}</strong>
                     </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span>• Spice Level:</span>
+                      <strong style={{ color: 'var(--text-dark)', fontWeight: 500 }}>{spice}</strong>
+                    </div>
                     {addonList.length > 0 && (
                       <div style={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'column', borderTop: '1px dashed var(--border-light)', paddingTop: '0.6rem', marginTop: '0.2rem' }}>
                         <span style={{ display: 'block', fontWeight: 600, fontSize: '0.75rem', marginBottom: '0.4rem', color: 'var(--text-dark)' }}>• Extras:</span>
@@ -504,10 +509,44 @@ export default function LunchMenuPage({ onOpenReservation, cart = {}, addToCart,
                 </div>
               </div>
 
+              {/* Spice Level */}
+              <div style={{ marginBottom: '2.5rem' }}>
+                <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.35rem', color: 'var(--text-dark)', marginBottom: '1.25rem', borderBottom: '1px solid var(--border-light)', paddingBottom: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                  <span>5. Spicy Level</span>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 300, fontFamily: 'var(--font-sans)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Choose One</span>
+                </h3>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: '1rem' }}>
+                  {['Mild', 'Medium', 'Spicy', 'More Spicy'].map((lvl) => (
+                    <button
+                      key={lvl}
+                      type="button"
+                      onClick={() => setSpice(lvl)}
+                      style={{
+                        padding: '0.75rem 0.5rem',
+                        borderRadius: '6px',
+                        border: `1.5px solid ${spice === lvl ? 'var(--gold-antique)' : 'var(--border-light)'}`,
+                        backgroundColor: spice === lvl ? 'var(--gold-light)' : 'var(--canvas-secondary)',
+                        color: 'var(--text-dark)',
+                        fontFamily: 'var(--font-sans)',
+                        fontSize: '0.85rem',
+                        fontWeight: spice === lvl ? 600 : 400,
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease',
+                        textAlign: 'center',
+                        outline: 'none'
+                      }}
+                      className="custom-option-card"
+                    >
+                      {lvl}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               {/* Add Extra */}
               <div style={{ marginBottom: '2.5rem' }}>
                 <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.35rem', color: 'var(--text-dark)', marginBottom: '1.25rem', borderBottom: '1px solid var(--border-light)', paddingBottom: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                  <span>5. Add Extra.</span>
+                  <span>6. Add Extra.</span>
                   <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 300, fontFamily: 'var(--font-sans)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Optional</span>
                 </h3>
                 
