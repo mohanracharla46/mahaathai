@@ -19,6 +19,11 @@ import lemongrassChickenImg from '../assets/Lemongrass.png';
 import massamanBeefStewImg from '../assets/Massaman Beef Stew with Roti.png';
 import thaiRamaGardenImg from '../assets/Thai Rama Garden.png';
 import thaiStyleOmeletteImg from '../assets/Thai Style Omelette.png';
+import vietnamesePhoImg from '../assets/Vietnamese Pho.png';
+import hainaneseChickenRiceImg from '../assets/Hainanese Chicken Rice.png';
+import thaiChickenBiryaniImg from '../assets/Thai Chicken Biryani.png';
+import thaiOrangeSesameChickenImg from '../assets/Thai Orange Sesame Chicken.png';
+import thaiSweetAndSourChickenImg from '../assets/Thai Sweet and Sour Chicken.png';
 import vegThaiFriedRiceImg from '../assets/Vegetarian Thai Fried Rice.png';
 import shrimpToastImg from '../assets/Shrimp Toast .png';
 import crispySpringRollsImg from '../assets/Crispy Spring Rolls (veg  shrimp  chicken).png';
@@ -357,7 +362,7 @@ export const menuData = {
       description: 'Slow-simmered broth with rice noodles, herbs, and your choice of protein.',
       price: 14.99,
       rating: 4.8,
-      image: menuCurry
+      image: vietnamesePhoImg
     },
     {
       id: 'noodle-yentafo',
@@ -497,7 +502,7 @@ export const menuData = {
       description: 'Tender poached chicken served with fragrant rice and ginger sauce.',
       price: 13.99,
       rating: 4.8,
-      image: heroDish
+      image: hainaneseChickenRiceImg
     }
   ],
   'Street Kitchen': [
@@ -507,7 +512,7 @@ export const menuData = {
       description: 'Classic Southeast Asian dish with poached chicken and aromatic rice.',
       price: 13.99,
       rating: 4.8,
-      image: menuAppetizer
+      image: hainaneseChickenRiceImg
     },
     {
       id: 'street-biryani',
@@ -515,7 +520,7 @@ export const menuData = {
       description: 'Spiced rice dish layered with herbs and protein.',
       price: 16.99,
       rating: 4.8,
-      image: menuAppetizer
+      image: thaiChickenBiryaniImg
     },
     {
       id: 'sig-3',
@@ -531,7 +536,7 @@ export const menuData = {
       description: 'Light and aromatic Vietnamese noodle soup.',
       price: 22,
       rating: 4.7,
-      image: menuCurry
+      image: vietnamesePhoImg
     },
     {
       id: 'street-yentafo',
@@ -547,7 +552,7 @@ export const menuData = {
       description: 'Zesty, bright notes of a traditional orange glaze with the aromatic, savory foundations of Thai cuisine.',
       price: 15.99,
       rating: 4.8,
-      image: menuAppetizer
+      image: thaiOrangeSesameChickenImg
     },
     {
       id: 'street-sweet-sour',
@@ -555,7 +560,7 @@ export const menuData = {
       description: 'Vibrant dish that balances sweet, tangy, and savory flavors.',
       price: 15.99,
       rating: 4.7,
-      image: menuAppetizer
+      image: thaiSweetAndSourChickenImg
     },
     {
       id: 'street-spicy-basil',
