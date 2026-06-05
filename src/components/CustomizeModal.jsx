@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { X, Check, ShoppingBag, Plus } from 'lucide-react';
 import { menuData } from './MenuSection';
 
-export default function CustomizeModal({ item, onClose, onConfirm, onAddSuggestion }) {
+export default function CustomizeModal({ item, cart = {}, onClose, onConfirm, onAddSuggestion, onRemoveSuggestion }) {
   const [spice, setSpice] = useState('Medium');
   const [selectedAddons, setSelectedAddons] = useState([]);
   const [requirements, setRequirements] = useState('');
@@ -233,56 +233,109 @@ export default function CustomizeModal({ item, onClose, onConfirm, onAddSuggesti
               Suggested Items
             </h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              {suggestions.map((sug) => (
-                <div 
-                  key={sug.id} 
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '0.5rem 0.75rem',
-                    borderRadius: '8px',
-                    border: '1px solid var(--border-light)',
-                    backgroundColor: 'rgba(204,164,83,0.03)'
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    {sug.image && (
-                      <img 
-                        src={sug.image} 
-                        alt={sug.name} 
-                        style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }}
-                      />
-                    )}
-                    <div style={{ textAlign: 'left' }}>
-                      <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-dark)', display: 'block' }}>{sug.name}</span>
-                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>${sug.price}</span>
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => onAddSuggestion(sug)}
+              {suggestions.map((sug) => {
+                const quantityInCart = cart[sug.id] ? cart[sug.id].quantity : 0;
+                return (
+                  <div 
+                    key={sug.id} 
                     style={{
-                      display: 'inline-flex',
+                      display: 'flex',
                       alignItems: 'center',
-                      gap: '0.25rem',
-                      padding: '0.35rem 0.75rem',
-                      borderRadius: '4px',
-                      border: '1px solid var(--text-dark)',
-                      backgroundColor: 'transparent',
-                      color: 'var(--text-dark)',
-                      fontSize: '0.7rem',
-                      fontWeight: 600,
-                      cursor: 'pointer',
-                      transition: 'all 0.2s'
+                      justifyContent: 'space-between',
+                      padding: '0.5rem 0.75rem',
+                      borderRadius: '8px',
+                      border: '1px solid var(--border-light)',
+                      backgroundColor: 'rgba(204,164,83,0.03)'
                     }}
-                    onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--text-dark)'; e.currentTarget.style.color = 'var(--canvas-primary)'; }}
-                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = 'var(--text-dark)'; }}
                   >
-                    <Plus size={10} /> Add
-                  </button>
-                </div>
-              ))}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      {sug.image && (
+                        <img 
+                          src={sug.image} 
+                          alt={sug.name} 
+                          style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }}
+                        />
+                      )}
+                      <div style={{ textAlign: 'left' }}>
+                        <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-dark)', display: 'block' }}>{sug.name}</span>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>${sug.price}</span>
+                      </div>
+                    </div>
+                    {quantityInCart > 0 ? (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        <button
+                          type="button"
+                          onClick={() => onRemoveSuggestion && onRemoveSuggestion(sug.id)}
+                          style={{
+                            width: '24px',
+                            height: '24px',
+                            borderRadius: '50%',
+                            border: '1px solid var(--border-medium)',
+                            backgroundColor: 'transparent',
+                            color: 'var(--text-dark)',
+                            cursor: 'pointer',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '0.85rem',
+                            fontWeight: 'bold',
+                            outline: 'none'
+                          }}
+                        >
+                          -
+                        </button>
+                        <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-dark)', minWidth: '14px', textAlign: 'center' }}>
+                          {quantityInCart}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => onAddSuggestion && onAddSuggestion(sug)}
+                          style={{
+                            width: '24px',
+                            height: '24px',
+                            borderRadius: '50%',
+                            border: '1px solid var(--border-medium)',
+                            backgroundColor: 'transparent',
+                            color: 'var(--text-dark)',
+                            cursor: 'pointer',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '0.85rem',
+                            fontWeight: 'bold',
+                            outline: 'none'
+                          }}
+                        >
+                          +
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => onAddSuggestion && onAddSuggestion(sug)}
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '0.25rem',
+                          padding: '0.35rem 0.75rem',
+                          borderRadius: '4px',
+                          border: '1px solid var(--text-dark)',
+                          backgroundColor: 'transparent',
+                          color: 'var(--text-dark)',
+                          fontSize: '0.7rem',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                          transition: 'all 0.2s'
+                        }}
+                        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--text-dark)'; e.currentTarget.style.color = 'var(--canvas-primary)'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = 'var(--text-dark)'; }}
+                      >
+                        <Plus size={10} /> Add
+                      </button>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}

@@ -680,6 +680,7 @@ export default function App() {
             {customizingItem && (
               <CustomizeModal
                 item={customizingItem}
+                cart={cart}
                 onClose={() => setCustomizingItem(null)}
                 onConfirm={(customizations) => {
                   addToCart(customizingItem, customizations);
@@ -687,6 +688,9 @@ export default function App() {
                 }}
                 onAddSuggestion={(sugItem) => {
                   handleAddSuggestedItem(sugItem);
+                }}
+                onRemoveSuggestion={(sugId) => {
+                  removeFromCart(sugId);
                 }}
               />
             )}
