@@ -1,24 +1,43 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Crown, Award, Gem, ArrowLeft, Sparkles, Gift, QrCode, Coins } from 'lucide-react';
-
-const generateRewardCouponId = () => `c-reward-${Date.now()}`;
+import { Crown, Award, Gem, ArrowLeft, Sparkles, Gift, Coins } from 'lucide-react';
+import { getUserRewards, redeemReward } from '../lib/api';
 
 export default function RewardsPage({ currentUser, onOpenReservation, onUpdateProfile }) {
   const [estimateSpend, setEstimateSpend] = useState(150);
+  const [rewardSummary, setRewardSummary] = useState(null);
+  const [rewardsError, setRewardsError] = useState('');
+  const [redeemedCode, setRedeemedCode] = useState('');
+  const [copyMessage, setCopyMessage] = useState('');
+
+  useEffect(() => {
+    if (!currentUser?.id) {
+      setRewardSummary(null);
+      return;
+    }
+
+    getUserRewards(currentUser.id)
+      .then(setRewardSummary)
+      .catch((error) => {
+        console.error('Failed to load rewards.', error);
+        setRewardsError('Could not load live reward points. Showing local estimate.');
+      });
+  }, [currentUser?.id]);
 
   // Dynamic Points Tally for Logged In User
   const orders = currentUser?.orders || [];
   const bookings = currentUser?.bookings || [];
-  const ordersTotal = orders.reduce((sum, o) => sum + (parseFloat(o.total) || 0), 0);
   const bookingsCount = bookings.filter(b => b.status === 'Confirmed').length;
 
   const basePoints = 100; // Sign-up bonus
-  const orderPoints = Math.round(ordersTotal * 10);
+  const orderPoints = orders.length * 10;
   const bookingPoints = bookingsCount * 50;
-  const totalEarnedPoints = basePoints + orderPoints + bookingPoints;
-  const redeemedPoints = currentUser?.redeemedPoints || 0;
-  const currentPoints = Math.max(0, totalEarnedPoints - redeemedPoints);
+  const fallbackEarnedPoints = basePoints + orderPoints + bookingPoints;
+  const liveBalance = rewardSummary?.balance;
+  const totalEarnedPoints = liveBalance?.lifetime_points ?? fallbackEarnedPoints;
+  const redeemedPoints = liveBalance?.redeemed_points ?? currentUser?.redeemedPoints ?? 0;
+  const currentPoints = liveBalance?.current_points ?? Math.max(0, totalEarnedPoints - redeemedPoints);
+  const rewardTransactions = rewardSummary?.transactions || [];
 
   // Determine Tier
   const getTier = (points) => {
@@ -47,7 +66,7 @@ export default function RewardsPage({ currentUser, onOpenReservation, onUpdatePr
 
   // Estimate rewards unlocks for slider
   const getUnlockedRewards = (spend) => {
-    const pts = spend * 10;
+    const pts = Math.floor(spend / 10);
     return [
       { id: 'rew-1', name: 'Complimentary Siam Appetizer', cost: 100, unlocked: pts >= 100 },
       { id: 'rew-2', name: 'Complimentary Royal Dessert', cost: 250, unlocked: pts >= 250 },
@@ -60,50 +79,41 @@ export default function RewardsPage({ currentUser, onOpenReservation, onUpdatePr
 
   // Available rewards for redemption
   const redeemableRewards = [
-    { id: 'appetizer', name: 'Complimentary Siam Appetizer', cost: 100, discount: 10, minOrder: 25, code: 'REWARDAPP' },
-    { id: 'dessert', name: 'Complimentary Royal Dessert', cost: 250, discount: 12, minOrder: 30, code: 'REWARDDESSERT' },
-    { id: 'credit', name: '$15 Dining Credit', cost: 500, discount: 15, minOrder: 40, code: 'REWARD15' }
+    { id: 'dining-credit', name: 'Dining Credit', cost: 100, discount: 1, minOrder: 0 }
   ];
 
-  const handleRedeem = (reward) => {
+  const formatMoney = (value) => Number(value || 0).toFixed(Number.isInteger(Number(value)) ? 0 : 2);
+
+  const handleRedeem = async (reward) => {
     if (currentPoints < reward.cost) return;
 
-    if (window.confirm(`Redeem "${reward.name}" for ${reward.cost} points? This will generate a coupon code for your next order.`)) {
-      // 1. Update Profile State (deduct points)
-      onUpdateProfile({
-        redeemedPoints: redeemedPoints + reward.cost
-      });
-
-      // 2. Generate and Add Promo Code to global coupons in localStorage
-      const newCoupon = {
-        id: generateRewardCouponId(),
-        code: reward.code,
-        type: 'flat',
-        value: reward.discount,
-        minOrder: reward.minOrder,
-        status: 'Active'
-      };
-
-      const globalCoupons = JSON.parse(localStorage.getItem('maha_global_coupons') || '[]');
-      if (globalCoupons.length === 0) {
-        // prefill default coupons
-        globalCoupons.push(
-          { id: 'c-mock1', code: 'WELCOME10', type: 'percentage', value: 10, minOrder: 30, status: 'Active' },
-          { id: 'c-mock2', code: 'MAHAFEAST', type: 'flat', value: 15, minOrder: 80, status: 'Active' }
-        );
-      }
-
-      // Check if this reward coupon is already present; if so, replace it so it stays Active
-      const index = globalCoupons.findIndex(c => c.code === reward.code);
-      if (index !== -1) {
-        globalCoupons[index] = newCoupon;
+    if (window.confirm(`Redeem "${reward.name}" for ${reward.cost} points? This will generate a coupon code.`)) {
+      if (currentUser?.id) {
+        try {
+          const updatedSummary = await redeemReward(currentUser.id, {
+            points: reward.cost,
+            description: reward.name,
+            reward_id: reward.id,
+            discount_value: reward.discount,
+            minimum_order_amount: reward.minOrder
+          });
+          setRewardSummary(updatedSummary);
+          const generatedCode = updatedSummary?.promo_code?.code || '';
+          setRedeemedCode(generatedCode);
+          setCopyMessage('');
+          setRewardsError('');
+          alert(generatedCode ? `Success! Reward redeemed. Use promo code: ${generatedCode} at checkout.` : 'Success! Reward redeemed.');
+        } catch (error) {
+          console.error('Failed to redeem reward.', error);
+          alert(error.message || 'Could not redeem reward points.');
+          return;
+        }
       } else {
-        globalCoupons.push(newCoupon);
+        onUpdateProfile({
+          redeemedPoints: redeemedPoints + reward.cost
+        });
+        alert('Success! Reward redeemed.');
       }
-      
-      localStorage.setItem('maha_global_coupons', JSON.stringify(globalCoupons));
-
-      alert(`Success! Reward redeemed. Copy and use promo code: ${reward.code} at checkout to claim your benefit.`);
     }
   };
 
@@ -206,7 +216,7 @@ export default function RewardsPage({ currentUser, onOpenReservation, onUpdatePr
             color: 'rgba(255,255,255,0.75)', maxWidth: '520px',
             margin: '0 auto', lineHeight: 1.8, fontWeight: 300
           }}>
-            Indulge in Siamese culinary excellence, ascend through membership ranks, 
+            Indulge in Siamese culinary excellence, ascend through membership ranks,
             and unlock exceptional dining privileges.
           </p>
         </div>
@@ -221,7 +231,7 @@ export default function RewardsPage({ currentUser, onOpenReservation, onUpdatePr
                LOGGED IN STATE: MEMBER DASHBOARD
                ========================================================================== */
             <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '2rem' }}>
-              
+
               {/* Points Progress Dashboard (Full Width) */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
@@ -274,7 +284,7 @@ export default function RewardsPage({ currentUser, onOpenReservation, onUpdatePr
                     Your Account Perks (Based on lifetime points)
                   </span>
                   <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: 0, fontWeight: 300 }}>
-                    Current status includes: <strong style={{ color: 'var(--text-dark)' }}>{userTier.perk}</strong>. Points are accrued automatically with every online order (10 points per $1) and table reservation (50 points).{' '}
+                    Current status includes: <strong style={{ color: 'var(--text-dark)' }}>{userTier.perk}</strong>. Points are accrued automatically with every online order ($10 earns 1 point). Rewards can be redeemed after 100 points.{' '}
                     <button
                       onClick={() => onOpenReservation('reservation')}
                       style={{ background: 'none', border: 'none', color: 'var(--gold-antique)', cursor: 'pointer', fontWeight: 600, padding: 0, fontSize: '0.85rem', textDecoration: 'underline', fontFamily: 'var(--font-sans)' }}
@@ -285,9 +295,62 @@ export default function RewardsPage({ currentUser, onOpenReservation, onUpdatePr
                 </div>
               </motion.div>
 
+              {rewardsError && (
+                <div style={{ padding: '0.9rem 1rem', border: '1px solid rgba(159,18,57,0.2)', borderRadius: '8px', backgroundColor: 'rgba(159,18,57,0.05)', color: '#9F1239', fontSize: '0.85rem', fontWeight: 600 }}>
+                  {rewardsError}
+                </div>
+              )}
+
+              {rewardTransactions.length > 0 && (
+                <div style={{ backgroundColor: 'var(--canvas-secondary)', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '1.5rem', boxShadow: 'var(--shadow-soft)' }}>
+                  <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.4rem', fontWeight: 300, color: 'var(--text-dark)', marginBottom: '1rem' }}>
+                    Recent Points Activity
+                  </h3>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    {rewardTransactions.slice(0, 6).map((entry) => (
+                      <div key={entry.id} style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', padding: '0.85rem 1rem', backgroundColor: 'var(--canvas-primary)', border: '1px solid var(--border-light)', borderRadius: '8px' }}>
+                        <div>
+                          <strong style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-dark)' }}>{entry.description || (entry.type === 'earned' ? 'Order reward' : 'Reward redeemed')}</strong>
+                          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                            {entry.created_at ? new Date(entry.created_at).toLocaleString() : 'Reward activity'}
+                          </span>
+                        </div>
+                        <span style={{ fontSize: '0.9rem', fontWeight: 700, color: entry.points >= 0 ? 'var(--accent-jade)' : '#9F1239' }}>
+                          {entry.points >= 0 ? '+' : ''}{entry.points} pts
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
 
               {/* Redeemable Rewards Panel */}
               <div style={{ marginTop: '2.5rem' }}>
+                {redeemedCode && (
+                  <div style={{ marginBottom: '1.5rem', padding: '1rem 1.25rem', border: '1px solid var(--gold-antique)', borderRadius: '8px', backgroundColor: 'var(--gold-light)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+                    <div>
+                      <span style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--gold-antique)' }}>Latest Reward Code</span>
+                      <strong style={{ fontSize: '1.1rem', color: 'var(--text-dark)', letterSpacing: '0.08em' }}>{redeemedCode}</strong>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigator.clipboard?.writeText(redeemedCode);
+                        setCopyMessage('Code copied');
+                        window.setTimeout(() => setCopyMessage(''), 2500);
+                      }}
+                      style={{ padding: '0.6rem 1rem', border: '1px solid var(--text-dark)', backgroundColor: 'var(--text-dark)', color: 'var(--canvas-primary)', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', cursor: 'pointer' }}
+                    >
+                      Copy Code
+                    </button>
+                    {copyMessage && (
+                      <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--accent-jade)' }}>
+                        {copyMessage}
+                      </span>
+                    )}
+                  </div>
+                )}
                 <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.8rem', fontWeight: 300, color: 'var(--text-dark)', marginBottom: '1.5rem', borderBottom: '1px solid var(--border-light)', paddingBottom: '0.5rem' }}>
                   Unleash Your Points
                 </h3>
@@ -328,7 +391,7 @@ export default function RewardsPage({ currentUser, onOpenReservation, onUpdatePr
                             {reward.name}
                           </h4>
                           <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 300, lineHeight: 1.5, marginBottom: '1.5rem' }}>
-                            Redeem to get a custom promo code offering a flat <strong style={{ color: 'var(--text-dark)' }}>${reward.discount} discount</strong> on orders above ${reward.minOrder}.
+                            Redeem to get a custom promo code offering a flat <strong style={{ color: 'var(--text-dark)' }}>${formatMoney(reward.discount)} discount</strong>.
                           </p>
                         </div>
 
@@ -364,7 +427,7 @@ export default function RewardsPage({ currentUser, onOpenReservation, onUpdatePr
                GUEST STATE: TEASER & INTERACTIVE CALCULATOR
                ========================================================================== */
             <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '3rem' }}>
-              
+
               {/* Interactive Point Estimator Simulator */}
               <div style={{
                 backgroundColor: 'var(--canvas-secondary)',
@@ -394,7 +457,7 @@ export default function RewardsPage({ currentUser, onOpenReservation, onUpdatePr
                         ${estimateSpend} <span style={{ fontSize: '0.85rem', fontWeight: 300, color: 'var(--text-muted)' }}>/ month</span>
                       </span>
                     </div>
-                    
+
                     <input
                       type="range"
                       min="30"
@@ -425,17 +488,17 @@ export default function RewardsPage({ currentUser, onOpenReservation, onUpdatePr
                     <div style={{ textAlign: 'center', padding: '1rem' }}>
                       <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Simulated Monthly Points</span>
                       <strong style={{ fontSize: '2.2rem', fontFamily: 'var(--font-heading)', color: 'var(--gold-antique)', fontWeight: 500, display: 'block', marginTop: '0.25rem' }}>
-                        {estimateSpend * 10}
+                        {Math.floor(estimateSpend / 10)}
                       </strong>
-                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>At 10 points per $1 spent</span>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Live rewards add 1 point for every $10 spent</span>
                     </div>
 
                     <div style={{ textAlign: 'center', padding: '1rem', borderLeft: '1px solid var(--border-light)' }}>
                       <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Projected Membership Tier</span>
-                      <strong style={{ fontSize: '1.5rem', fontFamily: 'var(--font-heading)', color: getTier(estimateSpend * 10).color, fontWeight: 500, display: 'block', marginTop: '0.75rem' }}>
-                        {getTier(estimateSpend * 10).name}
+                      <strong style={{ fontSize: '1.5rem', fontFamily: 'var(--font-heading)', color: getTier(Math.floor(estimateSpend / 10)).color, fontWeight: 500, display: 'block', marginTop: '0.75rem' }}>
+                        {getTier(Math.floor(estimateSpend / 10)).name}
                       </strong>
-                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{getTier(estimateSpend * 10).perk.split(',')[0]}</span>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{getTier(Math.floor(estimateSpend / 10)).perk.split(',')[0]}</span>
                     </div>
                   </div>
 
@@ -507,7 +570,7 @@ export default function RewardsPage({ currentUser, onOpenReservation, onUpdatePr
                       name: 'Jade Member',
                       points: '0 – 499 Points',
                       desc: 'Begin your culinary ascension. Accrue base points and receive classic privileges.',
-                      perks: ['10 Points for every $1 spent', '100 points signup bonus included', 'Complimentary sweet treat on your birthday'],
+                      perks: ['$10 spent earns 1 point', 'Redeem rewards after 100 points', 'Complimentary sweet treat on your birthday'],
                       icon: <Award size={24} />,
                       color: 'var(--accent-jade)'
                     },
@@ -554,7 +617,7 @@ export default function RewardsPage({ currentUser, onOpenReservation, onUpdatePr
                         <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 300, lineHeight: 1.5, marginBottom: '1.5rem' }}>
                           {tier.desc}
                         </p>
-                        
+
                         <div style={{ borderTop: '1px solid var(--border-light)', paddingTop: '1.25rem' }}>
                           <span style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase', color: 'var(--text-dark)', marginBottom: '0.75rem' }}>
                             Rank Privileges:
@@ -590,16 +653,16 @@ export default function RewardsPage({ currentUser, onOpenReservation, onUpdatePr
                   backgroundImage: 'radial-gradient(rgba(186,155,95,0.06) 1px, transparent 0)',
                   backgroundSize: '24px 24px'
                 }} />
-                
+
                 <div style={{ position: 'relative', zIndex: 10 }}>
                   <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '2.2rem', fontWeight: 300, color: 'var(--canvas-primary)', marginBottom: '1rem' }}>
                     Begin Your Culinary Ascent
                   </h2>
                   <p style={{ fontSize: '0.95rem', color: 'rgba(255,255,255,0.65)', maxWidth: '500px', margin: '0 auto 2.5rem', lineHeight: 1.7, fontWeight: 300 }}>
-                    Create an account today to enroll in the Maha Royal Circle rewards program. 
-                    Receive an immediate 100 points registration bonus.
+                    Create an account today to enroll in the Maha Royal Circle rewards program.
+                    Start earning points with every online order and redeem rewards after 100 points.
                   </p>
-                  
+
                   <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
                     <a
                       href="#/login"
