@@ -1,10 +1,50 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, ArrowLeft, UtensilsCrossed, Flame, Award } from 'lucide-react';
 import { menuData } from './MenuSection';
 
+const PROTEINS = [
+  { name: 'Chicken',           extra: 2.00 },
+  { name: 'Beef',              extra: 3.50 },
+  { name: 'Shrimp',            extra: 3.50 },
+  { name: 'Seafood',           extra: 6.00 },
+  { name: 'Fried Tofu',        extra: 0 },
+  { name: 'Soft Tofu',         extra: 0 },
+  { name: 'Vegetable',         extra: 0 },
+  { name: 'Extra Vegetable',   extra: 2.00 },
+  { name: 'Fried Paneer',      extra: 1.50 },
+  { name: 'No Protein',        extra: 0 },
+];
+
 export default function DinnerMenuPage({ onOpenReservation, cart = {}, addToCart, removeFromCart }) {
   const items = menuData['Dinner'];
+
+  // Track selected protein per item id
+  const [proteinMap, setProteinMap] = useState({});
+
+  const getProtein = (itemId) => proteinMap[itemId] || 'Chicken';
+  const setProtein = (itemId, name) => setProteinMap(prev => ({ ...prev, [itemId]: name }));
+
+  const getExtra = (proteinName) => {
+    const found = PROTEINS.find(p => p.name === proteinName);
+    return found ? found.extra : 0;
+  };
+
+  const getCartKey = (item, prot) =>
+    `${item.id}-prot-${prot.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
+
+  const handleAddToCart = (item) => {
+    const prot = getProtein(item.id);
+    const extra = getExtra(prot);
+    const enrichedItem = {
+      ...item,
+      id: getCartKey(item, prot),
+      name: `${item.name} (${prot})`,
+      price: Number((item.price + extra).toFixed(2)),
+      proteinChoice: prot
+    };
+    addToCart(enrichedItem);
+  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -22,32 +62,22 @@ export default function DinnerMenuPage({ onOpenReservation, cart = {}, addToCart
       <section
         className="menu-page-hero"
         style={{
-          position: 'relative',
-          minHeight: '55vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          textAlign: 'center',
-          overflow: 'hidden',
+          position: 'relative', minHeight: '55vh',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          textAlign: 'center', overflow: 'hidden',
           background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)'
         }}
       >
-        {/* Dot pattern */}
         <div style={{
           position: 'absolute', inset: 0,
           backgroundImage: 'radial-gradient(rgba(186,155,95,0.06) 1px, transparent 0)',
           backgroundSize: '30px 30px', zIndex: 1
         }} />
-
-        {/* Deep amber glow */}
         <div style={{
-          position: 'absolute',
-          top: '40%', left: '50%', transform: 'translate(-50%,-50%)',
+          position: 'absolute', top: '40%', left: '50%', transform: 'translate(-50%,-50%)',
           width: '700px', height: '700px', borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(186,155,95,0.1) 0%, transparent 60%)',
-          zIndex: 1
+          background: 'radial-gradient(circle, rgba(186,155,95,0.1) 0%, transparent 60%)', zIndex: 1
         }} />
-
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
@@ -64,10 +94,8 @@ export default function DinnerMenuPage({ onOpenReservation, cart = {}, addToCart
             onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'}
             onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
           >
-            <ArrowLeft size={14} />
-            Back to Home
+            <ArrowLeft size={14} /> Back to Home
           </a>
-
           <div style={{
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             gap: '0.75rem', marginBottom: '1.5rem'
@@ -80,7 +108,6 @@ export default function DinnerMenuPage({ onOpenReservation, cart = {}, addToCart
               THE MAIN COLLECTION
             </span>
           </div>
-
           <h1 style={{
             fontFamily: 'var(--font-heading)',
             fontSize: 'clamp(2.5rem, 5vw, 4rem)', fontWeight: 300,
@@ -88,13 +115,11 @@ export default function DinnerMenuPage({ onOpenReservation, cart = {}, addToCart
           }}>
             Dinner Menu
           </h1>
-
           <div style={{
             width: '80px', height: '1px',
             background: 'linear-gradient(90deg, transparent, var(--gold-antique), transparent)',
             margin: '0 auto 1.5rem'
           }} />
-
           <p style={{
             fontFamily: 'var(--font-body)', fontSize: '1rem',
             color: 'rgba(255,255,255,0.65)', maxWidth: '520px',
@@ -108,8 +133,7 @@ export default function DinnerMenuPage({ onOpenReservation, cart = {}, addToCart
 
       {/* Info Badges */}
       <section style={{
-        padding: '3rem 2rem',
-        backgroundColor: 'var(--canvas-secondary)',
+        padding: '3rem 2rem', backgroundColor: 'var(--canvas-secondary)',
         borderBottom: '1px solid var(--border-light)'
       }}>
         <div className="container menu-page-badges" style={{
@@ -118,21 +142,17 @@ export default function DinnerMenuPage({ onOpenReservation, cart = {}, addToCart
           {[
             { icon: <Flame size={18} />, label: 'Wok-Fired & Grilled Specials' },
             { icon: <UtensilsCrossed size={18} />, label: 'Served 5:00 PM – 10:00 PM' },
-            { icon: <Award size={18} />, label: 'Chef\'s Signature Creations' }
+            { icon: <Award size={18} />, label: "Chef's Signature Creations" }
           ].map((badge, i) => (
             <motion.div key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1, duration: 0.6 }}
+              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }} transition={{ delay: i * 0.1, duration: 0.6 }}
               style={{
                 display: 'flex', alignItems: 'center', gap: '0.75rem',
                 padding: '1rem 1.5rem', borderRadius: '8px',
-                backgroundColor: 'var(--canvas-primary)',
-                border: '1px solid var(--border-light)',
-                color: 'var(--text-dark)',
-                fontFamily: 'var(--font-body)', fontSize: '0.8rem',
-                fontWeight: 500, letterSpacing: '0.05em'
+                backgroundColor: 'var(--canvas-primary)', border: '1px solid var(--border-light)',
+                color: 'var(--text-dark)', fontFamily: 'var(--font-body)',
+                fontSize: '0.8rem', fontWeight: 500, letterSpacing: '0.05em'
               }}
             >
               <span style={{ color: 'var(--gold-antique)' }}>{badge.icon}</span>
@@ -153,10 +173,7 @@ export default function DinnerMenuPage({ onOpenReservation, cart = {}, addToCart
             }}>
               Full Dinner Selection
             </h2>
-            <p style={{
-              fontFamily: 'var(--font-body)', fontSize: '0.9rem',
-              color: 'var(--text-muted)', fontWeight: 300
-            }}>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.9rem', color: 'var(--text-muted)', fontWeight: 300 }}>
               {items ? items.length : 0} dishes available
             </p>
           </div>
@@ -173,94 +190,125 @@ export default function DinnerMenuPage({ onOpenReservation, cart = {}, addToCart
                 gap: '2rem'
               }}
             >
-              {items && items.map((item) => (
-                <motion.div
-                  key={item.id}
-                  variants={itemVariants}
-                  whileHover={{ y: -6 }}
-                  transition={{ duration: 0.4 }}
-                  style={{ display: 'flex', flexDirection: 'column' }}
-                >
-                  <div style={{
-                    overflow: 'hidden', position: 'relative', width: '100%',
-                    aspectRatio: '4/3', borderRadius: '8px', marginBottom: '1.5rem'
-                  }}>
-                    <img src={item.image} alt={item.name}
-                      style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s ease' }}
-                      onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-                      onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                    />
-                    <div style={{
-                      position: 'absolute', bottom: '0.75rem', left: '0.75rem',
-                      display: 'flex', alignItems: 'center', gap: '0.25rem',
-                      backgroundColor: 'rgba(255,255,255,0.95)',
-                      padding: '0.25rem 0.5rem', borderRadius: '4px',
-                      boxShadow: '0 2px 8px rgba(11,54,61,0.05)'
-                    }}>
-                      <Star size={12} fill="var(--gold-antique)" color="var(--gold-antique)" />
-                      <span style={{ fontSize: '10px', color: 'var(--text-dark)', fontWeight: 'bold' }}>
-                        {item.rating.toFixed(1)}
-                      </span>
-                    </div>
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
-                    <div className="menu-leader-row">
-                      <h3 className="menu-leader-title">{item.name}</h3>
-                      <div className="menu-leader-dots" />
-                      <span className="menu-leader-price">${item.price}</span>
-                    </div>
-                    <p className="menu-card-desc" style={{ flexGrow: 1 }}>{item.description}</p>
+              {items && items.map((item) => {
+                const selectedProtein = getProtein(item.id);
+                const extra = getExtra(selectedProtein);
+                const displayPrice = Number((item.price + extra).toFixed(2));
+                const cartKey = getCartKey(item, selectedProtein);
+                const cartItem = cart[cartKey];
+                const quantity = cartItem ? cartItem.quantity : 0;
 
-                    <div style={{ marginTop: '0.5rem', display: 'flex', justifyContent: 'flex-start' }}>
-                      {(() => {
-                        const cartItem = cart[item.id];
-                        const quantity = cartItem ? cartItem.quantity : 0;
-                        if (quantity > 0) {
-                          return (
-                            <div className="qty-controls" style={{ border: '1px solid var(--gold-antique)', borderRadius: '9999px', padding: '0.25rem 0.6rem' }}>
+                return (
+                  <motion.div
+                    key={item.id}
+                    variants={itemVariants}
+                    whileHover={{ y: -6 }}
+                    transition={{ duration: 0.4 }}
+                    style={{ display: 'flex', flexDirection: 'column' }}
+                  >
+                    {/* Image */}
+                    <div style={{
+                      overflow: 'hidden', position: 'relative', width: '100%',
+                      aspectRatio: '4/3', borderRadius: '8px', marginBottom: '1.5rem'
+                    }}>
+                      <img src={item.image} alt={item.name}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s ease' }}
+                        onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                        onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                      />
+                      <div style={{
+                        position: 'absolute', bottom: '0.75rem', left: '0.75rem',
+                        display: 'flex', alignItems: 'center', gap: '0.25rem',
+                        backgroundColor: 'rgba(255,255,255,0.95)',
+                        padding: '0.25rem 0.5rem', borderRadius: '4px',
+                        boxShadow: '0 2px 8px rgba(11,54,61,0.05)'
+                      }}>
+                        <Star size={12} fill="var(--gold-antique)" color="var(--gold-antique)" />
+                        <span style={{ fontSize: '10px', color: 'var(--text-dark)', fontWeight: 'bold' }}>
+                          {item.rating.toFixed(1)}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Info */}
+                    <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+                      <div className="menu-leader-row">
+                        <h3 className="menu-leader-title">{item.name}</h3>
+                        <div className="menu-leader-dots" />
+                        <span className="menu-leader-price">${displayPrice.toFixed(2)}</span>
+                      </div>
+                      <p className="menu-card-desc" style={{ flexGrow: 1 }}>{item.description}</p>
+
+                      {/* Protein Choice */}
+                      <div style={{ marginTop: '1rem', marginBottom: '0.75rem' }}>
+                        <span style={{
+                          display: 'block', fontFamily: 'var(--font-sans)', fontSize: '0.7rem',
+                          fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase',
+                          color: 'var(--text-muted)', marginBottom: '0.5rem'
+                        }}>
+                          Choice of Protein
+                        </span>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
+                          {PROTEINS.map((prot) => {
+                            const isActive = selectedProtein === prot.name;
+                            return (
                               <button
+                                key={prot.name}
                                 type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  removeFromCart(item.id);
+                                onClick={() => setProtein(item.id, prot.name)}
+                                style={{
+                                  padding: '0.3rem 0.65rem',
+                                  borderRadius: '999px',
+                                  fontSize: '0.68rem',
+                                  fontFamily: 'var(--font-sans)',
+                                  fontWeight: isActive ? 700 : 400,
+                                  border: `1.5px solid ${isActive ? 'var(--gold-antique)' : 'var(--border-light)'}`,
+                                  backgroundColor: isActive ? 'var(--gold-light)' : 'transparent',
+                                  color: 'var(--text-dark)',
+                                  cursor: 'pointer',
+                                  transition: 'all 0.15s ease',
+                                  whiteSpace: 'nowrap'
                                 }}
-                                className="qty-btn"
-                                style={{ border: 'none', background: 'none', color: 'var(--text-dark)', cursor: 'pointer', fontWeight: 'bold' }}
                               >
-                                -
+                                {prot.name}{prot.extra > 0 ? ` +$${prot.extra.toFixed(2)}` : ''}
                               </button>
-                              <span className="qty-val" style={{ margin: '0 0.75rem', fontWeight: 700 }}>{quantity}</span>
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  addToCart(item);
-                                }}
-                                className="qty-btn"
-                                style={{ border: 'none', background: 'none', color: 'var(--text-dark)', cursor: 'pointer', fontWeight: 'bold' }}
-                              >
-                                +
-                              </button>
-                            </div>
-                          );
-                        }
-                        return (
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Add to Cart */}
+                      <div style={{ marginTop: '0.5rem', display: 'flex', justifyContent: 'flex-start' }}>
+                        {quantity > 0 ? (
+                          <div className="qty-controls" style={{ border: '1px solid var(--gold-antique)', borderRadius: '9999px', padding: '0.25rem 0.6rem' }}>
+                            <button
+                              type="button"
+                              onClick={(e) => { e.stopPropagation(); removeFromCart(cartKey); }}
+                              className="qty-btn"
+                              style={{ border: 'none', background: 'none', color: 'var(--text-dark)', cursor: 'pointer', fontWeight: 'bold' }}
+                            >-</button>
+                            <span className="qty-val" style={{ margin: '0 0.75rem', fontWeight: 700 }}>{quantity}</span>
+                            <button
+                              type="button"
+                              onClick={(e) => { e.stopPropagation(); handleAddToCart(item); }}
+                              className="qty-btn"
+                              style={{ border: 'none', background: 'none', color: 'var(--text-dark)', cursor: 'pointer', fontWeight: 'bold' }}
+                            >+</button>
+                          </div>
+                        ) : (
                           <button
                             type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              addToCart(item);
-                            }}
+                            onClick={(e) => { e.stopPropagation(); handleAddToCart(item); }}
                             className="card-btn"
                           >
                             + Add to Cart
                           </button>
-                        );
-                      })()}
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </motion.div>
-              ))}
+                  </motion.div>
+                );
+              })}
             </motion.div>
           </AnimatePresence>
         </div>
@@ -268,10 +316,8 @@ export default function DinnerMenuPage({ onOpenReservation, cart = {}, addToCart
 
       {/* Cross-navigation */}
       <section style={{
-        padding: '4rem 2rem',
-        backgroundColor: 'var(--canvas-secondary)',
-        borderTop: '1px solid var(--border-light)',
-        borderBottom: '1px solid var(--border-light)'
+        padding: '4rem 2rem', backgroundColor: 'var(--canvas-secondary)',
+        borderTop: '1px solid var(--border-light)', borderBottom: '1px solid var(--border-light)'
       }}>
         <div className="container" style={{ textAlign: 'center' }}>
           <span style={{
@@ -294,23 +340,15 @@ export default function DinnerMenuPage({ onOpenReservation, cart = {}, addToCart
               { name: 'Vegetarian Menu', href: '#/menu/vegetarian' }
             ].map((link) => (
               <a key={link.name} href={link.href} style={{
-                padding: '0.85rem 2rem',
-                border: '1px solid var(--border-light)',
-                backgroundColor: 'var(--canvas-primary)',
-                color: 'var(--text-dark)',
+                padding: '0.85rem 2rem', border: '1px solid var(--border-light)',
+                backgroundColor: 'var(--canvas-primary)', color: 'var(--text-dark)',
                 fontFamily: 'var(--font-body)', fontSize: '0.75rem',
                 fontWeight: 600, letterSpacing: '0.15em',
                 textTransform: 'uppercase', textDecoration: 'none',
                 borderRadius: '4px', transition: 'all 0.3s ease'
               }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = 'var(--gold-antique)';
-                  e.currentTarget.style.color = 'var(--gold-antique)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = 'var(--border-light)';
-                  e.currentTarget.style.color = 'var(--text-dark)';
-                }}
+                onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--gold-antique)'; e.currentTarget.style.color = 'var(--gold-antique)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--border-light)'; e.currentTarget.style.color = 'var(--text-dark)'; }}
               >
                 {link.name}
               </a>
@@ -354,23 +392,15 @@ export default function DinnerMenuPage({ onOpenReservation, cart = {}, addToCart
           <button
             onClick={() => onOpenReservation && onOpenReservation('reservation')}
             style={{
-              padding: '1rem 2.5rem',
-              border: '1px solid var(--gold-antique)',
-              backgroundColor: 'var(--gold-antique)',
-              color: 'var(--text-dark)',
+              padding: '1rem 2.5rem', border: '1px solid var(--gold-antique)',
+              backgroundColor: 'var(--gold-antique)', color: 'var(--text-dark)',
               fontFamily: 'var(--font-body)', fontSize: '0.75rem',
               fontWeight: 700, letterSpacing: '0.2em',
               textTransform: 'uppercase', borderRadius: '2px',
               cursor: 'pointer', transition: 'all 0.4s ease'
             }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'transparent';
-              e.currentTarget.style.color = 'var(--gold-antique)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--gold-antique)';
-              e.currentTarget.style.color = 'var(--text-dark)';
-            }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = 'var(--gold-antique)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--gold-antique)'; e.currentTarget.style.color = 'var(--text-dark)'; }}
           >
             BOOK A TABLE
           </button>
