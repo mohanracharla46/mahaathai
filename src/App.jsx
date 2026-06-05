@@ -175,6 +175,7 @@ export default function App() {
     name: '',
     phone: '',
     address: '',
+    pickupTime: '',
     serviceType: 'delivery'
   });
   const [isCartCheckedOut, setIsCartCheckedOut] = useState(false);
@@ -311,6 +312,11 @@ export default function App() {
     setCouponDiscount(0);
     setAppliedCoupon(null);
     setCouponError('');
+    setCartCheckoutData((prev) => ({
+      ...prev,
+      address: '',
+      pickupTime: ''
+    }));
   };
 
   const getCartCount = () => {
@@ -752,7 +758,9 @@ export default function App() {
                         </h4>
                         <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: '1.6', marginBottom: '1.5rem', fontWeight: 300 }}>
                           Thank you, <strong style={{ fontWeight: 600, color: 'var(--text-dark)' }}>{cartCheckoutData.name}</strong>. Your fine dining selection is being processed. 
-                          {cartCheckoutData.serviceType === 'delivery' ? ' A thermal insulated delivery courier will be dispatched shortly.' : ' Your curbside pickup is secured.'}
+                          {cartCheckoutData.serviceType === 'delivery'
+                            ? ' A thermal insulated delivery courier will be dispatched shortly.'
+                            : ` Your curbside pickup is secured for ${cartCheckoutData.pickupTime || 'as soon as possible'}.`}
                         </p>
 
                         <div className="receipt-box">
@@ -844,7 +852,7 @@ export default function App() {
                               customerName: cartCheckoutData.name,
                               customerPhone: cartCheckoutData.phone,
                               customerEmail: currentUser ? currentUser.email : 'guest@example.com',
-                              address: cartCheckoutData.serviceType === 'delivery' ? cartCheckoutData.address : 'Pickup'
+                              address: cartCheckoutData.serviceType === 'delivery' ? cartCheckoutData.address : `Pickup (${cartCheckoutData.pickupTime || 'ASAP'})`
                             };
                             if (currentUser) {
                               const updated = {
@@ -923,6 +931,23 @@ export default function App() {
                                 placeholder="Street Address, Apt / Suite"
                                 value={cartCheckoutData.address}
                                 onChange={(e) => setCartCheckoutData({ ...cartCheckoutData, address: e.target.value })}
+                                className="w-full px-4 py-2 font-sans text-sm bg-white rounded border focus:outline-none"
+                                style={{ width: '100%', padding: '0.6rem 0.8rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }}
+                              />
+                            </div>
+                          )}
+
+                          {cartCheckoutData.serviceType === 'pickup' && (
+                            <div>
+                              <label className="block font-sans text-[10px] font-bold tracking-widest uppercase text-dark mb-1" style={{ fontSize: '10px' }}>
+                                Pickup Time
+                              </label>
+                              <input
+                                type="text"
+                                required
+                                placeholder="e.g. 12:30 PM, As soon as possible"
+                                value={cartCheckoutData.pickupTime || ''}
+                                onChange={(e) => setCartCheckoutData({ ...cartCheckoutData, pickupTime: e.target.value })}
                                 className="w-full px-4 py-2 font-sans text-sm bg-white rounded border focus:outline-none"
                                 style={{ width: '100%', padding: '0.6rem 0.8rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }}
                               />
