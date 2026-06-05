@@ -29,9 +29,7 @@ import thaiChickenBiryaniImg from '../assets/Thai Chicken Biryani.png';
 import thaiOrangeSesameChickenImg from '../assets/Thai Orange Sesame Chicken.png';
 import thaiSweetAndSourChickenImg from '../assets/Thai Sweet and Sour Chicken.png';
 import vegThaiFriedRiceImg from '../assets/Vegetarian Thai Fried Rice.png';
-import shrimpToastImg from '../assets/Shrimp Toast .png';
 import crispySpringRollsImg from '../assets/Crispy Spring Rolls (veg  shrimp  chicken).png';
-import crunchyMahaRollsImg from '../assets/Crunchy Maha Rolls.png';
 import firecrackerShrimpImg from '../assets/Firecracker Shrimp.png';
 import freshGardenRollsImg from '../assets/Fresh Garden Rolls.png';
 import goldenFriedTofuImg from '../assets/Golden Fried Tofu.png';
@@ -153,14 +151,6 @@ export const menuData = {
       image: crispySpringRollsImg
     },
     {
-      id: 'app-maha-rolls',
-      name: 'Crunchy Maha Rolls',
-      description: 'Deep-fried rolls with shredded texture, filled with chicken, mushroom, and glass noodles.',
-      price: 10.99,
-      rating: 4.9,
-      image: crunchyMahaRollsImg
-    },
-    {
       id: 'app-firecracker-shrimp',
       name: 'Firecracker Shrimp Blanket',
       description: 'Whole shrimp wrapped in thin pastry and fried crispy, served with a bright chili-lime dipping sauce.',
@@ -201,14 +191,6 @@ export const menuData = {
       image: dumplingsImg
     },
     {
-      id: 'app-shrimp-toast',
-      name: 'Shrimp Toast (Signature)',
-      description: 'Fried bread topped with seasoned shrimp mixture, crisp on the outside and rich inside.',
-      price: 9.99,
-      rating: 4.8,
-      image: shrimpToastImg
-    },
-    {
       id: 'app-satay-chicken',
       name: 'Street Satay Chicken',
       description: 'Grilled marinated chicken in Thai spices, served with peanut sauce and cucumber relish.',
@@ -231,14 +213,6 @@ export const menuData = {
       price: 7.99,
       rating: 4.8,
       image: vietnameseFreshRollsImg
-    },
-    {
-      id: 'app-fish-cakes',
-      name: 'Thai Fish Cakes',
-      description: 'Fried fish cakes blended with Thai herbs and green beans for a slightly spicy bite.',
-      price: 9.99,
-      rating: 4.8,
-      image: menuAppetizer
     }
   ],
   'Salads': [
@@ -569,14 +543,6 @@ export const menuData = {
       price: 15.99,
       rating: 4.7,
       image: thaiSweetAndSourChickenImg
-    },
-    {
-      id: 'street-spicy-basil',
-      name: 'Spicy Basil Leaves',
-      description: 'Authentic street-style taste with the right balance of heat and seasoning.',
-      price: 15.99,
-      rating: 4.8,
-      image: menuAppetizer
     },
     {
       id: 'street-rama-garden',
@@ -947,14 +913,6 @@ export const menuData = {
       price: 5.00,
       rating: 4.9,
       image: thaiIcedTeaImg
-    },
-    {
-      id: 'bev-boba',
-      name: 'Boba Selection',
-      description: 'Explore our rich and creamy Boba Milk Teas and fruit teas. (See Boba menu for full selection).',
-      price: 6.00,
-      rating: 4.9,
-      image: menuAppetizer
     }
   ],
   'Soups & Claypots': [
