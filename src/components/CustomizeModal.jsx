@@ -5,11 +5,30 @@ import { menuData } from './MenuSection';
 
 export default function CustomizeModal({ item, cart = {}, onClose, onConfirm, onAddSuggestion, onRemoveSuggestion }) {
   const [spice, setSpice] = useState('Medium');
+  const [protein, setProtein] = useState('Chicken');
   const [selectedAddons, setSelectedAddons] = useState([]);
   const [requirements, setRequirements] = useState('');
   const [suggestedQuantities, setSuggestedQuantities] = useState({});
 
   const spiceLevels = ['Mild', 'Medium', 'Spicy', 'More Spicy'];
+
+  const proteinOptions = [
+    { name: 'Chicken',         extra: 2.00 },
+    { name: 'Beef',            extra: 3.50 },
+    { name: 'Shrimp',          extra: 3.50 },
+    { name: 'Seafood',         extra: 6.00 },
+    { name: 'Fried Tofu',      extra: 0 },
+    { name: 'Soft Tofu',       extra: 0 },
+    { name: 'Vegetable',       extra: 0 },
+    { name: 'Extra Vegetable', extra: 2.00 },
+    { name: 'Fried Paneer',    extra: 1.50 },
+    { name: 'No Protein',      extra: 0 },
+  ];
+
+  const getProteinExtra = () => {
+    const found = proteinOptions.find(p => p.name === protein);
+    return found ? found.extra : 0;
+  };
 
   const addonOptions = [
     { name: 'Extra Vegetables', price: 1.50 },
@@ -81,7 +100,7 @@ export default function CustomizeModal({ item, cart = {}, onClose, onConfirm, on
     }, 0);
   };
 
-  const currentPrice = Number((item.price + getAddonsTotal() + getSuggestionsTotal()).toFixed(2));
+  const currentPrice = Number((item.price + getProteinExtra() + getAddonsTotal() + getSuggestionsTotal()).toFixed(2));
 
   return (
     <div 
@@ -177,7 +196,40 @@ export default function CustomizeModal({ item, cart = {}, onClose, onConfirm, on
           </div>
         </div>
 
-        {/* Add-ons */}
+        {/* Protein Choice */}
+        <div>
+          <h4 style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase', color: 'var(--text-dark)', marginBottom: '0.85rem' }}>
+            Choice of Protein
+          </h4>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+            {proteinOptions.map((prot) => {
+              const isActive = protein === prot.name;
+              return (
+                <button
+                  key={prot.name}
+                  type="button"
+                  onClick={() => setProtein(prot.name)}
+                  style={{
+                    padding: '0.5rem 0.9rem',
+                    borderRadius: '999px',
+                    fontSize: '0.78rem',
+                    fontFamily: 'var(--font-sans)',
+                    fontWeight: isActive ? 700 : 400,
+                    border: `1.5px solid ${isActive ? 'var(--gold-antique)' : 'var(--border-light)'}`,
+                    backgroundColor: isActive ? 'var(--gold-light)' : 'transparent',
+                    color: 'var(--text-dark)',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease',
+                    whiteSpace: 'nowrap'
+                  }}
+                >
+                  {prot.name}{prot.extra > 0 ? ` +$${prot.extra.toFixed(2)}` : ''}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         <div>
           <h4 style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase', color: 'var(--text-dark)', marginBottom: '0.85rem' }}>
             Add-ons (Optional)
@@ -394,7 +446,7 @@ export default function CustomizeModal({ item, cart = {}, onClose, onConfirm, on
           </button>
           <button
             type="button"
-            onClick={() => onConfirm({ spice, addons: selectedAddons, requirements, suggestions: suggestedQuantities })}
+            onClick={() => onConfirm({ spice, protein, addons: selectedAddons, requirements, suggestions: suggestedQuantities })}
             className="btn-filled"
             style={{
               flex: 2,

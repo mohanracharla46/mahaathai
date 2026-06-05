@@ -234,13 +234,17 @@ export default function App() {
     if (customizations) {
       setCart((prevCart) => {
         const addonNames = customizations.addons.map(a => a.name).join(', ');
-        const customId = `${item.id}-spice-${customizations.spice.toLowerCase()}${customizations.addons.length > 0 ? `-addons-${customizations.addons.map(a => a.name.toLowerCase().replace(/[^a-z0-9]/g, '')).join('-')}` : ''}${customizations.requirements ? `-req-${customizations.requirements.toLowerCase().replace(/[^a-z0-9]/g, '-').slice(0, 10)}` : ''}`;
+        const proteinPart = customizations.protein ? `-prot-${customizations.protein.toLowerCase().replace(/[^a-z0-9]/g, '')}` : '';
+        const customId = `${item.id}${proteinPart}-spice-${customizations.spice.toLowerCase()}${customizations.addons.length > 0 ? `-addons-${customizations.addons.map(a => a.name.toLowerCase().replace(/[^a-z0-9]/g, '')).join('-')}` : ''}${customizations.requirements ? `-req-${customizations.requirements.toLowerCase().replace(/[^a-z0-9]/g, '-').slice(0, 10)}` : ''}`;
         
+        const PROTEIN_EXTRAS = { 'Chicken': 2.00, 'Beef': 3.50, 'Shrimp': 3.50, 'Seafood': 6.00, 'Extra Vegetable': 2.00, 'Fried Paneer': 1.50 };
+        const proteinExtra = customizations.protein ? (PROTEIN_EXTRAS[customizations.protein] || 0) : 0;
         const addonsPrice = customizations.addons.reduce((sum, a) => sum + a.price, 0);
-        const customPrice = Number((item.price + addonsPrice).toFixed(2));
+        const customPrice = Number((item.price + proteinExtra + addonsPrice).toFixed(2));
         
         // Build customized name & details
-        const customName = `${item.name} (${customizations.spice}${addonNames ? ` + ${addonNames}` : ''})`;
+        const proteinLabel = customizations.protein && customizations.protein !== 'No Protein' ? customizations.protein : '';
+        const customName = `${item.name}${proteinLabel ? ` (${proteinLabel})` : ''} — ${customizations.spice}${addonNames ? ` + ${addonNames}` : ''}`;
         
         const existing = prevCart[customId];
         if (existing) {
@@ -795,6 +799,9 @@ export default function App() {
                               </div>
                               {item.customizations && (
                                 <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textAlign: 'left', marginTop: '0.15rem', display: 'flex', flexDirection: 'column', gap: '0.1rem', lineHeight: '1.25' }}>
+                                  {item.customizations.protein && item.customizations.protein !== 'No Protein' && (
+                                    <span>Protein: {item.customizations.protein}</span>
+                                  )}
                                   <span>Spice: {item.customizations.spice}</span>
                                   {item.customizations.addons && item.customizations.addons.length > 0 && (
                                     <span>Add-ons: {item.customizations.addons.map(a => a.name).join(', ')}</span>
@@ -1089,6 +1096,9 @@ export default function App() {
                               <h5 className="order-item-title" style={{ fontSize: '0.95rem' }}>{item.name}</h5>
                               {item.customizations && (
                                 <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.2rem', display: 'flex', flexDirection: 'column', gap: '0.1rem', lineHeight: '1.25' }}>
+                                  {item.customizations.protein && item.customizations.protein !== 'No Protein' && (
+                                    <span>Protein: <strong style={{ color: 'var(--text-dark)' }}>{item.customizations.protein}</strong></span>
+                                  )}
                                   <span>Spice: <strong style={{ color: 'var(--text-dark)' }}>{item.customizations.spice}</strong></span>
                                   {item.customizations.addons && item.customizations.addons.length > 0 && (
                                     <span>Add-ons: <strong style={{ color: 'var(--text-dark)' }}>{item.customizations.addons.map(a => a.name).join(', ')}</strong></span>
