@@ -156,7 +156,7 @@ export default function Footer() {
         <div className="container">
           <div className="footer-bottom-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
             <span className="copyright-text" style={{ fontSize: '0.7rem', color: 'var(--text-muted)', letterSpacing: '0.05em' }}>
-              © 2026 Maha Thai. Crafted with Heritage.
+              © 2026 NKXUS PVT LTD. All rights reserved.
             </span>
             <div className="footer-policies" style={{ display: 'flex', gap: '1rem' }}>
               <a href="#" className="policy-link" style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textDecoration: 'none' }}>Privacy Policy</a>
