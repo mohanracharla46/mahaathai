@@ -1479,7 +1479,7 @@ export default function AdminPage() {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                       {[
                         { key: 'seatingReminder', title: 'Automated Seating Reminder', desc: 'Dispatches automated email/SMS reminders to patrons 24 hours prior to their reserved seating booking.' },
-                        { key: 'happyHourPricing', title: 'Happy Hour Smart Pricing', desc: 'Lowers Appetizers and Beverages cost by 15% automatically on weekdays from 2 PM to 5 PM.' },
+                        { key: 'happyHourPricing', title: 'Sunday Special Discount', desc: 'Applies a 10% discount on all orders automatically every Sunday.' },
                         { key: 'reviewInvites', title: 'Automated Review Invites', desc: 'Triggers a dining feedback request email 2 hours after a food delivery is marked as delivered.' },
                         { key: 'backupSync', title: 'System Database Cloud Sync', desc: 'Syncs customer records, menu templates, and logs to secondary secure systems nightly.' },
                         { key: 'kitchenDisplayAutoAlert', title: 'Kitchen Alert Auto-Prioritizer', desc: 'Flags orders exceeding $100 as priority in staff logs automatically.' }
@@ -1513,7 +1513,7 @@ export default function AdminPage() {
                       </div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-light)', paddingBottom: '0.5rem' }}>
                         <span style={{ color: 'var(--text-muted)' }}>[09:00:05] Menu Price Engine:</span>
-                        <span>Standard pricing active (Happy hour disabled)</span>
+                        <span>Standard pricing active (Sunday discount disabled)</span>
                       </div>
                     </div>
                   </div>
