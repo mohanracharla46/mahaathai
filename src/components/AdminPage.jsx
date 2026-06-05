@@ -460,6 +460,11 @@ export default function AdminPage() {
   // --- MENU ITEM OPERATIONS ---
   const handleOpenEditDish = (dish) => {
     setSelectedDish(dish);
+    const isInLunch = (localMenu['Lunch'] || []).some(item => item.id === dish.id || item.name === dish.name);
+    const isInDinner = (localMenu['Dinner'] || []).some(item => item.id === dish.id || item.name === dish.name);
+    const isInVeg = (localMenu['Vegetarian'] || []).some(item => item.id === dish.id || item.name === dish.name) ||
+                    (localMenu['Plant-Based'] || []).some(item => item.id === dish.id || item.name === dish.name);
+
     setDishFormData({
       id: dish.id,
       name: dish.name,
@@ -467,7 +472,10 @@ export default function AdminPage() {
       description: dish.description || '',
       rating: dish.rating || 4.8,
       image: dish.image || '',
-      availability: dish.availability !== false
+      availability: dish.availability !== false,
+      lunch: isInLunch,
+      dinner: isInDinner,
+      veg: isInVeg
     });
     setShowEditItemModal(true);
   };
@@ -477,23 +485,78 @@ export default function AdminPage() {
     if (!dishFormData.name || dishFormData.price <= 0) return;
 
     const updatedMenu = { ...localMenu };
-    const items = updatedMenu[selectedMenuCategory] || [];
-    const index = items.findIndex(item => item.id === dishFormData.id);
     
-    if (index !== -1) {
-      items[index] = {
-        ...items[index],
-        name: dishFormData.name,
-        price: parseFloat(dishFormData.price),
-        description: dishFormData.description,
-        rating: parseFloat(dishFormData.rating),
-        image: dishFormData.image,
-        availability: dishFormData.availability
-      };
-      updatedMenu[selectedMenuCategory] = items;
-      saveMenuOverrides(updatedMenu);
-      setShowEditItemModal(false);
+    const updatedItem = {
+      id: dishFormData.id,
+      name: dishFormData.name,
+      price: parseFloat(dishFormData.price),
+      description: dishFormData.description,
+      rating: parseFloat(dishFormData.rating),
+      image: dishFormData.image,
+      availability: dishFormData.availability
+    };
+
+    // Helper functions
+    const updateInCategory = (catName) => {
+      if (updatedMenu[catName]) {
+        updatedMenu[catName] = updatedMenu[catName].map(item => 
+          (item.id === updatedItem.id || item.name === selectedDish.name) ? updatedItem : item
+        );
+      }
+    };
+
+    const addToCategory = (catName) => {
+      if (!updatedMenu[catName]) updatedMenu[catName] = [];
+      const exists = updatedMenu[catName].some(item => item.id === updatedItem.id || item.name === selectedDish.name);
+      if (!exists) {
+        updatedMenu[catName].push(updatedItem);
+      } else {
+        updateInCategory(catName);
+      }
+    };
+
+    const removeFromCategory = (catName) => {
+      if (updatedMenu[catName]) {
+        updatedMenu[catName] = updatedMenu[catName].filter(item => item.id !== updatedItem.id && item.name !== selectedDish.name);
+      }
+    };
+
+    // 1. Update in the primary category
+    updateInCategory(selectedMenuCategory);
+
+    // 2. Update in all standard categories if it exists
+    Object.keys(updatedMenu).forEach(cat => {
+      if (cat !== 'Lunch' && cat !== 'Dinner' && cat !== 'Vegetarian' && cat !== 'Plant-Based') {
+        const hasItem = updatedMenu[cat].some(item => item.id === updatedItem.id || item.name === selectedDish.name);
+        if (hasItem) {
+          updateInCategory(cat);
+        }
+      }
+    });
+
+    // 3. Handle Lunch, Dinner, Veg category logic
+    if (dishFormData.lunch) {
+      addToCategory('Lunch');
+    } else {
+      removeFromCategory('Lunch');
     }
+
+    if (dishFormData.dinner) {
+      addToCategory('Dinner');
+    } else {
+      removeFromCategory('Dinner');
+    }
+
+    if (dishFormData.veg) {
+      addToCategory('Vegetarian');
+      addToCategory('Plant-Based');
+    } else {
+      removeFromCategory('Vegetarian');
+      removeFromCategory('Plant-Based');
+    }
+
+    saveMenuOverrides(updatedMenu);
+    setShowEditItemModal(false);
   };
 
   const handleOpenAddDish = () => {
@@ -504,7 +567,10 @@ export default function AdminPage() {
       description: '',
       rating: 5.0,
       image: 'https://images.unsplash.com/photo-1559314809-0d155014e29e?auto=format&fit=crop&q=80&w=400',
-      availability: true
+      availability: true,
+      lunch: selectedMenuCategory === 'Lunch',
+      dinner: selectedMenuCategory === 'Dinner',
+      veg: selectedMenuCategory === 'Vegetarian' || selectedMenuCategory === 'Plant-Based'
     });
     setShowAddItemModal(true);
   };
@@ -514,7 +580,6 @@ export default function AdminPage() {
     if (!dishFormData.name || !dishFormData.price) return;
 
     const updatedMenu = { ...localMenu };
-    const items = updatedMenu[selectedMenuCategory] || [];
     
     const newItem = {
       id: dishFormData.id,
@@ -526,8 +591,52 @@ export default function AdminPage() {
       availability: dishFormData.availability
     };
 
-    items.push(newItem);
-    updatedMenu[selectedMenuCategory] = items;
+    // 1. Add to primary category
+    if (!updatedMenu[selectedMenuCategory]) {
+      updatedMenu[selectedMenuCategory] = [];
+    }
+    if (!updatedMenu[selectedMenuCategory].some(item => item.id === newItem.id)) {
+      updatedMenu[selectedMenuCategory].push(newItem);
+    }
+
+    // Helper functions
+    const addToCategory = (catName) => {
+      if (!updatedMenu[catName]) updatedMenu[catName] = [];
+      const index = updatedMenu[catName].findIndex(item => item.id === newItem.id || item.name === newItem.name);
+      if (index === -1) {
+        updatedMenu[catName].push(newItem);
+      } else {
+        updatedMenu[catName][index] = newItem;
+      }
+    };
+
+    const removeFromCategory = (catName) => {
+      if (updatedMenu[catName]) {
+        updatedMenu[catName] = updatedMenu[catName].filter(item => item.id !== newItem.id && item.name !== newItem.name);
+      }
+    };
+
+    // 2. Map other categories
+    if (dishFormData.lunch) {
+      addToCategory('Lunch');
+    } else {
+      removeFromCategory('Lunch');
+    }
+
+    if (dishFormData.dinner) {
+      addToCategory('Dinner');
+    } else {
+      removeFromCategory('Dinner');
+    }
+
+    if (dishFormData.veg) {
+      addToCategory('Vegetarian');
+      addToCategory('Plant-Based');
+    } else {
+      removeFromCategory('Vegetarian');
+      removeFromCategory('Plant-Based');
+    }
+
     saveMenuOverrides(updatedMenu);
     setShowAddItemModal(false);
   };
@@ -2110,7 +2219,24 @@ export default function AdminPage() {
                     </div>
                   )}
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', borderTop: '1px solid var(--border-light)', paddingTop: '0.75rem' }}>
+                  <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', color: 'var(--text-dark)' }}>Menu Occasion / Tags</label>
+                  <div style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                      <input type="checkbox" id="dish-tag-lunch-add" checked={dishFormData.lunch || false} onChange={(e) => setDishFormData({ ...dishFormData, lunch: e.target.checked })} style={{ cursor: 'pointer' }} />
+                      <label htmlFor="dish-tag-lunch-add" style={{ fontSize: '0.8rem', color: 'var(--text-dark)', userSelect: 'none', cursor: 'pointer' }}>Lunch</label>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                      <input type="checkbox" id="dish-tag-dinner-add" checked={dishFormData.dinner || false} onChange={(e) => setDishFormData({ ...dishFormData, dinner: e.target.checked })} style={{ cursor: 'pointer' }} />
+                      <label htmlFor="dish-tag-dinner-add" style={{ fontSize: '0.8rem', color: 'var(--text-dark)', userSelect: 'none', cursor: 'pointer' }}>Dinner</label>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                      <input type="checkbox" id="dish-tag-veg-add" checked={dishFormData.veg || false} onChange={(e) => setDishFormData({ ...dishFormData, veg: e.target.checked })} style={{ cursor: 'pointer' }} />
+                      <label htmlFor="dish-tag-veg-add" style={{ fontSize: '0.8rem', color: 'var(--text-dark)', userSelect: 'none', cursor: 'pointer' }}>Vegetarian (Veg)</label>
+                    </div>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.25rem' }}>
                   <input type="checkbox" id="dish-avail-add" checked={dishFormData.availability} onChange={(e) => setDishFormData({ ...dishFormData, availability: e.target.checked })} style={{ cursor: 'pointer' }} />
                   <label htmlFor="dish-avail-add" style={{ fontSize: '0.8rem', color: 'var(--text-dark)', userSelect: 'none', cursor: 'pointer' }}>Mark as Available in Inventory (In Stock)</label>
                 </div>
@@ -2165,7 +2291,24 @@ export default function AdminPage() {
                     </div>
                   )}
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', borderTop: '1px solid var(--border-light)', paddingTop: '0.75rem' }}>
+                  <label style={{ display: 'block', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', tracking: '0.1em', color: 'var(--text-dark)' }}>Menu Occasion / Tags</label>
+                  <div style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                      <input type="checkbox" id="dish-tag-lunch-edit" checked={dishFormData.lunch || false} onChange={(e) => setDishFormData({ ...dishFormData, lunch: e.target.checked })} style={{ cursor: 'pointer' }} />
+                      <label htmlFor="dish-tag-lunch-edit" style={{ fontSize: '0.8rem', color: 'var(--text-dark)', userSelect: 'none', cursor: 'pointer' }}>Lunch</label>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                      <input type="checkbox" id="dish-tag-dinner-edit" checked={dishFormData.dinner || false} onChange={(e) => setDishFormData({ ...dishFormData, dinner: e.target.checked })} style={{ cursor: 'pointer' }} />
+                      <label htmlFor="dish-tag-dinner-edit" style={{ fontSize: '0.8rem', color: 'var(--text-dark)', userSelect: 'none', cursor: 'pointer' }}>Dinner</label>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                      <input type="checkbox" id="dish-tag-veg-edit" checked={dishFormData.veg || false} onChange={(e) => setDishFormData({ ...dishFormData, veg: e.target.checked })} style={{ cursor: 'pointer' }} />
+                      <label htmlFor="dish-tag-veg-edit" style={{ fontSize: '0.8rem', color: 'var(--text-dark)', userSelect: 'none', cursor: 'pointer' }}>Vegetarian (Veg)</label>
+                    </div>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.25rem' }}>
                   <input type="checkbox" id="dish-avail-edit" checked={dishFormData.availability} onChange={(e) => setDishFormData({ ...dishFormData, availability: e.target.checked })} style={{ cursor: 'pointer' }} />
                   <label htmlFor="dish-avail-edit" style={{ fontSize: '0.8rem', color: 'var(--text-dark)', userSelect: 'none', cursor: 'pointer' }}>Mark as Available in Inventory (In Stock)</label>
                 </div>
