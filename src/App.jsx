@@ -964,17 +964,50 @@ export default function App() {
                               <label className="block font-sans text-[10px] font-bold tracking-widest uppercase text-dark mb-1" style={{ fontSize: '10px' }}>
                                 Pickup Time
                               </label>
-                              <input
-                                type="text"
+                              <select
                                 required
-                                placeholder="e.g. 12:30 PM, As soon as possible"
                                 value={cartCheckoutData.pickupTime || ''}
                                 onChange={(e) => setCartCheckoutData({ ...cartCheckoutData, pickupTime: e.target.value })}
-                                className="w-full px-4 py-2 font-sans text-sm bg-white rounded border focus:outline-none"
-                                style={{ width: '100%', padding: '0.6rem 0.8rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none' }}
-                              />
+                                style={{ width: '100%', padding: '0.6rem 0.8rem', fontSize: '0.85rem', border: '1px solid var(--border-light)', borderRadius: '4px', outline: 'none', backgroundColor: 'var(--canvas-primary)', color: 'var(--text-dark)', cursor: 'pointer' }}
+                              >
+                                <option value="">Select pickup time...</option>
+                                <option value="11:00 AM">11:00 AM</option>
+                                <option value="11:20 AM">11:20 AM</option>
+                                <option value="11:40 AM">11:40 AM</option>
+                                <option value="12:00 PM">12:00 PM</option>
+                                <option value="12:20 PM">12:20 PM</option>
+                                <option value="12:40 PM">12:40 PM</option>
+                                <option value="1:00 PM">1:00 PM</option>
+                                <option value="1:20 PM">1:20 PM</option>
+                                <option value="1:40 PM">1:40 PM</option>
+                                <option value="2:00 PM">2:00 PM</option>
+                                <option value="2:20 PM">2:20 PM</option>
+                                <option value="2:40 PM">2:40 PM</option>
+                                <option value="3:00 PM">3:00 PM</option>
+                                <option value="3:20 PM">3:20 PM</option>
+                                <option value="3:40 PM">3:40 PM</option>
+                                <option value="4:00 PM">4:00 PM</option>
+                                <option value="4:20 PM">4:20 PM</option>
+                                <option value="4:40 PM">4:40 PM</option>
+                                <option value="5:00 PM">5:00 PM</option>
+                                <option value="5:20 PM">5:20 PM</option>
+                                <option value="5:40 PM">5:40 PM</option>
+                                <option value="6:00 PM">6:00 PM</option>
+                                <option value="6:20 PM">6:20 PM</option>
+                                <option value="6:40 PM">6:40 PM</option>
+                                <option value="7:00 PM">7:00 PM</option>
+                                <option value="7:20 PM">7:20 PM</option>
+                                <option value="7:40 PM">7:40 PM</option>
+                                <option value="8:00 PM">8:00 PM</option>
+                                <option value="8:20 PM">8:20 PM</option>
+                                <option value="8:40 PM">8:40 PM</option>
+                                <option value="9:00 PM">9:00 PM</option>
+                                <option value="9:20 PM">9:20 PM</option>
+                                <option value="9:40 PM">9:40 PM</option>
+                              </select>
                             </div>
                           )}
+
 
                           {/* Coupon Code Input */}
                           <div>
