@@ -7,12 +7,16 @@ import heroDish from '../assets/hero_dish.png';
 import menuAppetizer from '../assets/menu_appetizer.png';
 import menuCurry from '../assets/menu_curry.png';
 import menuDessert from '../assets/menu_dessert.png';
-import mahaStreetPadThaiImg from '../assets/Maha Street Pad Thai.png';
+import mahaStreetPadThaiImg from '../assets/Pad thai.png';
 import coconutShellSeafoodImg from '../assets/Coconut Shell.png';
 import chooCheeSeafoodCurryImg from '../assets/Choo Chee Seafood Curry.png';
 import lambChopsImg from '../assets/Lamb Chops.jpeg';
 import salmonImg from '../assets/Salmon .png';
 import wholeFishSelectionImg from '../assets/Whole Fish Selection.png';
+import wholeFishSwaiImg from '../assets/Whole Fish Selection (Swai Filet).png';
+import wholeFishTilapiaImg from '../assets/Whole Fish Selection (Tilapia).png';
+import wholeFishRedsnapperImg from '../assets/Whole Fish Selection (Redsnapper).png';
+import wholeFishPomfretImg from '../assets/Whole Fish Selection (Pomfret).png';
 import yentafoImg from '../assets/Yen Ta Fo.png';
 import kanaHedHormImg from '../assets/KA-NA HED HORM.png';
 import lemongrassChickenImg from '../assets/Lemongrass.png';
@@ -32,7 +36,11 @@ import firecrackerShrimpImg from '../assets/Firecracker Shrimp.png';
 import freshGardenRollsImg from '../assets/Fresh Garden Rolls.png';
 import goldenFriedTofuImg from '../assets/Golden Fried Tofu.png';
 import mahaCrispyCrabBitesImg from '../assets/Maha Crispy Crab Bites.png';
+import crabBitesImg from '../assets/crab bites.png';
 import panSearedDumplingsImg from '../assets/Pan-Seared Dumplings (chicken  pork  veg).png';
+import dumplingsImg from '../assets/Dumplings.png';
+import tofuSatayImg from '../assets/Tofu Satay.png';
+import shrimpSaladImg from '../assets/shrimp salad.png';
 import streetSataySkewersImg from '../assets/Street Satay Skewers (chicken  spicy chicken 🌶️  tofu).png';
 import vietnameseFreshRollsImg from '../assets/Vietnamese Fresh Rolls.png';
 import caramelizedPadSeeEwImg from '../assets/Caramelized Pad See Ew.png';
@@ -82,7 +90,7 @@ import plantPadThaiImg from '../assets/Vegetarian Pad Thai.png';
 import bananaStickyRiceImg from '../assets/Banana Sticky Rice.png';
 import blackRiceMangoImg from '../assets/Black Rice Mango.png';
 import eggDropSoupImg from '../assets/Egg Drop Soup.png';
-import hotSourSoupImg from '../assets/Hot & Sour Soup.png';
+import hotSourSoupImg from '../assets/hot and sour soup.png';
 import misoSoupImg from '../assets/Miso Soup.png';
 import shrimpWontonSoupImg from '../assets/Shrimp Wonton Soup.png';
 import lunchImg from '../assets/lunchimg.png';
@@ -182,7 +190,7 @@ export const menuData = {
       description: 'Cream cheese and crab wrapped in wonton skin and fried until golden and crispy.',
       price: 8.99,
       rating: 4.8,
-      image: mahaCrispyCrabBitesImg
+      image: crabBitesImg
     },
     {
       id: 'app-dumplings',
@@ -190,7 +198,7 @@ export const menuData = {
       description: 'Dumplings with crispy bottoms and juicy filling, served with savory soy sauce.',
       price: 7.99,
       rating: 4.8,
-      image: panSearedDumplingsImg
+      image: dumplingsImg
     },
     {
       id: 'app-shrimp-toast',
@@ -214,7 +222,7 @@ export const menuData = {
       description: 'Grilled Tofu marinated in Thai spices, served with peanut sauce and cucumber relish.',
       price: 8.99,
       rating: 4.8,
-      image: streetSataySkewersImg
+      image: tofuSatayImg
     },
     {
       id: 'app-vietnamese-rolls',
@@ -288,7 +296,7 @@ export const menuData = {
       description: 'Choice of poached tiger prawns or tender squid rings dressed with celery, red onions, tomatoes, coriander, and fresh chili-lime marinade.',
       price: 13.99,
       rating: 4.8,
-      image: yumShrimpOrSquidImg
+      image: shrimpSaladImg
     }
   ],
   'Noodle Bar': [
@@ -610,7 +618,7 @@ export const menuData = {
       description: 'Deep-fried whole Swai fish filet served with garlic or chili-based sauces.',
       price: 18.99,
       rating: 4.8,
-      image: wholeFishSelectionImg
+      image: wholeFishSwaiImg
     },
     {
       id: 'sea-whole-fish-tilapia',
@@ -618,7 +626,7 @@ export const menuData = {
       description: 'Deep-fried whole Tilapia fish served with garlic or chili-based sauces.',
       price: 22.99,
       rating: 4.8,
-      image: wholeFishSelectionImg
+      image: wholeFishTilapiaImg
     },
     {
       id: 'sea-whole-fish-redsnapper',
@@ -626,7 +634,7 @@ export const menuData = {
       description: 'Deep-fried whole Redsnapper served with garlic or chili-based sauces.',
       price: 31.00,
       rating: 4.9,
-      image: wholeFishSelectionImg
+      image: wholeFishRedsnapperImg
     },
     {
       id: 'sea-whole-fish-pomfret',
@@ -634,7 +642,7 @@ export const menuData = {
       description: 'Deep-fried whole Pomfret served with garlic or chili-based sauces.',
       price: 25.00,
       rating: 4.8,
-      image: wholeFishSelectionImg
+      image: wholeFishPomfretImg
     },
     {
       id: 'sea-whole-fish-pompano',
