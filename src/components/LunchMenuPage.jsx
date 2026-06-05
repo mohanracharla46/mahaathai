@@ -7,6 +7,49 @@ export default function LunchMenuPage({ onOpenReservation, cart = {}, addToCart,
   const [appetizer, setAppetizer] = useState('Crispy Spring Roll');
   const [entree, setEntree] = useState('Basil Fried Rice 🌶️');
   const [protein, setProtein] = useState('Vegetable');
+  const [addons, setAddons] = useState({
+    'Chicken': false,
+    'Pork': false,
+    'Beef': false,
+    'Extra Shrimp': false,
+    'Fried Paneer/cottage Cheese': 0,
+    'Soft Paneer/cottage Cheese': 0
+  });
+
+  const getSelectedAddonsList = () => {
+    const list = [];
+    if (addons['Chicken']) {
+      list.push({ name: 'Chicken', price: 2.00 });
+    }
+    if (addons['Pork']) {
+      list.push({ name: 'Pork', price: 2.00 });
+    }
+    if (addons['Beef']) {
+      list.push({ name: 'Beef', price: 3.50 });
+    }
+    if (addons['Extra Shrimp']) {
+      list.push({ name: 'Extra Shrimp', price: 4.00 });
+    }
+    if (addons['Fried Paneer/cottage Cheese'] > 0) {
+      const qty = addons['Fried Paneer/cottage Cheese'];
+      list.push({
+        name: `Fried Paneer/cottage Cheese (x${qty})`,
+        price: 1.50 * qty
+      });
+    }
+    if (addons['Soft Paneer/cottage Cheese'] > 0) {
+      const qty = addons['Soft Paneer/cottage Cheese'];
+      list.push({
+        name: `Soft Paneer/cottage Cheese (x${qty})`,
+        price: 1.00 * qty
+      });
+    }
+    return list;
+  };
+
+  const getAddonsTotal = () => {
+    return getSelectedAddonsList().reduce((sum, a) => sum + a.price, 0);
+  };
 
   const appetizers = [
     'Crispy Spring Roll',
@@ -49,17 +92,24 @@ export default function LunchMenuPage({ onOpenReservation, cart = {}, addToCart,
   };
 
   const extra = getProteinExtra(protein);
-  const currentPrice = 12.99 + extra;
+  const addonsTotal = getAddonsTotal();
+  const currentPrice = 12.99 + extra + addonsTotal;
 
   const sanitizeForId = (str) => str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-').replace(/-+$/, '').replace(/^-+/, '');
-  const currentItemId = `lunch-special-${sanitizeForId(appetizer)}-${sanitizeForId(entree)}-${sanitizeForId(protein)}`;
+  
+  const addonList = getSelectedAddonsList();
+  const addonsIdPart = addonList.length > 0
+    ? `-addons-${addonList.map(a => sanitizeForId(a.name)).join('-')}`
+    : '';
+  const currentItemId = `lunch-special-${sanitizeForId(appetizer)}-${sanitizeForId(entree)}-${sanitizeForId(protein)}${addonsIdPart}`;
 
+  const addonNames = addonList.map(a => a.name).join(', ');
   const currentItem = {
     id: currentItemId,
-    name: `Lunch Special (${appetizer}, ${entree}, ${protein})`,
+    name: `Lunch Special (${appetizer}, ${entree}, ${protein}${addonNames ? ` + ${addonNames}` : ''})`,
     price: currentPrice,
     image: lunchImg,
-    description: `Lunch Combo: ${appetizer}, Soup & Salad, ${entree} with ${protein}.`,
+    description: `Lunch Combo: ${appetizer}, Soup & Salad, ${entree} with ${protein}.${addonNames ? ` Extras: ${addonNames}.` : ''}`,
     rating: 5.0
   };
 
@@ -301,6 +351,19 @@ export default function LunchMenuPage({ onOpenReservation, cart = {}, addToCart,
                       <span>• Protein:</span>
                       <strong style={{ color: 'var(--text-dark)', fontWeight: 500 }}>{protein} {extra > 0 ? `(+$${extra})` : ''}</strong>
                     </div>
+                    {addonList.length > 0 && (
+                      <div style={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'column', borderTop: '1px dashed var(--border-light)', paddingTop: '0.6rem', marginTop: '0.2rem' }}>
+                        <span style={{ display: 'block', fontWeight: 600, fontSize: '0.75rem', marginBottom: '0.4rem', color: 'var(--text-dark)' }}>• Extras:</span>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', paddingLeft: '0.5rem' }}>
+                          {addonList.map(a => (
+                            <div key={a.name} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem' }}>
+                              <span>{a.name}</span>
+                              <strong style={{ color: 'var(--text-dark)', fontWeight: 500 }}>+${a.price.toFixed(2)}</strong>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -438,6 +501,174 @@ export default function LunchMenuPage({ onOpenReservation, cart = {}, addToCart,
                       onClick={() => setProtein(prot.name)}
                     />
                   ))}
+                </div>
+              </div>
+
+              {/* Add Extra */}
+              <div style={{ marginBottom: '2.5rem' }}>
+                <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.35rem', color: 'var(--text-dark)', marginBottom: '1.25rem', borderBottom: '1px solid var(--border-light)', paddingBottom: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                  <span>5. Add Extra.</span>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 300, fontFamily: 'var(--font-sans)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Optional</span>
+                </h3>
+                
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
+                  {/* Checkbox extras */}
+                  {[
+                    { id: 'Chicken', name: 'Chicken', price: 2.00 },
+                    { id: 'Pork', name: 'Pork', price: 2.00 },
+                    { id: 'Beef', name: 'Beef', price: 3.50 },
+                    { id: 'Extra Shrimp', name: 'Extra Shrimp', price: 4.00 }
+                  ].map((addon) => {
+                    const isSelected = addons[addon.id];
+                    return (
+                      <div
+                        key={addon.id}
+                        onClick={() => setAddons(prev => ({ ...prev, [addon.id]: !prev[addon.id] }))}
+                        className="custom-option-card"
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          padding: '1rem 1.25rem',
+                          borderRadius: '8px',
+                          backgroundColor: isSelected ? 'var(--gold-light)' : 'var(--canvas-secondary)',
+                          border: isSelected ? '2px solid var(--gold-antique)' : '1px solid var(--border-light)',
+                          cursor: 'pointer',
+                          userSelect: 'none',
+                          boxShadow: isSelected ? 'var(--shadow-soft)' : 'none'
+                        }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                          <div style={{
+                            width: '20px',
+                            height: '20px',
+                            borderRadius: '4px',
+                            border: isSelected ? '1px solid var(--gold-antique)' : '1px solid var(--border-medium)',
+                            backgroundColor: isSelected ? 'var(--gold-antique)' : 'transparent',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: 'var(--text-dark)',
+                            flexShrink: 0
+                          }}>
+                            {isSelected && (
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="20 6 9 17 4 12" />
+                              </svg>
+                            )}
+                          </div>
+                          <span style={{
+                            fontFamily: 'var(--font-sans)',
+                            fontSize: '0.88rem',
+                            fontWeight: isSelected ? 600 : 400,
+                            color: 'var(--text-dark)'
+                          }}>
+                            {addon.name}
+                          </span>
+                        </div>
+                        <span style={{
+                          fontFamily: 'var(--font-sans)',
+                          fontSize: '0.85rem',
+                          fontWeight: 600,
+                          color: isSelected ? 'var(--text-dark)' : 'var(--text-muted)'
+                        }}>
+                          +${addon.price.toFixed(2)}
+                        </span>
+                      </div>
+                    );
+                  })}
+
+                  {/* Quantity counters */}
+                  {[
+                    { id: 'Fried Paneer/cottage Cheese', name: 'Fried Paneer/cottage Cheese', price: 1.50 },
+                    { id: 'Soft Paneer/cottage Cheese', name: 'Soft Paneer/cottage Cheese', price: 1.00 }
+                  ].map((addon) => {
+                    const qty = addons[addon.id];
+                    const isSelected = qty > 0;
+                    return (
+                      <div
+                        key={addon.id}
+                        className="custom-option-card"
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          padding: '1rem 1.25rem',
+                          borderRadius: '8px',
+                          backgroundColor: isSelected ? 'var(--gold-light)' : 'var(--canvas-secondary)',
+                          border: isSelected ? '2px solid var(--gold-antique)' : '1px solid var(--border-light)',
+                          userSelect: 'none',
+                          boxShadow: isSelected ? 'var(--shadow-soft)' : 'none'
+                        }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginRight: '0.25rem' }}>
+                            <button
+                              type="button"
+                              onClick={() => setAddons(prev => ({ ...prev, [addon.id]: Math.max(0, prev[addon.id] - 1) }))}
+                              style={{
+                                width: '24px',
+                                height: '24px',
+                                borderRadius: '50%',
+                                border: '1px solid var(--border-medium)',
+                                backgroundColor: 'transparent',
+                                color: 'var(--text-dark)',
+                                cursor: 'pointer',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: '0.85rem',
+                                fontWeight: 'bold',
+                                outline: 'none'
+                              }}
+                            >
+                              -
+                            </button>
+                            <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-dark)', minWidth: '14px', textAlign: 'center' }}>
+                              {qty}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => setAddons(prev => ({ ...prev, [addon.id]: prev[addon.id] + 1 }))}
+                              style={{
+                                width: '24px',
+                                height: '24px',
+                                borderRadius: '50%',
+                                border: '1px solid var(--border-medium)',
+                                backgroundColor: 'transparent',
+                                color: 'var(--text-dark)',
+                                cursor: 'pointer',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: '0.85rem',
+                                fontWeight: 'bold',
+                                outline: 'none'
+                              }}
+                            >
+                              +
+                            </button>
+                          </div>
+                          <span style={{
+                            fontFamily: 'var(--font-sans)',
+                            fontSize: '0.88rem',
+                            fontWeight: isSelected ? 600 : 400,
+                            color: 'var(--text-dark)'
+                          }}>
+                            {addon.name}
+                          </span>
+                        </div>
+                        <span style={{
+                          fontFamily: 'var(--font-sans)',
+                          fontSize: '0.85rem',
+                          fontWeight: 600,
+                          color: isSelected ? 'var(--text-dark)' : 'var(--text-muted)'
+                        }}>
+                          +${addon.price.toFixed(2)}
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 
