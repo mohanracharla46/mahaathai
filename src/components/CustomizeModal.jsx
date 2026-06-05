@@ -5,33 +5,51 @@ import { menuData } from './MenuSection';
 
 export default function CustomizeModal({ item, onClose, onConfirm, onAddSuggestion }) {
   const [spice, setSpice] = useState('Medium');
-  const [selectedAddons, setSelectedAddons] = useState([]);
+  const [addons, setAddons] = useState({
+    'Chicken': false,
+    'Pork': false,
+    'Beef': false,
+    'Extra Shrimp': false,
+    'Fried Paneer/cottage Cheese': 0,
+    'Soft Paneer/cottage Cheese': 0
+  });
   const [requirements, setRequirements] = useState('');
 
   const spiceLevels = ['Mild', 'Medium', 'Spicy', 'More Spicy'];
 
-  const addonOptions = [
-    { name: 'Extra Vegetables', price: 1.50 },
-    { name: 'Extra Tofu', price: 2.00 },
-    { name: 'Extra Chicken', price: 2.50 },
-    { name: 'Extra Beef', price: 3.00 },
-    { name: 'Extra Shrimp', price: 3.50 },
-    { name: 'Fried Egg', price: 1.50 },
-    { name: 'Jasmine Rice', price: 2.00 }
-  ];
-
-  const handleToggleAddon = (addon) => {
-    setSelectedAddons((prev) => {
-      const exists = prev.find((a) => a.name === addon.name);
-      if (exists) {
-        return prev.filter((a) => a.name !== addon.name);
-      }
-      return [...prev, addon];
-    });
+  const getSelectedAddonsList = () => {
+    const list = [];
+    if (addons['Chicken']) {
+      list.push({ name: 'Chicken', price: 2.00 });
+    }
+    if (addons['Pork']) {
+      list.push({ name: 'Pork', price: 2.00 });
+    }
+    if (addons['Beef']) {
+      list.push({ name: 'Beef', price: 3.50 });
+    }
+    if (addons['Extra Shrimp']) {
+      list.push({ name: 'Extra Shrimp', price: 4.00 });
+    }
+    if (addons['Fried Paneer/cottage Cheese'] > 0) {
+      const qty = addons['Fried Paneer/cottage Cheese'];
+      list.push({
+        name: `Fried Paneer/cottage Cheese (x${qty})`,
+        price: 1.50 * qty
+      });
+    }
+    if (addons['Soft Paneer/cottage Cheese'] > 0) {
+      const qty = addons['Soft Paneer/cottage Cheese'];
+      list.push({
+        name: `Soft Paneer/cottage Cheese (x${qty})`,
+        price: 1.00 * qty
+      });
+    }
+    return list;
   };
 
   const getAddonsTotal = () => {
-    return selectedAddons.reduce((sum, a) => sum + a.price, 0);
+    return getSelectedAddonsList().reduce((sum, a) => sum + a.price, 0);
   };
 
   const currentPrice = Number((item.price + getAddonsTotal()).toFixed(2));
@@ -150,24 +168,30 @@ export default function CustomizeModal({ item, onClose, onConfirm, onAddSuggesti
           </div>
         </div>
 
-        {/* Add-ons */}
+        {/* Add Extra */}
         <div>
           <h4 style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase', color: 'var(--text-dark)', marginBottom: '0.85rem' }}>
-            Add-ons (Optional)
+            Add Extra.
           </h4>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
-            {addonOptions.map((addon) => {
-              const isSelected = selectedAddons.some((a) => a.name === addon.name);
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+            {/* Checkbox options */}
+            {[
+              { id: 'Chicken', name: 'Chicken', price: 2.00 },
+              { id: 'Pork', name: 'Pork', price: 2.00 },
+              { id: 'Beef', name: 'Beef', price: 3.50 },
+              { id: 'Extra Shrimp', name: 'Extra Shrimp', price: 4.00 }
+            ].map((addon) => {
+              const isSelected = addons[addon.id];
               return (
                 <div
-                  key={addon.name}
-                  onClick={() => handleToggleAddon(addon)}
+                  key={addon.id}
+                  onClick={() => setAddons(prev => ({ ...prev, [addon.id]: !prev[addon.id] }))}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    padding: '0.75rem 1rem',
-                    borderRadius: '8px',
+                    padding: '0.6rem 0.75rem',
+                    borderRadius: '6px',
                     backgroundColor: isSelected ? 'var(--gold-light)' : 'var(--canvas-secondary)',
                     border: `1px solid ${isSelected ? 'var(--gold-antique)' : 'var(--border-light)'}`,
                     cursor: 'pointer',
@@ -188,6 +212,95 @@ export default function CustomizeModal({ item, onClose, onConfirm, onAddSuggesti
                       color: 'var(--text-dark)'
                     }}>
                       {isSelected && <Check size={10} strokeWidth={3} />}
+                    </div>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--text-dark)', fontWeight: isSelected ? 600 : 400 }}>
+                      {addon.name}
+                    </span>
+                  </div>
+                  <span style={{ fontSize: '0.75rem', color: isSelected ? 'var(--text-dark)' : 'var(--text-muted)', fontWeight: 600 }}>
+                    +${addon.price.toFixed(2)}
+                  </span>
+                </div>
+              );
+            })}
+
+            {/* Quantity-based options */}
+            {[
+              { id: 'Fried Paneer/cottage Cheese', name: 'Fried Paneer/cottage Cheese', price: 1.50 },
+              { id: 'Soft Paneer/cottage Cheese', name: 'Soft Paneer/cottage Cheese', price: 1.00 }
+            ].map((addon) => {
+              const qty = addons[addon.id];
+              const isSelected = qty > 0;
+              return (
+                <div
+                  key={addon.id}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '0.6rem 0.75rem',
+                    borderRadius: '6px',
+                    backgroundColor: isSelected ? 'var(--gold-light)' : 'var(--canvas-secondary)',
+                    border: `1px solid ${isSelected ? 'var(--gold-antique)' : 'var(--border-light)'}`,
+                    userSelect: 'none',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setAddons(prev => ({ ...prev, [addon.id]: Math.max(0, prev[addon.id] - 1) }));
+                        }}
+                        style={{
+                          width: '22px',
+                          height: '22px',
+                          borderRadius: '50%',
+                          border: '1px solid var(--border-medium)',
+                          backgroundColor: 'transparent',
+                          color: 'var(--text-dark)',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '0.85rem',
+                          lineHeight: 1,
+                          fontWeight: 'bold',
+                          outline: 'none'
+                        }}
+                      >
+                        -
+                      </button>
+                      <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-dark)', minWidth: '14px', textAlign: 'center' }}>
+                        {qty}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setAddons(prev => ({ ...prev, [addon.id]: prev[addon.id] + 1 }));
+                        }}
+                        style={{
+                          width: '22px',
+                          height: '22px',
+                          borderRadius: '50%',
+                          border: '1px solid var(--border-medium)',
+                          backgroundColor: 'transparent',
+                          color: 'var(--text-dark)',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '0.85rem',
+                          lineHeight: 1,
+                          fontWeight: 'bold',
+                          outline: 'none'
+                        }}
+                      >
+                        +
+                      </button>
                     </div>
                     <span style={{ fontSize: '0.8rem', color: 'var(--text-dark)', fontWeight: isSelected ? 600 : 400 }}>
                       {addon.name}
@@ -314,7 +427,7 @@ export default function CustomizeModal({ item, onClose, onConfirm, onAddSuggesti
           </button>
           <button
             type="button"
-            onClick={() => onConfirm({ spice, addons: selectedAddons, requirements })}
+            onClick={() => onConfirm({ spice, addons: getSelectedAddonsList(), requirements })}
             className="btn-filled"
             style={{
               flex: 2,
