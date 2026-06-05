@@ -16,6 +16,7 @@ export default function LunchMenuPage({ onOpenReservation, cart = {}, addToCart,
     'Fried Paneer/cottage Cheese': 0,
     'Soft Paneer/cottage Cheese': 0
   });
+  const [requirements, setRequirements] = useState('');
 
   const getSelectedAddonsList = () => {
     const list = [];
@@ -102,7 +103,10 @@ export default function LunchMenuPage({ onOpenReservation, cart = {}, addToCart,
   const addonsIdPart = addonList.length > 0
     ? `-addons-${addonList.map(a => sanitizeForId(a.name)).join('-')}`
     : '';
-  const currentItemId = `lunch-special-${sanitizeForId(appetizer)}-${sanitizeForId(entree)}-${sanitizeForId(protein)}-spice-${spice.toLowerCase()}${addonsIdPart}`;
+  const reqsIdPart = requirements
+    ? `-req-${requirements.toLowerCase().replace(/[^a-z0-9]/g, '-').slice(0, 10)}`
+    : '';
+  const currentItemId = `lunch-special-${sanitizeForId(appetizer)}-${sanitizeForId(entree)}-${sanitizeForId(protein)}-spice-${spice.toLowerCase()}${addonsIdPart}${reqsIdPart}`;
 
   const addonNames = addonList.map(a => a.name).join(', ');
   const currentItem = {
@@ -111,7 +115,12 @@ export default function LunchMenuPage({ onOpenReservation, cart = {}, addToCart,
     price: currentPrice,
     image: lunchImg,
     description: `Lunch Combo: ${appetizer}, Soup & Salad, ${entree} with ${protein} (${spice} Spice).${addonNames ? ` Extras: ${addonNames}.` : ''}`,
-    rating: 5.0
+    rating: 5.0,
+    customizations: {
+      spice,
+      addons: addonList,
+      requirements: requirements || ''
+    }
   };
 
   const cartItem = cart[currentItemId];
@@ -356,6 +365,12 @@ export default function LunchMenuPage({ onOpenReservation, cart = {}, addToCart,
                       <span>• Spice Level:</span>
                       <strong style={{ color: 'var(--text-dark)', fontWeight: 500 }}>{spice}</strong>
                     </div>
+                    {requirements && (
+                      <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px dashed var(--border-light)', paddingTop: '0.6rem', marginTop: '0.2rem' }}>
+                        <span>• Special Instructions:</span>
+                        <strong style={{ color: 'var(--gold-antique)', fontStyle: 'italic', maxWidth: '180px', wordBreak: 'break-word', textAlign: 'right' }}>"{requirements}"</strong>
+                      </div>
+                    )}
                     {addonList.length > 0 && (
                       <div style={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'column', borderTop: '1px dashed var(--border-light)', paddingTop: '0.6rem', marginTop: '0.2rem' }}>
                         <span style={{ display: 'block', fontWeight: 600, fontSize: '0.75rem', marginBottom: '0.4rem', color: 'var(--text-dark)' }}>• Extras:</span>
@@ -709,6 +724,31 @@ export default function LunchMenuPage({ onOpenReservation, cart = {}, addToCart,
                     );
                   })}
                 </div>
+              </div>
+
+              {/* Requirements / Special Instructions */}
+              <div style={{ marginBottom: '2.5rem' }}>
+                <h3 style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase', color: 'var(--text-dark)', marginBottom: '0.6rem' }}>
+                  ANY MORE REQUIREMENTS?
+                </h3>
+                <textarea
+                  value={requirements}
+                  onChange={(e) => setRequirements(e.target.value)}
+                  placeholder="e.g. Allergy details, no peanuts, extra garlic, extra sauce, etc."
+                  style={{
+                    width: '100%',
+                    minHeight: '80px',
+                    padding: '0.75rem 1rem',
+                    borderRadius: '8px',
+                    border: '1px solid var(--border-medium)',
+                    fontSize: '0.9rem',
+                    fontFamily: 'var(--font-sans)',
+                    outline: 'none',
+                    resize: 'vertical',
+                    color: 'var(--text-dark)',
+                    backgroundColor: 'var(--canvas-primary)'
+                  }}
+                />
               </div>
 
             </div>
