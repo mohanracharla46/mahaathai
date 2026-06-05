@@ -6,7 +6,7 @@ import lunchImg from '../assets/lunchimg.png';
 export default function LunchMenuPage({ onOpenReservation, cart = {}, addToCart, removeFromCart }) {
   const [appetizer, setAppetizer] = useState('Crispy Spring Roll');
   const [entree, setEntree] = useState('Basil Fried Rice 🌶️');
-  const [protein, setProtein] = useState('Veggies');
+  const [protein, setProtein] = useState('Vegetable');
 
   const appetizers = [
     'Crispy Spring Roll',
@@ -29,12 +29,17 @@ export default function LunchMenuPage({ onOpenReservation, cart = {}, addToCart,
   ];
 
   const proteins = [
-    { name: 'Veggies', extra: 0 },
-    { name: 'Chicken', extra: 0 },
-    { name: 'Tofu', extra: 0 },
-    { name: 'Beef', extra: 3 },
-    { name: 'Shrimp', extra: 3 },
-    { name: 'Seafood', extra: 6 }
+    { name: 'Beef', extra: 3.50 },
+    { name: 'Shrimp', extra: 3.50 },
+    { name: 'Seafood', extra: 6.00 },
+    { name: 'No Protein', extra: 0 },
+    { name: 'Chicken', extra: 2.00 },
+    { name: 'Fried Tofu', extra: 0 },
+    { name: 'Soft Tofu', extra: 0 },
+    { name: 'Vegetable', extra: 0 },
+    { name: 'Extra Vegetable', extra: 2.00 },
+    { name: 'Fried Paneer/cottage Cheese', extra: 1.50 },
+    { name: 'Soft Paneer/cottage Cheese', extra: 1.00 }
   ];
 
   // Price calculations
